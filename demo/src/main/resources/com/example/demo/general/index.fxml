@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="874.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.IndexController">
+   <children>
+      <TableView fx:id="orderTable" layoutX="12.0" layoutY="507.0" prefHeight="279.0" prefWidth="850.0">
+        <columns>
+          <TableColumn fx:id="indexCol" prefWidth="58.0" text="STT" />
+          <TableColumn fx:id="sellerCol" prefWidth="120.0" text="Người bán" />
+            <TableColumn fx:id="buyerCol" prefWidth="120.0" text="Người mua" />
+            <TableColumn fx:id="cargoCol" prefWidth="92.0" text="Loại hàng" />
+            <TableColumn fx:id="totalWeightCol" prefWidth="120.0" text="Tổng" />
+            <TableColumn fx:id="vehicleWeightCol" prefWidth="120.0" text="Bì" />
+            <TableColumn fx:id="cargoWeightCol" prefWidth="120.0" text="Hàng" />
+            <TableColumn fx:id="createdAtCol" prefWidth="100.0" text="Ngày tạo" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>
