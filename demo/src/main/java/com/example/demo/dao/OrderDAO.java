@@ -28,10 +28,25 @@ public class OrderDAO {
             return orders;
         }
         List<Order> orderList = new ArrayList<>();
-        for (int i = 1; i <= 100; i++) {
-            orderList.add(new Order(i, i, "99c33737", "TESTER SELLER", "TESTER BUYER", 1000, 0, 0, LocalDate.now(), LocalDate.now(), "CREATED", "UNPAID", "", 0, "", "", ""));
+        for (int i = 1; i <= 10; i++) {
+            orderList.add(new Order(i, i, "99c337" + i, "TESTER SELLER", "TESTER BUYER", 1000, 0, 0, LocalDate.now(), LocalDate.now(), "CREATED", "UNPAID", "", 0, "", "", ""));
         }
         orders = FXCollections.observableList(orderList);
         return orders;
+    }
+
+    public void createOrder(Order order) {
+        orders.add(order);
+    }
+
+    public void updateOrder(Order updatedOrder) {
+        int index = 0;
+        for (Order order : orders) {
+            if (order.getId() == updatedOrder.getId()) {
+                break;
+            }
+            index++;
+        }
+        orders.set(index, updatedOrder);
     }
 }

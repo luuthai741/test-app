@@ -1,4 +1,4 @@
-package com.example.demo.utils;
+package com.example.demo.utils.constants;
 
 public enum Page {
     ADMIN_HOME("admin/home.fxml"),
