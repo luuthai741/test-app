@@ -1,0 +1,20 @@
+.left-form {
+    -fx-background-color: linear-gradient(to bottom right, #2d658c, #2ca772);
+}
+
+.right-form {
+    -fx-background-color: #fff;
+}
+.general-button {
+    -fx-background-color: linear-gradient(to bottom right, #2968a7, #14405d);
+    -fx-cursor: hand;
+    -fx-text-fill: #fff;
+    -fx-font-size: 12px;
+}
+
+.nav-button{
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+    -fx-text-fill: white;
+    -fx-font-family: 'Arial';
+}

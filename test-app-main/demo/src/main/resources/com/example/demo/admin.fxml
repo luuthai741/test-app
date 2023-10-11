@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.AdminController">
+   <children>
+      <AnchorPane>
+         <children>
+            <BorderPane fx:id="borderPane" layoutX="7.0" layoutY="6.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <left>
+                  <AnchorPane prefHeight="150.0" prefWidth="150.0" styleClass="left-form" stylesheets="@css/login.css" BorderPane.alignment="CENTER">
+                     <children>
+                        <Label alignment="CENTER" layoutX="14.0" layoutY="44.0" prefHeight="34.0" prefWidth="172.0" text="ADMIN DASHBOARD" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <Line endX="100.0" layoutX="70.0" layoutY="78.0" startX="-40.0" stroke="WHITE" />
+                        <Button fx:id="ADMIN_HOME" alignment="BASELINE_LEFT" layoutX="14.0" layoutY="141.0" mnemonicParsing="false" onAction="#switchPage" prefHeight="34.0" prefWidth="150.0" styleClass="nav-button" stylesheets="@css/login.css" text="Thống kê">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="FORM" alignment="BASELINE_LEFT" layoutX="14.0" layoutY="175.0" mnemonicParsing="false" onAction="#switchPage" prefHeight="34.0" prefWidth="150.0" styleClass="nav-button" stylesheets="@css/login.css" text="Tạo phiếu tay">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="LIST" alignment="BASELINE_LEFT" layoutX="14.0" layoutY="209.0" mnemonicParsing="false" onAction="#switchPage" prefHeight="34.0" prefWidth="150.0" styleClass="nav-button" stylesheets="@css/login.css" text="Danh sách cân">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="DEBTOR" alignment="BASELINE_LEFT" layoutX="14.0" layoutY="243.0" mnemonicParsing="false" onAction="#switchPage" prefHeight="34.0" prefWidth="150.0" styleClass="nav-button" stylesheets="@css/login.css" text="Tổng thu nợ">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="INDEX" alignment="BASELINE_LEFT" layoutX="14.0" layoutY="107.0" mnemonicParsing="false" onAction="#switchPage" prefHeight="34.0" prefWidth="150.0" styleClass="nav-button" stylesheets="@css/login.css" text="Cân xe">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </AnchorPane>
+               </left>
+               <center>
+               </center>
+            </BorderPane>
+         </children>
+      </AnchorPane>
+   </children>
+</StackPane>
