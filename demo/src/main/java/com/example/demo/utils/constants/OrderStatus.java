@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum OrderStatus {
+    ALL("Tất cả"),
     CREATED("Vừa tạo"),
     COMPLETED("Hoàn thành"),
     CANCELED("Hủy");
@@ -29,7 +30,7 @@ public enum OrderStatus {
         return null;
     }
 
-    public static ObservableList<String> getIndexStatus(){
+    public static ObservableList<String> getIndexStatus() {
         List<String> statusList = new ArrayList<>();
         for (OrderStatus orderStatus : OrderStatus.values()) {
             statusList.add(orderStatus.getNote());

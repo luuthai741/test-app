@@ -1,8 +1,15 @@
 package com.example.demo.utils.constants;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public enum PaymentStatus {
     PAID("Đã trả"),
-    UNPAID("Chưa trả");
+    UNPAID("Chưa trả"),
+    ALL("Tất cả");
 
     private String note;
 
@@ -21,5 +28,23 @@ public enum PaymentStatus {
             }
         }
         return null;
+    }
+
+    public static ObservableList<String> getIndexStatus() {
+        List<String> statusList = new ArrayList<>();
+        for (PaymentStatus paymentStatus : PaymentStatus.values()) {
+            if (paymentStatus.equals(ALL)){
+                continue;
+            }
+            statusList.add(paymentStatus.getNote());
+        }
+        return FXCollections.observableList(statusList);
+    }
+    public static ObservableList<String> getItemStatus() {
+        List<String> statusList = new ArrayList<>();
+        for (PaymentStatus paymentStatus : PaymentStatus.values()) {
+            statusList.add(paymentStatus.getNote());
+        }
+        return FXCollections.observableList(statusList);
     }
 }

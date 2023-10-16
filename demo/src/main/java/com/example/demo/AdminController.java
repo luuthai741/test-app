@@ -1,13 +1,16 @@
 package com.example.demo;
 
 import com.example.demo.utils.constants.Page;
+import com.example.demo.utils.util.ConvertUtil;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
@@ -36,8 +39,21 @@ public class AdminController implements Initializable {
                 System.out.println("TEST HOME");
             }
             case LIST -> {
-                newRoot = FXMLLoader.load(getClass().getResource(LIST.getFxml()));
-                System.out.println("TEST LIST");
+                if (!ConvertUtil.PAGES.contains(LIST.name())){
+                    newRoot = FXMLLoader.load(getClass().getResource(LIST.getFxml()));
+                    Scene scene = new Scene(newRoot);
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    stage.setTitle("Danh sách mã cân");
+                    stage.show();
+                    ConvertUtil.PAGES.add(LIST.name());
+                    stage.setOnCloseRequest(e->{
+                        ConvertUtil.PAGES.remove(LIST.name());
+                    });
+                    System.out.println("Mở trang");
+                    return;
+                }
+                System.out.println("Đã mở trang");
             }
             case DEBTOR -> {
                 newRoot = FXMLLoader.load(getClass().getResource(DEBTOR.getFxml()));

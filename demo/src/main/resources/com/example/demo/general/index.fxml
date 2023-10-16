@@ -10,7 +10,6 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.IndexController">
@@ -28,110 +27,178 @@
             <TableColumn fx:id="createdAtCol" prefWidth="88.0" text="Ngày tạo" />
         </columns>
       </TableView>
-      <AnchorPane layoutX="65.0" layoutY="351.0" prefHeight="98.0" prefWidth="872.0">
+      <AnchorPane layoutX="64.0" layoutY="374.0" prefHeight="79.0" prefWidth="872.0">
          <children>
-            <Button fx:id="firstTimeButton" layoutX="28.0" layoutY="37.0" mnemonicParsing="false" onAction="#actionFirstTime" prefHeight="30.0" prefWidth="120.0" text="Cân lần 1">
+            <Button fx:id="firstTimeButton" layoutX="27.0" layoutY="25.0" mnemonicParsing="false" onAction="#actionFirstTime" prefHeight="30.0" prefWidth="100.0" text="Cân lần 1">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></Button>
-            <Button fx:id="secondTimeButton" layoutX="167.0" layoutY="37.0" mnemonicParsing="false" onAction="#actionSecondTime" prefHeight="30.0" prefWidth="120.0" text="Cần lần 2">
+            <Button fx:id="secondTimeButton" layoutX="137.0" layoutY="25.0" mnemonicParsing="false" onAction="#actionSecondTime" prefHeight="30.0" prefWidth="100.0" text="Cần lần 2">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></Button>
-            <Button fx:id="saveButton" layoutX="307.0" layoutY="37.0" mnemonicParsing="false" onAction="#saveOrder" prefHeight="30.0" prefWidth="120.0" text="Xác nhận">
+            <Button fx:id="saveButton" layoutX="247.0" layoutY="25.0" mnemonicParsing="false" onAction="#saveOrder" prefHeight="30.0" prefWidth="100.0" text="Lưu">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></Button>
-            <Button fx:id="printButton" layoutX="446.0" layoutY="37.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" text="In phiếu">
+            <Button fx:id="printButton" layoutX="359.0" layoutY="25.0" mnemonicParsing="false" onAction="#printOrder" prefHeight="30.0" prefWidth="100.0" text="In phiếu">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></Button>
-            <Button fx:id="deleteButton" layoutX="581.0" layoutY="37.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" text="Xóa">
+            <Button fx:id="deleteButton" layoutX="469.0" layoutY="25.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" text="Xóa">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></Button>
-            <Button layoutX="720.0" layoutY="37.0" mnemonicParsing="false" onAction="#rollback" prefHeight="30.0" prefWidth="120.0" text="Hoàn tác">
+            <Button layoutX="579.0" layoutY="25.0" mnemonicParsing="false" onAction="#rollback" prefHeight="30.0" prefWidth="100.0" text="Hoàn tác">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></Button>
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="454.0" layoutY="444.0" prefHeight="85.0" prefWidth="463.0">
+      <AnchorPane layoutX="64.0" layoutY="444.0" prefHeight="85.0" prefWidth="872.0">
          <children>
-            <DatePicker fx:id="startDatePicker" layoutX="14.0" layoutY="19.0" prefHeight="24.0" prefWidth="144.0" />
-            <DatePicker fx:id="endDatePicker" layoutX="176.0" layoutY="19.0" prefHeight="24.0" prefWidth="144.0" />
-            <Label alignment="CENTER" layoutX="158.0" layoutY="23.0" prefHeight="16.0" prefWidth="18.0" text="-" />
-            <ComboBox fx:id="statusComboBox" layoutX="337.0" layoutY="19.0" prefHeight="24.0" prefWidth="103.0" />
-            <Button fx:id="searchButton" layoutX="358.0" layoutY="53.0" mnemonicParsing="false" text="Tìm" />
+            <DatePicker fx:id="startDatePicker" layoutX="14.0" layoutY="46.0" prefHeight="24.0" prefWidth="144.0" />
+            <DatePicker fx:id="endDatePicker" layoutX="176.0" layoutY="46.0" prefHeight="24.0" prefWidth="144.0" />
+            <Label alignment="CENTER" layoutX="158.0" layoutY="50.0" prefHeight="16.0" prefWidth="18.0" text="-" />
+            <ComboBox fx:id="statusComboBox" layoutX="337.0" layoutY="46.0" prefHeight="24.0" prefWidth="103.0" />
+            <Button fx:id="searchButton" layoutX="625.0" layoutY="43.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="78.0" text="Tìm kiếm" />
+            <Label alignment="CENTER" layoutX="36.0" layoutY="13.0" prefHeight="30.0" prefWidth="100.0" text="Ngày bắt đầu">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" layoutX="198.0" layoutY="13.0" prefHeight="30.0" prefWidth="100.0" text="Ngày kết thúc">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" layoutX="339.0" layoutY="13.0" prefHeight="30.0" prefWidth="100.0" text="Trạng thái">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <TextField layoutX="456.0" layoutY="46.0" />
+            <Label alignment="CENTER" layoutX="481.0" layoutY="13.0" prefHeight="30.0" prefWidth="100.0" text="Biển số xe">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
       <AnchorPane layoutX="14.0" layoutY="14.0" prefHeight="360.0" prefWidth="973.0">
          <children>
-            <AnchorPane layoutX="14.0" layoutY="10.0" prefHeight="320.0" prefWidth="358.0">
+            <AnchorPane layoutX="14.0" layoutY="10.0" prefHeight="339.0" prefWidth="359.0" style="-fx-border-color: #e0dede; -fx-border-width: 1px 0 1px 1px;">
                <children>
-                  <Label fx:id="weightLabel" alignment="CENTER" layoutX="1.0" layoutY="30.0" prefHeight="146.0" prefWidth="358.0" text="0">
+                  <Label fx:id="weightLabel" alignment="CENTER" layoutX="1.0" layoutY="97.0" prefHeight="146.0" prefWidth="358.0" text="0">
                      <font>
                         <Font size="80.0" />
                      </font>
                   </Label>
-                  <CheckBox fx:id="manualCheckbox" layoutX="46.0" layoutY="198.0" mnemonicParsing="false" onAction="#switchManual" text="Cân tay" />
-                  <TextField fx:id="manualTextField" layoutX="46.0" layoutY="233.0" prefWidth="180.0" />
+                  <CheckBox fx:id="manualCheckbox" layoutX="44.0" layoutY="261.0" mnemonicParsing="false" onAction="#switchManual" text="Cân tay" />
+                  <TextField fx:id="manualTextField" layoutX="44.0" layoutY="286.0" prefWidth="180.0" />
+                  <Label fx:id="currentTimeLabel" alignment="CENTER" layoutX="30.0" layoutY="27.0" prefHeight="50.0" prefWidth="300.0">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
                </children>
             </AnchorPane>
-            <AnchorPane layoutX="373.0" layoutY="14.0" prefHeight="339.0" prefWidth="600.0">
+            <AnchorPane layoutX="373.0" layoutY="10.0" prefHeight="339.0" prefWidth="600.0" style="-fx-border-color: #e0dede;">
                <children>
-                  <Label layoutX="32.0" layoutY="14.0" prefHeight="30.0" prefWidth="80.0" text="STT" />
-                  <TextField fx:id="indexTextField" layoutX="138.0" layoutY="17.0" prefHeight="24.0" prefWidth="211.0" />
-                  <Label layoutX="32.0" layoutY="44.0" prefHeight="30.0" prefWidth="80.0" text="Biển số" />
-                  <TextField fx:id="licensePlatesTextField" layoutX="138.0" layoutY="47.0" prefHeight="24.0" prefWidth="211.0" />
-                  <Label layoutX="32.0" layoutY="74.0" prefHeight="30.0" prefWidth="80.0" text="Người bán" />
-                  <TextField fx:id="sellerTextField" layoutX="138.0" layoutY="77.0" prefHeight="24.0" prefWidth="211.0" />
-                  <Label layoutX="32.0" layoutY="104.0" prefHeight="30.0" prefWidth="80.0" text="Người mua" />
-                  <TextField fx:id="buyerTextField" layoutX="138.0" layoutY="107.0" prefHeight="24.0" prefWidth="211.0" />
-                  <Label layoutX="119.0" layoutY="21.0" text=":" />
-                  <Label layoutX="119.0" layoutY="51.0" text=":" />
-                  <Label layoutX="119.0" layoutY="81.0" text=":" />
-                  <Label layoutX="119.0" layoutY="111.0" text=":" />
-                  <Label layoutX="32.0" layoutY="134.0" prefHeight="30.0" prefWidth="80.0" text="Ghi chú" />
-                  <TextField fx:id="noteTextField" layoutX="138.0" layoutY="137.0" prefHeight="24.0" prefWidth="211.0" />
-                  <Label layoutX="119.0" layoutY="141.0" text=":" />
-                  <Label layoutX="32.0" layoutY="164.0" prefHeight="30.0" prefWidth="80.0" text="Loại hàng" />
-                  <Label layoutX="119.0" layoutY="171.0" text=":" />
-                  <ComboBox fx:id="cargoComboBox" layoutX="138.0" layoutY="167.0" prefHeight="24.0" prefWidth="120.0" />
-                  <Label layoutX="32.0" layoutY="194.0" prefHeight="30.0" prefWidth="80.0" text="Thành tiền" />
-                  <TextField fx:id="paymentAmountTextField" layoutX="138.0" layoutY="197.0" prefHeight="24.0" prefWidth="120.0" />
-                  <Label layoutX="119.0" layoutY="201.0" text=":" />
-                  <Line disable="true" endX="454.0" fill="#5b1616" layoutX="133.0" layoutY="231.0" startX="-100.0" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeWidth="0.3" />
-                  <AnchorPane fx:id="weightDetailPane" layoutY="232.0" prefHeight="98.0" prefWidth="600.0">
+                  <AnchorPane prefHeight="208.0" prefWidth="300.0" style="-fx-border-color: #e0dede; -fx-border-width: 0px 1px 0 0;">
                      <children>
-                        <Label alignment="CENTER" layoutX="119.0" layoutY="31.0" prefHeight="24.0" prefWidth="63.0" text="Tổng">
+                        <Label layoutX="14.0" layoutY="14.0" prefHeight="30.0" prefWidth="80.0" text="STT">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="indexTextField" layoutX="120.0" layoutY="17.0" prefHeight="24.0" prefWidth="150.0" />
+                        <Label layoutX="14.0" layoutY="44.0" prefHeight="30.0" prefWidth="80.0" text="Biển số">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="licensePlatesTextField" layoutX="120.0" layoutY="47.0" prefHeight="24.0" prefWidth="150.0" />
+                        <Label layoutX="14.0" layoutY="74.0" prefHeight="30.0" prefWidth="80.0" text="Người bán">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="sellerTextField" layoutX="120.0" layoutY="77.0" prefHeight="24.0" prefWidth="150.0" />
+                        <Label layoutX="14.0" layoutY="104.0" prefHeight="30.0" prefWidth="80.0" text="Người mua">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="buyerTextField" layoutX="120.0" layoutY="107.0" prefHeight="24.0" prefWidth="150.0" />
+                        <Label layoutX="101.0" layoutY="21.0" text=":" />
+                        <Label layoutX="101.0" layoutY="51.0" text=":" />
+                        <Label layoutX="101.0" layoutY="81.0" text=":" />
+                        <Label layoutX="101.0" layoutY="111.0" text=":" />
+                        <Label layoutX="14.0" layoutY="134.0" prefHeight="30.0" prefWidth="80.0" text="Ghi chú">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="noteTextField" layoutX="120.0" layoutY="137.0" prefHeight="24.0" prefWidth="150.0" />
+                        <Label layoutX="101.0" layoutY="141.0" text=":" />
+                        <Label layoutX="14.0" layoutY="164.0" prefHeight="30.0" prefWidth="80.0" text="Loại hàng">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="101.0" layoutY="171.0" text=":" />
+                        <ComboBox fx:id="cargoComboBox" layoutX="120.0" layoutY="167.0" prefHeight="24.0" prefWidth="120.0" />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="paymentPane" layoutX="300.0" prefHeight="208.0" prefWidth="300.0">
+                     <children>
+                        <Label layoutX="19.0" layoutY="14.0" prefHeight="30.0" prefWidth="80.0" text="Thành tiền" />
+                        <TextField fx:id="paymentAmountTextField" layoutX="125.0" layoutY="17.0" prefHeight="25.0" prefWidth="69.0" />
+                        <Label layoutX="106.0" layoutY="21.0" text=":" />
+                        <Label layoutX="18.0" layoutY="44.0" prefHeight="30.0" prefWidth="80.0" text="Thanh toán" />
+                        <Label layoutX="105.0" layoutY="51.0" text=":" />
+                        <ComboBox fx:id="paymentStatusCombobox" layoutX="124.0" layoutY="47.0" prefHeight="24.0" prefWidth="120.0" />
+                        <Label layoutX="18.0" layoutY="74.0" prefHeight="30.0" prefWidth="80.0" text="Người trả">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="105.0" layoutY="81.0" text=":" />
+                        <TextField fx:id="payerTextField" layoutX="125.0" layoutY="77.0" prefHeight="25.0" prefWidth="120.0" />
+                        <CheckBox fx:id="payerIsSellerCheckbox" layoutX="125.0" layoutY="107.0" mnemonicParsing="false" onAction="#onChangePayerIsSellerCheckbox" text="Người bán" />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="weightDetailPane" layoutY="207.0" prefHeight="126.0" prefWidth="600.0" style="-fx-border-color: #e0dede; -fx-border-width: 1px 0 0 0;">
+                     <children>
+                        <Label alignment="CENTER" layoutX="98.0" layoutY="11.0" prefHeight="24.0" prefWidth="63.0" text="Tổng">
                            <font>
                               <Font size="15.0" />
                            </font>
                         </Label>
-                        <Label fx:id="cargoWeightLabel" alignment="CENTER" layoutX="375.0" layoutY="61.0" prefHeight="40.0" prefWidth="150.0" text="0">
+                        <Label fx:id="cargoWeightLabel" alignment="CENTER" layoutX="395.0" layoutY="56.0" prefHeight="40.0" prefWidth="150.0" text="0">
                            <font>
-                              <Font size="20.0" />
+                              <Font size="28.0" />
                            </font>
                         </Label>
-                        <Label alignment="CENTER" layoutX="269.0" layoutY="31.0" prefHeight="24.0" prefWidth="63.0" text="Bì">
+                        <Label alignment="CENTER" layoutX="268.0" layoutY="11.0" prefHeight="24.0" prefWidth="63.0" text="Bì">
                            <font>
                               <Font size="15.0" />
                            </font>
                         </Label>
-                        <Label fx:id="totalWeightLabel" alignment="CENTER" layoutX="75.0" layoutY="61.0" prefHeight="40.0" prefWidth="150.0" text="0">
+                        <Label fx:id="totalWeightLabel" alignment="CENTER" layoutX="55.0" layoutY="56.0" prefHeight="40.0" prefWidth="150.0" text="0">
                            <font>
-                              <Font size="20.0" />
+                              <Font size="28.0" />
                            </font>
                         </Label>
-                        <Label alignment="CENTER" layoutX="419.0" layoutY="31.0" prefHeight="24.0" prefWidth="63.0" text="Hàng">
+                        <Label alignment="CENTER" layoutX="438.0" layoutY="11.0" prefHeight="24.0" prefWidth="63.0" text="Hàng">
                            <font>
                               <Font size="15.0" />
                            </font>
                         </Label>
-                        <Label fx:id="vehicleWeightLabel" alignment="CENTER" layoutX="225.0" layoutY="61.0" prefHeight="40.0" prefWidth="150.0" text="0">
+                        <Label fx:id="vehicleWeightLabel" alignment="CENTER" layoutX="225.0" layoutY="56.0" prefHeight="40.0" prefWidth="150.0" text="0">
                            <font>
-                              <Font size="20.0" />
+                              <Font size="28.0" />
                            </font>
                         </Label>
                      </children>
