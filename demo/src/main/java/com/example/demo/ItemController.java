@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 import static com.example.demo.utils.constants.Page.FORM;
+import static com.example.demo.utils.constants.Page.REPORT;
 
 public class ItemController implements Initializable {
     @FXML
@@ -118,8 +119,20 @@ public class ItemController implements Initializable {
         orderTable.setContextMenu(contextMenu);
     }
 
-    public void report(ActionEvent actionEvent) {
-
+    public void report(ActionEvent actionEvent) throws IOException {
+        if (!ConvertUtil.PAGES.contains(REPORT.name())) {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(REPORT.getFxml()));
+            Parent root = fxmlLoader.load();
+            Scene scene = new Scene(root);
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.setTitle("Thống kê");
+            stage.show();
+            ConvertUtil.PAGES.add(REPORT.name());
+            stage.setOnCloseRequest(e -> {
+                ConvertUtil.PAGES.remove(REPORT.name());
+            });
+        }
     }
 
     public void search(ActionEvent actionEvent) {

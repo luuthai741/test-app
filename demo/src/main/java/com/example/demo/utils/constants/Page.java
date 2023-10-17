@@ -6,6 +6,7 @@ public enum Page {
     DEBTOR("admin/debtor.fxml"),
     INDEX("general/index.fxml"),
     ORDER("general/order.fxml"),
+    REPORT("general/report.fxml"),
     FORM("general/form.fxml");
 
     private String fxml;

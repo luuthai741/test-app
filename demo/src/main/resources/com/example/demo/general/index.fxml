@@ -168,12 +168,12 @@
                         <CheckBox fx:id="payerIsSellerCheckbox" layoutX="122.0" layoutY="77.0" mnemonicParsing="false" onAction="#onChangePayerIsSellerCheckbox" text="Người bán" />
                         <Label layoutX="14.0" layoutY="95.0" prefHeight="30.0" prefWidth="80.0" text="Thanh toán" />
                         <Label layoutX="101.0" layoutY="102.0" text=":" />
-                        <RadioButton text="PAID" fx:id="paidRadioButton" layoutX="121.0" layoutY="101.0" mnemonicParsing="false">
+                        <RadioButton text="Đã trả" fx:id="paidRadioButton" layoutX="121.0" layoutY="101.0" mnemonicParsing="false">
                            <toggleGroup>
                               <ToggleGroup fx:id="paymentStatus" />
                            </toggleGroup>
                         </RadioButton>
-                        <RadioButton text="UNPAID" fx:id="unpaidRadioButton" layoutX="121.0" layoutY="123.0" mnemonicParsing="false">
+                        <RadioButton text="Chưa trả" fx:id="unpaidRadioButton" layoutX="121.0" layoutY="123.0" mnemonicParsing="false">
                            <toggleGroup>
                               <ToggleGroup fx:id="paymentStatus" />
                            </toggleGroup>

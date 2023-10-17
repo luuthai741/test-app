@@ -24,7 +24,6 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -130,7 +129,6 @@ public class IndexController implements Initializable {
     private Order selectedOrder = null;
     private OrderDAO orderDAO = OrderDAO.getInstance();
     private PrintService printService = PrintService.getInstance();
-    private TableViewSelectionModel tableViewSelectionModel;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         ObservableList<Order> orders = orderDAO.getOrders();
@@ -203,10 +201,6 @@ public class IndexController implements Initializable {
     }
 
     public void rollback() {
-        if (tableViewSelectionModel != null){
-            orderTable.setSelectionModel(tableViewSelectionModel);
-            orderTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        }
         if (selectedOrder != null && (selectedOrder.getCargoWeight() != 0 || (selectedOrder.getTotalWeight() != 0 && selectedOrder.getVehicleWeight() !=0))){
             orderDAO.getOrders().remove(selectedOrder);
         }
@@ -294,8 +288,6 @@ public class IndexController implements Initializable {
             order.setNote(noteTextField.getText());
             order.setCreatedBy("test");
             orderDAO.createOrder(order);
-            tableViewSelectionModel = orderTable.getSelectionModel();
-            cleanData();
             firstTimeButton.setDisable(false);
             secondTimeButton.setDisable(false);
         } else {
@@ -315,9 +307,7 @@ public class IndexController implements Initializable {
             selectedOrder.setPayer(payerTextField.getText());
             selectedOrder.setPaymentStatus(paidRadioButton.isSelected() ? PaymentStatus.PAID.getNote() : PaymentStatus.UNPAID.getNote());
             printButton.setDisable(false);
-            tableViewSelectionModel = orderTable.getSelectionModel();
             orderDAO.updateOrder(selectedOrder);
-            orderTable.setSelectionModel(null);
             firstTimeButton.setDisable(true);
             secondTimeButton.setDisable(true);
             orderTable.setEditable(false);
@@ -339,6 +329,8 @@ public class IndexController implements Initializable {
         cargoWeightLabel.setText("");
         selectedOrder = null;
         payerIsSellerCheckbox.setSelected(false);
+        paidRadioButton.setSelected(false);
+        unpaidRadioButton.setSelected(false);
     }
 
     private void setValue(Order order) {

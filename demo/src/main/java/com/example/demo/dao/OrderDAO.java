@@ -29,13 +29,16 @@ public class OrderDAO {
             return orders;
         }
         List<Order> orderList = new ArrayList<>();
-        for (int i = 1; i <= 3; i++) {
+        for (int i = 1; i <= 30; i++) {
             orderList.add(new Order(i, i, "99c337" + i, "TESTER SELLER", "TESTER BUYER", new Random().nextInt(10000), 0, 0, LocalDate.now(), LocalDate.now(), "CREATED", "UNPAID", "", 0, "", "", ""));
         }
         orders = FXCollections.observableList(orderList);
         return orders;
     }
 
+    public Order getOrderByIndex(int index){
+        return orders.stream().filter(order-> order.getIndex() == index).findFirst().orElse(null);
+    }
     public void createOrder(Order order) {
         orders.add(order);
     }
