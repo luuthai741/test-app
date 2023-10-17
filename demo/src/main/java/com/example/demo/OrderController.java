@@ -12,7 +12,7 @@ import java.util.ResourceBundle;
 
 import static com.example.demo.utils.util.DateUtil.DD_MM_YYYY;
 
-public class OrderController implements Initializable {
+public class OrderController{
     @FXML
     private Label companyLabel;
     @FXML
@@ -60,17 +60,12 @@ public class OrderController implements Initializable {
         sellerLabel.setText(order.getSeller());
         buyerLabel.setText(order.getBuyer());
         cargoLabel.setText(order.getCargoType());
-        createdByLabel.setText(DateUtil.convertToString(order.getCreatedAt(), DD_MM_YYYY));
+        createdLabel.setText(DateUtil.convertToString(order.getCreatedAt(), DD_MM_YYYY));
         updatedTimeLabel.setText(DateUtil.convertToString(order.getUpdatedAt(), DD_MM_YYYY));
         amountLabel.setText(String.valueOf(order.getPaymentAmount()));
         totalWeightLabel.setText(String.valueOf(order.getTotalWeight()));
         vehicleWeightLabel.setText(String.valueOf(order.getVehicleWeight()));
         cargoWeightLabel.setText(String.valueOf(order.getCargoWeight()));
         createdByLabel.setText(order.getCreatedBy());
-    }
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        System.out.println("test");
     }
 }

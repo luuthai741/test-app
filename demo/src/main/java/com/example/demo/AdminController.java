@@ -59,10 +59,6 @@ public class AdminController implements Initializable {
                 newRoot = FXMLLoader.load(getClass().getResource(DEBTOR.getFxml()));
                 System.out.println("TEST DEBTOR");
             }
-            case FORM -> {
-                newRoot = FXMLLoader.load(getClass().getResource(FORM.getFxml()));
-                System.out.println("TEST FORM");
-            }
         }
         borderPane.setCenter(newRoot);
     }

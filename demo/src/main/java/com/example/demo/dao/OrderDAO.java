@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class OrderDAO {
     private static OrderDAO instance;
@@ -28,8 +29,8 @@ public class OrderDAO {
             return orders;
         }
         List<Order> orderList = new ArrayList<>();
-        for (int i = 1; i <= 10; i++) {
-            orderList.add(new Order(i, i, "99c337" + i, "TESTER SELLER", "TESTER BUYER", 1000, 0, 0, LocalDate.now(), LocalDate.now(), "CREATED", "UNPAID", "", 0, "", "", ""));
+        for (int i = 1; i <= 3; i++) {
+            orderList.add(new Order(i, i, "99c337" + i, "TESTER SELLER", "TESTER BUYER", new Random().nextInt(10000), 0, 0, LocalDate.now(), LocalDate.now(), "CREATED", "UNPAID", "", 0, "", "", ""));
         }
         orders = FXCollections.observableList(orderList);
         return orders;

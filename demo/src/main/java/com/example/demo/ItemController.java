@@ -4,16 +4,24 @@ import com.example.demo.dao.OrderDAO;
 import com.example.demo.model.Order;
 import com.example.demo.utils.constants.OrderStatus;
 import com.example.demo.utils.constants.PaymentStatus;
+import com.example.demo.utils.util.ConvertUtil;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
+
+import static com.example.demo.utils.constants.Page.FORM;
 
 public class ItemController implements Initializable {
     @FXML
@@ -98,9 +106,13 @@ public class ItemController implements Initializable {
         paymentStatusComboBox.setItems(PaymentStatus.getItemStatus());
         paymentStatusComboBox.setValue(PaymentStatus.ALL.getNote());
         ContextMenu contextMenu = new ContextMenu();
-        MenuItem deleteMenuItem = new MenuItem("Chi tiết");
-        deleteMenuItem.setOnAction(e->{
-            System.out.println("click eevent");
+        MenuItem deleteMenuItem = new MenuItem("Chỉnh sửa");
+        deleteMenuItem.setOnAction(e -> {
+            try {
+                openPopup(e);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         });
         contextMenu.getItems().add(deleteMenuItem);
         orderTable.setContextMenu(contextMenu);
@@ -112,5 +124,23 @@ public class ItemController implements Initializable {
 
     public void search(ActionEvent actionEvent) {
 
+    }
+
+    public void openPopup(ActionEvent actionEvent) throws IOException {
+        if (!ConvertUtil.PAGES.contains(FORM.name())) {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(FORM.getFxml()));
+            Parent root = fxmlLoader.load();
+            FormController formController = fxmlLoader.getController();
+            formController.setValue(orderTable.getSelectionModel().getSelectedItem());
+            Scene scene = new Scene(root);
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.setTitle("Chỉnh sửa mã cân");
+            stage.show();
+            ConvertUtil.PAGES.add(FORM.name());
+            stage.setOnCloseRequest(e -> {
+                ConvertUtil.PAGES.remove(FORM.name());
+            });
+        }
     }
 }

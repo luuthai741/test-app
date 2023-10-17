@@ -24,6 +24,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -71,7 +72,9 @@ public class IndexController implements Initializable {
     @FXML
     private TextField paymentAmountTextField;
     @FXML
-    private ComboBox<String> paymentStatusCombobox;
+    private RadioButton paidRadioButton;
+    @FXML
+    private RadioButton unpaidRadioButton;
     @FXML
     private TextField payerTextField;
     @FXML
@@ -127,6 +130,7 @@ public class IndexController implements Initializable {
     private Order selectedOrder = null;
     private OrderDAO orderDAO = OrderDAO.getInstance();
     private PrintService printService = PrintService.getInstance();
+    private TableViewSelectionModel tableViewSelectionModel;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         ObservableList<Order> orders = orderDAO.getOrders();
@@ -154,7 +158,6 @@ public class IndexController implements Initializable {
             }
         });
         manualTextField.setVisible(false);
-        indexTextField.setEditable(false);
         paymentPane.setVisible(false);
 //        cargoComboBox.setItems(FXCollections.observableList(List.of("Sắt","Than","Dây 27")));
 
@@ -162,8 +165,6 @@ public class IndexController implements Initializable {
         endDatePicker.setValue(LocalDate.now());
         statusComboBox.setItems(OrderStatus.getIndexStatus());
         statusComboBox.setValue(OrderStatus.CREATED.getNote());
-        paymentStatusCombobox.setItems(PaymentStatus.getIndexStatus());
-        paymentStatusCombobox.setValue(PaymentStatus.PAID.getNote());
         manualTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             try {
                 Long longValue = Long.valueOf(newValue);
@@ -202,6 +203,14 @@ public class IndexController implements Initializable {
     }
 
     public void rollback() {
+        if (tableViewSelectionModel != null){
+            orderTable.setSelectionModel(tableViewSelectionModel);
+            orderTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        }
+        if (selectedOrder != null && (selectedOrder.getCargoWeight() != 0 || (selectedOrder.getTotalWeight() != 0 && selectedOrder.getVehicleWeight() !=0))){
+            orderDAO.getOrders().remove(selectedOrder);
+        }
+        orderTable.getSelectionModel().clearSelection();
         cleanData();
         paymentPane.setVisible(false);
         firstTimeButton.setDisable(false);
@@ -238,16 +247,16 @@ public class IndexController implements Initializable {
             return;
         }
         firstTimeButton.setDisable(true);
-        Double totalWeight = selectedOrder.getTotalWeight();
+        Integer totalWeight = selectedOrder.getTotalWeight();
         Double cargoWeight = Math.abs(value - totalWeight);
         if (value >= totalWeight) {
-            totalWeightLabel.setText(value.toString());
-            vehicleWeightLabel.setText(totalWeight.toString());
+            totalWeightLabel.setText(String.valueOf(value.intValue()));
+            vehicleWeightLabel.setText(String.valueOf(totalWeight.intValue()));
         } else {
-            totalWeightLabel.setText(totalWeight.toString());
-            vehicleWeightLabel.setText(value.toString());
+            totalWeightLabel.setText(String.valueOf(totalWeight.intValue()));
+            vehicleWeightLabel.setText(String.valueOf(value.intValue()));
         }
-        cargoWeightLabel.setText(cargoWeight.toString());
+        cargoWeightLabel.setText(String.valueOf(cargoWeight.intValue()));
         paymentPane.setVisible(true);
         paymentAmountTextField.setEditable(true);
     }
@@ -273,7 +282,7 @@ public class IndexController implements Initializable {
             order.setLicensePlates(licensePlatesTextField.getText());
             order.setSeller(replaceNullStringToBlank(sellerTextField.getText()));
             order.setBuyer(replaceNullStringToBlank(buyerTextField.getText()));
-            order.setTotalWeight(Double.valueOf(totalWeightLabel.getText()));
+            order.setTotalWeight(Integer.valueOf(totalWeightLabel.getText()));
             order.setVehicleWeight(0);
             order.setCargoWeight(0);
             order.setCreatedAt(LocalDate.now());
@@ -285,6 +294,7 @@ public class IndexController implements Initializable {
             order.setNote(noteTextField.getText());
             order.setCreatedBy("test");
             orderDAO.createOrder(order);
+            tableViewSelectionModel = orderTable.getSelectionModel();
             cleanData();
             firstTimeButton.setDisable(false);
             secondTimeButton.setDisable(false);
@@ -292,9 +302,9 @@ public class IndexController implements Initializable {
             selectedOrder.setLicensePlates(licensePlatesTextField.getText());
             selectedOrder.setSeller(replaceNullStringToBlank(sellerTextField.getText()));
             selectedOrder.setBuyer(replaceNullStringToBlank(buyerTextField.getText()));
-            selectedOrder.setTotalWeight(Double.valueOf(totalWeightLabel.getText()));
-            selectedOrder.setVehicleWeight(Double.valueOf(vehicleWeightLabel.getText()));
-            selectedOrder.setCargoWeight(Double.valueOf(cargoWeightLabel.getText()));
+            selectedOrder.setTotalWeight(Double.valueOf(totalWeightLabel.getText()).intValue());
+            selectedOrder.setVehicleWeight(Double.valueOf(vehicleWeightLabel.getText()).intValue());
+            selectedOrder.setCargoWeight(Double.valueOf(cargoWeightLabel.getText()).intValue());
             selectedOrder.setUpdatedAt(LocalDate.now());
             selectedOrder.setStatus(OrderStatus.COMPLETED.name());
             selectedOrder.setPaymentStatus(PaymentStatus.PAID.name());
@@ -303,16 +313,20 @@ public class IndexController implements Initializable {
             selectedOrder.setNote(noteTextField.getText());
             selectedOrder.setCreatedBy("test");
             selectedOrder.setPayer(payerTextField.getText());
-            selectedOrder.setPaymentStatus(paymentStatusCombobox.getValue());
+            selectedOrder.setPaymentStatus(paidRadioButton.isSelected() ? PaymentStatus.PAID.getNote() : PaymentStatus.UNPAID.getNote());
             printButton.setDisable(false);
+            tableViewSelectionModel = orderTable.getSelectionModel();
             orderDAO.updateOrder(selectedOrder);
+            orderTable.setSelectionModel(null);
             firstTimeButton.setDisable(true);
             secondTimeButton.setDisable(true);
+            orderTable.setEditable(false);
         }
 
     }
 
     private void cleanData() {
+        orderTable.setEditable(true);
         indexTextField.setText("");
         licensePlatesTextField.setText("");
         sellerTextField.setText("");
@@ -335,10 +349,15 @@ public class IndexController implements Initializable {
         noteTextField.setText(order.getNote());
         weightDetailPane.setVisible(true);
         paymentAmountTextField.setText(String.valueOf(order.getPaymentAmount()));
-        paymentStatusCombobox.setValue(order.getPaymentStatus());
         totalWeightLabel.setText(String.valueOf(order.getTotalWeight()));
         vehicleWeightLabel.setText(String.valueOf(order.getVehicleWeight()));
         cargoWeightLabel.setText(String.valueOf(order.getCargoWeight()));
+        PaymentStatus paymentStatus = PaymentStatus.getByNote(order.getPaymentStatus());
+        if (PaymentStatus.PAID.equals(paymentStatus)) {
+            paidRadioButton.setSelected(true);
+        } else {
+            unpaidRadioButton.setSelected(true);
+        }
     }
 
     public void onChangePayerIsSellerCheckbox(ActionEvent actionEvent) {
@@ -364,6 +383,7 @@ public class IndexController implements Initializable {
             alert.setTitle("Lỗi in phiếu cân");
             alert.setHeaderText(null);
             alert.setContentText("Có lỗi trọng quá trình xuất phiếu cân");
+            alert.show();
         }
     }
 }

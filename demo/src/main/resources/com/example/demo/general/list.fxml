@@ -11,7 +11,6 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-
 <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.ItemController">
    <children>
       <AnchorPane prefHeight="200.0" prefWidth="200.0">
@@ -57,8 +56,8 @@
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Button fx:id="searchButton" layoutX="829.0" layoutY="45.0" mnemonicParsing="false" onAction="#search" prefHeight="30.0" prefWidth="78.0" text="Tìm kiếm" />
-                        <Button fx:id="reportButton" layoutX="829.0" layoutY="14.0" mnemonicParsing="false" onAction="#report" prefHeight="30.0" prefWidth="100.0" text="Xuất thống kê" />
+                        <Button fx:id="searchButton" layoutX="829.0" layoutY="45.0" mnemonicParsing="false" onAction="#search" prefHeight="30.0" prefWidth="100.0" text="Tìm kiếm" />
+                        <Button fx:id="reportButton" layoutX="829.0" layoutY="14.0" mnemonicParsing="false" onAction="#report" prefHeight="30.0" prefWidth="112.0" text="Xuất thống kê" />
                      </children>
                   </AnchorPane>
                   <AnchorPane layoutX="1.0" layoutY="99.0" prefHeight="700.0" prefWidth="1000.0">
@@ -66,17 +65,17 @@
                         <TableView fx:id="orderTable" maxWidth="1000.0" minWidth="800.0" prefHeight="700.0" prefWidth="1000.0">
                            <columns>
                               <TableColumn fx:id="indexCol" prefWidth="51.0" text="STT" />
-                              <TableColumn fx:id="licensePlatesCol" prefWidth="112.0" text="Biển số xe" />
-                              <TableColumn fx:id="sellerCol" prefWidth="106.0" text="Người bán" />
-                              <TableColumn fx:id="buyerCol" prefWidth="106.0" text="Người mua" />
+                              <TableColumn fx:id="licensePlatesCol" prefWidth="100.0" text="Biển số xe" />
+                              <TableColumn fx:id="sellerCol" prefWidth="100.0" text="Người bán" />
+                              <TableColumn fx:id="buyerCol" prefWidth="100.0" text="Người mua" />
                               <TableColumn fx:id="cargoCol" prefWidth="90.0" text="Loại hàng" />
-                              <TableColumn fx:id="totalWeightCol" prefWidth="120.0" text="Tổng" />
-                              <TableColumn fx:id="vehicleWeightCol" prefWidth="122.0" text="Bì" />
-                              <TableColumn fx:id="cargoWeightCol" prefWidth="76.0" text="Hàng" />
-                              <TableColumn fx:id="amountCol" prefWidth="76.0" text="Thành tiền" />
-                              <TableColumn fx:id="paymentStatusCol" prefWidth="76.0" text="Toanh toán" />
-                              <TableColumn fx:id="createdAtCol" prefWidth="88.0" text="Ngày tạo" />
-                              <TableColumn fx:id="updatedCol" prefWidth="88.0" text="Ngày cập nhật" />
+                              <TableColumn fx:id="totalWeightCol" prefWidth="90.0" text="Tổng" />
+                              <TableColumn fx:id="vehicleWeightCol" prefWidth="90.0" text="Bì" />
+                              <TableColumn fx:id="cargoWeightCol" prefWidth="90.0" text="Hàng" />
+                              <TableColumn fx:id="amountCol" prefWidth="85.0" text="Thành tiền" />
+                              <TableColumn fx:id="paymentStatusCol" prefWidth="90.0" text="Toanh toán" />
+                              <TableColumn fx:id="createdAtCol" text="Ngày tạo" />
+                              <TableColumn fx:id="updatedCol" text="Ngày cập nhật" />
                            </columns>
                         </TableView>
                      </children>

@@ -8,9 +8,9 @@ public class Order {
     private String licensePlates;
     private String seller;
     private String buyer;
-    private double totalWeight;
-    private double vehicleWeight;
-    private double cargoWeight;
+    private int totalWeight;
+    private int vehicleWeight;
+    private int cargoWeight;
     private LocalDate createdAt;
     private LocalDate updatedAt;
     private String status;
@@ -24,7 +24,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(long id, int index, String licensePlates, String seller, String buyer, double totalWeight, double vehicleWeight, double cargoWeight, LocalDate createdAt, LocalDate updatedAt, String status, String paymentStatus, String cargoType, double paymentAmount, String note, String payer, String createdBy) {
+    public Order(long id, int index, String licensePlates, String seller, String buyer, int totalWeight, int vehicleWeight, int cargoWeight, LocalDate createdAt, LocalDate updatedAt, String status, String paymentStatus, String cargoType, double paymentAmount, String note, String payer, String createdBy) {
         this.id = id;
         this.index = index;
         this.licensePlates = licensePlates;
@@ -84,27 +84,27 @@ public class Order {
         this.buyer = buyer;
     }
 
-    public double getTotalWeight() {
+    public int getTotalWeight() {
         return totalWeight;
     }
 
-    public void setTotalWeight(double totalWeight) {
+    public void setTotalWeight(int totalWeight) {
         this.totalWeight = totalWeight;
     }
 
-    public double getVehicleWeight() {
+    public int getVehicleWeight() {
         return vehicleWeight;
     }
 
-    public void setVehicleWeight(double vehicleWeight) {
+    public void setVehicleWeight(int vehicleWeight) {
         this.vehicleWeight = vehicleWeight;
     }
 
-    public double getCargoWeight() {
+    public int getCargoWeight() {
         return cargoWeight;
     }
 
-    public void setCargoWeight(double cargoWeight) {
+    public void setCargoWeight(int cargoWeight) {
         this.cargoWeight = cargoWeight;
     }
 
