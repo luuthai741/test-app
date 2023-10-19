@@ -29,7 +29,7 @@ public class OrderDAO {
             return orders;
         }
         List<Order> orderList = new ArrayList<>();
-        for (int i = 1; i <= 30; i++) {
+        for (int i = 1; i <= 1000; i++) {
             orderList.add(new Order(i, i, "99c337" + i, "TESTER SELLER", "TESTER BUYER", new Random().nextInt(10000), 0, 0, LocalDate.now(), LocalDate.now(), "CREATED", "UNPAID", "", 0, "", "", ""));
         }
         orders = FXCollections.observableList(orderList);

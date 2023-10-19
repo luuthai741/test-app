@@ -1,0 +1,25 @@
+.table-view .column-header-background{
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: black;
+}
+.table-row-cell{
+    -fx-cell-size: 20px;
+}
+.table-row-cell: odd{
+    -fx-background-color: #FFFFFF;
+    -fx-padding: 0.0em;
+    -fx-text-fill: black;
+}
+.table-row-cell: even{
+    -fx-background-color: #FFFFFF;
+    -fx-padding: 0.0em;
+    -fx-text-fill: black;
+}
+.table-view .scroll-bar * {
+    -fx-min-width: 0;
+    -fx-pref-width: 0;
+    -fx-max-width: 0;
+    -fx-min-height: 0;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+}
