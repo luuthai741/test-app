@@ -21,6 +21,7 @@ import static com.example.demo.utils.constants.Page.*;
 public class AdminController implements Initializable {
     @FXML
     private BorderPane borderPane;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
     }
@@ -30,16 +31,16 @@ public class AdminController implements Initializable {
         Page page = Page.valueOf(button.getId());
         Parent newRoot = null;
         switch (page) {
-            case INDEX -> {
+            case INDEX:
                 newRoot = FXMLLoader.load(getClass().getResource(INDEX.getFxml()));
                 System.out.println("Can xe");
-            }
-            case ADMIN_HOME -> {
+                break;
+            case ADMIN_HOME:
                 newRoot = FXMLLoader.load(getClass().getResource(ADMIN_HOME.getFxml()));
                 System.out.println("TEST HOME");
-            }
-            case LIST -> {
-                if (!ConvertUtil.PAGES.contains(LIST.name())){
+                break;
+            case LIST:
+                if (!ConvertUtil.PAGES.contains(LIST.name())) {
                     newRoot = FXMLLoader.load(getClass().getResource(LIST.getFxml()));
                     Scene scene = new Scene(newRoot);
                     Stage stage = new Stage();
@@ -47,18 +48,18 @@ public class AdminController implements Initializable {
                     stage.setTitle("Danh sách mã cân");
                     stage.show();
                     ConvertUtil.PAGES.add(LIST.name());
-                    stage.setOnCloseRequest(e->{
+                    stage.setOnCloseRequest(e -> {
                         ConvertUtil.PAGES.remove(LIST.name());
                     });
                     System.out.println("Mở trang");
                     return;
                 }
                 System.out.println("Đã mở trang");
-            }
-            case DEBTOR -> {
+                break;
+            case DEBTOR:
                 newRoot = FXMLLoader.load(getClass().getResource(DEBTOR.getFxml()));
                 System.out.println("TEST DEBTOR");
-            }
+                break;
         }
         borderPane.setCenter(newRoot);
     }
