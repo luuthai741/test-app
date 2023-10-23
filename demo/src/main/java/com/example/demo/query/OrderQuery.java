@@ -18,7 +18,7 @@ public class OrderQuery {
 
     private String queryByIndex() {
         String query = "";
-        if (!index.isBlank()) {
+        if (index != null && !index.isBlank()) {
             query = " AND INDEX_BY_DAY = " + index;
         }
         return query;
@@ -26,40 +26,40 @@ public class OrderQuery {
 
     private String queryByLicensePlates() {
         String query = "";
-        if (!licensePlates.isBlank()) {
-            query = " AND LICENSE_PLATES = " + licensePlates;
+        if (licensePlates != null && !licensePlates.isBlank()) {
+            query = " AND LICENSE_PLATES = '" + licensePlates + "'";
         }
         return query;
     }
 
     private String queryBySeller() {
         String query = "";
-        if (!seller.isBlank()) {
-            query = " AND SELLER = " + seller;
+        if (seller != null && !seller.isBlank()) {
+            query = " AND SELLER = '" + seller + "'";
         }
         return query;
     }
 
     private String queryByBuyer() {
         String query = "";
-        if (!buyer.isBlank()) {
-            query = " AND BUYER = " + buyer;
+        if (buyer != null && !buyer.isBlank()) {
+            query = " AND BUYER = '" + buyer + "'";
         }
         return query;
     }
 
     private String queryByStatus() {
         String query = "";
-        if (!status.isBlank()) {
-            query = " AND STATUS = " + status;
+        if (status != null && !status.isBlank()) {
+            query = " AND STATUS = '" + status + "'";
         }
         return query;
     }
 
     private String queryByPaymentStatus() {
         String query = "";
-        if (!paymentStatus.isBlank()) {
-            query = " AND PAYMENT_STATUS = " + paymentStatus;
+        if (paymentStatus != null && !paymentStatus.isBlank()) {
+            query = " AND PAYMENT_STATUS = '" + paymentStatus + "'";
         }
         return query;
     }
@@ -68,14 +68,14 @@ public class OrderQuery {
     private String queryByCreatedAt() {
         String query = "";
         if (dateTimeFrom == null) {
-            dateTimeFrom = LocalDateTime.now();
+            dateTimeFrom = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0);
         }
         if (dateTimeTo == null) {
-            dateTimeTo = LocalDateTime.now();
+            dateTimeTo = LocalDateTime.now().withHour(23).withMinute(59).withSecond(59);
         }
         String dateFromQuery = DateUtil.convertToString(dateTimeFrom, DateUtil.DB_FORMAT);
         String dateToQuery = DateUtil.convertToString(dateTimeTo, DateUtil.DB_FORMAT);
-        query = " AND CREATED_AT >= " + dateFromQuery + " AND CREATED_AT <= " + dateToQuery;
+        query = " AND CREATED_AT >= '" + dateFromQuery + "' AND CREATED_AT <= '" + dateToQuery + "'";
         return query;
     }
 
