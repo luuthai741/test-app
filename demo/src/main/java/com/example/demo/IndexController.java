@@ -154,7 +154,7 @@ public class IndexController implements Initializable {
         endDatePicker.setValue(LocalDate.now());
         statusComboBox.setItems(OrderStatus.getIndexStatus());
         statusComboBox.setValue(OrderStatus.CREATED.getNote());
-        PauseTransition pause = new PauseTransition(Duration.seconds(1));
+        PauseTransition pause = new PauseTransition(Duration.seconds(300));
         manualTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             pause.setOnFinished(e ->{
                 try {
@@ -280,8 +280,8 @@ public class IndexController implements Initializable {
             order.setCargoWeight(0);
             order.setCreatedAt(LocalDate.now());
             order.setUpdatedAt(LocalDate.now());
-            order.setStatus(OrderStatus.CREATED.name());
-            order.setPaymentStatus(PaymentStatus.UNPAID.name());
+            order.setStatus(OrderStatus.CREATED.getNote());
+            order.setPaymentStatus(PaymentStatus.UNPAID.getNote());
             order.setCargoType(cargoComboBox.getValue());
             order.setPaymentAmount(0);
             order.setNote(noteTextField.getText());
