@@ -6,7 +6,6 @@ import com.example.demo.utils.constants.OrderStatus;
 import com.example.demo.utils.constants.Page;
 import com.example.demo.utils.constants.PaymentStatus;
 import com.example.demo.utils.util.ConvertUtil;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,7 +20,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.List;
 
 import static com.example.demo.utils.constants.Page.FORM;
 import static com.example.demo.utils.util.ConvertUtil.replaceNullStringToBlank;
@@ -83,7 +81,7 @@ public class FormController {
         try {
             int firstValue = Integer.valueOf(totalWeightTextField.getText());
             int secondValue = Integer.valueOf(vehicleWeightTextField.getText());
-            Order order = orderDAO.getOrderByIndex(Integer.valueOf(indexTextField.getText()));
+            Order order = orderDAO.getOrderOnByObservableListByIndex(Integer.valueOf(indexTextField.getText()));
             if (firstValue >= secondValue) {
                 order.setTotalWeight(firstValue);
                 order.setVehicleWeight(secondValue);
@@ -138,7 +136,7 @@ public class FormController {
     }
 
     public void openOrderDetail(ActionEvent actionEvent) throws IOException {
-        Order order = orderDAO.getOrderByIndex(Integer.valueOf(indexTextField.getText()));
+        Order order = orderDAO.getOrderOnByObservableListByIndex(Integer.valueOf(indexTextField.getText()));
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(Page.ORDER.getFxml()));
         Parent root = fxmlLoader.load();
         OrderController orderController = fxmlLoader.getController();
