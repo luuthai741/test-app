@@ -6,37 +6,26 @@ import com.example.demo.service.PrintService;
 import com.example.demo.utils.constants.OrderStatus;
 import com.example.demo.utils.constants.Page;
 import com.example.demo.utils.constants.PaymentStatus;
-import com.example.demo.utils.util.ConvertUtil;
 import com.example.demo.utils.util.DateUtil;
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.print.*;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.ResourceBundle;
 
 import static com.example.demo.utils.util.ConvertUtil.replaceNullStringToBlank;
@@ -129,9 +118,11 @@ public class IndexController implements Initializable {
     private Order selectedOrder = null;
     private OrderDAO orderDAO = OrderDAO.getInstance();
     private PrintService printService = PrintService.getInstance();
+    private ObservableList<Order> orders;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        ObservableList<Order> orders = orderDAO.getOrders();
+        orders = orderDAO.getOrders();
         indexCol.setCellValueFactory(new PropertyValueFactory("index"));
         licensePlatesCol.setCellValueFactory(new PropertyValueFactory("licensePlates"));
         sellerCol.setCellValueFactory(new PropertyValueFactory("seller"));
@@ -163,15 +154,19 @@ public class IndexController implements Initializable {
         endDatePicker.setValue(LocalDate.now());
         statusComboBox.setItems(OrderStatus.getIndexStatus());
         statusComboBox.setValue(OrderStatus.CREATED.getNote());
+        PauseTransition pause = new PauseTransition(Duration.seconds(1));
         manualTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            try {
-                Long longValue = Long.valueOf(newValue);
-                manualTextField.setText(newValue);
-                weightLabel.setText(longValue.toString());
-            } catch (IllegalArgumentException e) {
-                manualTextField.setText("");
-                weightLabel.setText("");
-            }
+            pause.setOnFinished(e ->{
+                try {
+                    Long longValue = Long.valueOf(newValue);
+                    manualTextField.setText(newValue);
+                    weightLabel.setText(longValue.toString());
+                } catch (IllegalArgumentException ex) {
+                    manualTextField.setText("");
+                    weightLabel.setText("");
+                }
+            });
+            pause.playFromStart();
         });
         weightDetailPane.setVisible(false);
         printButton.setDisable(true);
@@ -201,7 +196,7 @@ public class IndexController implements Initializable {
     }
 
     public void rollback() {
-        if (selectedOrder != null && (selectedOrder.getCargoWeight() != 0 || (selectedOrder.getTotalWeight() != 0 && selectedOrder.getVehicleWeight() !=0))){
+        if (selectedOrder != null && (selectedOrder.getCargoWeight() != 0 || (selectedOrder.getTotalWeight() != 0 && selectedOrder.getVehicleWeight() != 0))) {
             orderDAO.getOrders().remove(selectedOrder);
         }
         orderTable.getSelectionModel().clearSelection();
@@ -210,6 +205,8 @@ public class IndexController implements Initializable {
         firstTimeButton.setDisable(false);
         secondTimeButton.setDisable(false);
         weightDetailPane.setVisible(false);
+        orders = orderDAO.getOrders();
+        orderTable.setItems(orders);
     }
 
     public void actionFirstTime(ActionEvent actionEvent) {
@@ -223,7 +220,7 @@ public class IndexController implements Initializable {
             alert.show();
             return;
         }
-        int index = orderDAO.getOrders().size();
+        long index = orderDAO.countOrderByDate(LocalDateTime.now());
         indexTextField.setText(String.valueOf(index + 1));
         secondTimeButton.setDisable(true);
         weightDetailPane.setVisible(true);
@@ -271,6 +268,8 @@ public class IndexController implements Initializable {
         Order order = null;
         if (selectedOrder == null) {
             order = new Order();
+            long id = orderDAO.countById() + 1;
+            order.setId(id);
             order.setId(Integer.valueOf(indexTextField.getText()));
             order.setIndex(Integer.valueOf(indexTextField.getText()));
             order.setLicensePlates(licensePlatesTextField.getText());
@@ -369,8 +368,8 @@ public class IndexController implements Initializable {
         OrderController orderController = fxmlLoader.getController();
         orderController.setValue(selectedOrder);
         Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        boolean success =  printService.printOrder(stage,root);
-        if (!success){
+        boolean success = printService.printOrder(stage, root);
+        if (!success) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Lỗi in phiếu cân");
             alert.setHeaderText(null);
