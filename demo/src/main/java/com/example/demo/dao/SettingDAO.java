@@ -1,10 +1,7 @@
 package com.example.demo.dao;
 
 import com.example.demo.mapper.SettingMapper;
-import com.example.demo.mapper.WeightMoneyMapper;
 import com.example.demo.model.Setting;
-import com.example.demo.model.WeightMoney;
-import com.example.demo.utils.constants.SettingConstants;
 import com.example.demo.utils.constants.SettingKey;
 import com.example.demo.utils.util.SqlUtil;
 import javafx.collections.FXCollections;
@@ -15,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.demo.utils.constants.SettingConstants.*;
-import static com.example.demo.utils.constants.WeightMoneyConstants.*;
+import static com.example.demo.utils.constants.SettingConstants.SELECT_ALL;
 
 
 public class SettingDAO {
