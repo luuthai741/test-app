@@ -1,9 +1,13 @@
 package com.example.demo.query;
 
+import com.example.demo.utils.constants.OrderStatus;
+import com.example.demo.utils.constants.PaymentStatus;
 import com.example.demo.utils.util.DateUtil;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+
+import static com.example.demo.utils.constants.OrderStatus.ALL;
 
 public class OrderQuery {
     private String index;
@@ -27,7 +31,7 @@ public class OrderQuery {
     private String queryByLicensePlates() {
         String query = "";
         if (licensePlates != null && !licensePlates.isBlank()) {
-            query = " AND LICENSE_PLATES = '" + licensePlates + "'";
+            query = " AND LICENSE_PLATES = '*" + licensePlates + "*'";
         }
         return query;
     }
@@ -35,7 +39,15 @@ public class OrderQuery {
     private String queryBySeller() {
         String query = "";
         if (seller != null && !seller.isBlank()) {
-            query = " AND SELLER = '" + seller + "'";
+            seller = seller.trim();
+            String[] parts = seller.split(" ");
+            if (parts.length == 2) {
+                String seller1 = parts[0] + " " + parts[1];
+                String seller2 = parts[1] + " " + parts[2];
+                query = " AND (SELLER = '*" + seller1 + "*' OR SELLER = '*" + seller2 + "'";
+            } else {
+                query = " AND SELLER = '*" + seller + "*'";
+            }
         }
         return query;
     }
@@ -43,14 +55,22 @@ public class OrderQuery {
     private String queryByBuyer() {
         String query = "";
         if (buyer != null && !buyer.isBlank()) {
-            query = " AND BUYER = '" + buyer + "'";
+            buyer = buyer.trim();
+            String[] parts = buyer.split(" ");
+            if (parts.length == 2) {
+                String buyer1 = parts[0] + " " + parts[1];
+                String buyer2 = parts[1] + " " + parts[2];
+                query = " AND (BUYER = '*" + buyer1 + "*' OR BUYER = '*" + buyer1 + "'";
+            } else {
+                query = " AND BUYER = '*" + seller + "*'";
+            }
         }
         return query;
     }
 
     private String queryByStatus() {
         String query = "";
-        if (status != null && !status.isBlank()) {
+        if (status != null && !status.isBlank() && !status.equals(ALL.getNote())) {
             query = " AND STATUS = '" + status + "'";
         }
         return query;
@@ -58,7 +78,7 @@ public class OrderQuery {
 
     private String queryByPaymentStatus() {
         String query = "";
-        if (paymentStatus != null && !paymentStatus.isBlank()) {
+        if (paymentStatus != null && !paymentStatus.isBlank() && !paymentStatus.equals(PaymentStatus.ALL.getNote())) {
             query = " AND PAYMENT_STATUS = '" + paymentStatus + "'";
         }
         return query;

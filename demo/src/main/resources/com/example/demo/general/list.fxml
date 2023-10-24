@@ -17,7 +17,7 @@
          <children>
             <AnchorPane layoutX="300.0" layoutY="200.0" prefHeight="800.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <AnchorPane layoutX="11.0" layoutY="8.0" prefHeight="91.0" prefWidth="978.0">
+                  <AnchorPane layoutX="11.0" layoutY="8.0" prefHeight="91.0" prefWidth="979.0">
                      <children>
                         <DatePicker fx:id="startDatePicker" layoutX="14.0" layoutY="47.0" prefHeight="24.0" prefWidth="144.0" />
                         <Label layoutX="165.0" layoutY="51.0" text="-" />

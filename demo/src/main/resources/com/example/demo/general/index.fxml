@@ -31,27 +31,23 @@
       </TableView>
       <AnchorPane layoutX="64.0" layoutY="374.0" prefHeight="79.0" prefWidth="872.0">
          <children>
-            <Button fx:id="firstTimeButton" layoutX="27.0" layoutY="25.0" mnemonicParsing="false" onAction="#actionFirstTime" prefHeight="30.0" prefWidth="100.0" text="Cân lần 1">
+            <Button fx:id="firstTimeButton" layoutX="164.0" layoutY="25.0" mnemonicParsing="false" onAction="#actionFirstTime" prefHeight="30.0" prefWidth="100.0" text="Cân lần 1">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></Button>
-            <Button fx:id="secondTimeButton" layoutX="137.0" layoutY="25.0" mnemonicParsing="false" onAction="#actionSecondTime" prefHeight="30.0" prefWidth="100.0" text="Cần lần 2">
+            <Button fx:id="secondTimeButton" layoutX="274.0" layoutY="25.0" mnemonicParsing="false" onAction="#actionSecondTime" prefHeight="30.0" prefWidth="100.0" text="Cần lần 2">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></Button>
-            <Button fx:id="saveButton" layoutX="247.0" layoutY="25.0" mnemonicParsing="false" onAction="#saveOrder" prefHeight="30.0" prefWidth="100.0" text="Lưu">
+            <Button fx:id="saveButton" layoutX="384.0" layoutY="25.0" mnemonicParsing="false" onAction="#saveOrder" prefHeight="30.0" prefWidth="100.0" text="Lưu">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></Button>
-            <Button fx:id="printButton" layoutX="359.0" layoutY="25.0" mnemonicParsing="false" onAction="#printOrder" prefHeight="30.0" prefWidth="100.0" text="In phiếu">
+            <Button fx:id="printButton" layoutX="496.0" layoutY="25.0" mnemonicParsing="false" onAction="#printOrder" prefHeight="30.0" prefWidth="100.0" text="In phiếu">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></Button>
-            <Button fx:id="deleteButton" layoutX="469.0" layoutY="25.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" text="Xóa">
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor></Button>
-            <Button layoutX="579.0" layoutY="25.0" mnemonicParsing="false" onAction="#rollback" prefHeight="30.0" prefWidth="100.0" text="Hoàn tác">
+            <Button layoutX="608.0" layoutY="25.0" mnemonicParsing="false" onAction="#rollback" prefHeight="30.0" prefWidth="100.0" text="Hoàn tác">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></Button>
@@ -62,8 +58,7 @@
             <DatePicker fx:id="startDatePicker" layoutX="14.0" layoutY="46.0" prefHeight="24.0" prefWidth="144.0" />
             <DatePicker fx:id="endDatePicker" layoutX="176.0" layoutY="46.0" prefHeight="24.0" prefWidth="144.0" />
             <Label alignment="CENTER" layoutX="158.0" layoutY="50.0" prefHeight="16.0" prefWidth="18.0" text="-" />
-            <ComboBox fx:id="statusComboBox" layoutX="337.0" layoutY="46.0" prefHeight="24.0" prefWidth="103.0" />
-            <Button fx:id="searchButton" layoutX="625.0" layoutY="43.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="78.0" text="Tìm kiếm" />
+            <Button fx:id="searchButton" layoutX="491.0" layoutY="45.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="90.0" text="Tìm kiếm" />
             <Label alignment="CENTER" layoutX="36.0" layoutY="13.0" prefHeight="30.0" prefWidth="100.0" text="Ngày bắt đầu">
                <font>
                   <Font name="System Bold" size="12.0" />
@@ -74,13 +69,8 @@
                   <Font name="System Bold" size="12.0" />
                </font>
             </Label>
-            <Label alignment="CENTER" layoutX="339.0" layoutY="13.0" prefHeight="30.0" prefWidth="100.0" text="Trạng thái">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-            </Label>
-            <TextField layoutX="456.0" layoutY="46.0" />
-            <Label alignment="CENTER" layoutX="481.0" layoutY="13.0" prefHeight="30.0" prefWidth="100.0" text="Biển số xe">
+            <TextField layoutX="340.0" layoutY="47.0" prefHeight="24.0" prefWidth="126.0" />
+            <Label alignment="CENTER" layoutX="353.0" layoutY="13.0" prefHeight="30.0" prefWidth="100.0" text="Biển số xe">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
@@ -168,12 +158,12 @@
                         <CheckBox fx:id="payerIsSellerCheckbox" layoutX="122.0" layoutY="77.0" mnemonicParsing="false" onAction="#onChangePayerIsSellerCheckbox" text="Người bán" />
                         <Label layoutX="14.0" layoutY="95.0" prefHeight="30.0" prefWidth="80.0" text="Thanh toán" />
                         <Label layoutX="101.0" layoutY="102.0" text=":" />
-                        <RadioButton text="Đã trả" fx:id="paidRadioButton" layoutX="121.0" layoutY="101.0" mnemonicParsing="false">
+                        <RadioButton fx:id="paidRadioButton" layoutX="121.0" layoutY="101.0" mnemonicParsing="false" text="Đã trả">
                            <toggleGroup>
                               <ToggleGroup fx:id="paymentStatus" />
                            </toggleGroup>
                         </RadioButton>
-                        <RadioButton text="Chưa trả" fx:id="unpaidRadioButton" layoutX="121.0" layoutY="123.0" mnemonicParsing="false">
+                        <RadioButton fx:id="unpaidRadioButton" layoutX="121.0" layoutY="123.0" mnemonicParsing="false" text="Chưa trả">
                            <toggleGroup>
                               <ToggleGroup fx:id="paymentStatus" />
                            </toggleGroup>

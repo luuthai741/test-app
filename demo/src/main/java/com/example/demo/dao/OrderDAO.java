@@ -10,9 +10,12 @@ import javafx.collections.ObservableList;
 
 import java.sql.ResultSet;
 import java.time.LocalDateTime;
+import java.time.Year;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.demo.utils.constants.OrderQueryConstants.*;
+import static com.example.demo.utils.constants.OrderStatus.CANCELED;
 import static com.example.demo.utils.constants.OrderStatus.CREATED;
 
 public class OrderDAO {
@@ -21,7 +24,6 @@ public class OrderDAO {
     private OrderDAO() {
     }
 
-    private ObservableList<Order> orders;
     private OrderMapper orderMapper = OrderMapper.getInstance();
 
     public static OrderDAO getInstance() {
@@ -89,6 +91,7 @@ public class OrderDAO {
 
     public ObservableList<Order> getOrders() {
         SqlUtil sqlUtil = new SqlUtil();
+        ObservableList<Order> orders = FXCollections.observableList(new ArrayList<>());
         try {
             sqlUtil.connect();
             OrderQuery orderQuery = new OrderQuery();
@@ -115,6 +118,7 @@ public class OrderDAO {
         orderQuery.setDateTimeFrom(dateFrom);
         orderQuery.setDateTimeTo(dateTo);
         SqlUtil sqlUtil = new SqlUtil();
+        ObservableList<Order> orders = FXCollections.observableList(new ArrayList<>());
         try {
             sqlUtil.connect();
             String sql = SELECT_ALL + orderQuery.getQueryCondition();
@@ -129,8 +133,17 @@ public class OrderDAO {
         return orders;
     }
 
+    public Order getTopByLicensePlates(String licensePlates) {
+        ObservableList<Order> orders = getOrderFilters(licensePlates, null, null, null, null, LocalDateTime.of(Year.now().getValue() - 2, 01, 01, 0, 0, 0), LocalDateTime.now());
+        Order order = null;
+        if (orders.size() > 0) {
+            order = orders.get(0);
+        }
+        return order;
+    }
+
     public Order getOrderOnByObservableListByIndex(int index) {
-        return orders.stream().filter(order -> order.getIndex() == index).findFirst().orElse(null);
+        return null;
     }
 
     public Order createOrder(Order order) {
@@ -138,7 +151,7 @@ public class OrderDAO {
         try {
             sqlUtil.connect();
             String query = String.format(INSERT_ORDER,
-                    order.getId(), order.getIndex(), order.getLicensePlates(),
+                    order.getIndex(), order.getLicensePlates(),
                     order.getSeller(), order.getBuyer(), order.getTotalWeight(),
                     order.getVehicleWeight(), order.getCargoWeight(), DateUtil.convertToString(LocalDateTime.now(), DateUtil.DB_FORMAT),
                     DateUtil.convertToString(LocalDateTime.now(), DateUtil.DB_FORMAT), order.getStatus(), order.getPaymentStatus(),
@@ -170,5 +183,18 @@ public class OrderDAO {
             sqlUtil.disconnect();
         }
         return order;
+    }
+
+    public void deleteOrder(Order order) {
+        SqlUtil sqlUtil = new SqlUtil();
+        try {
+            sqlUtil.connect();
+            String query = String.format(UPDATE_ORDER_STATUS_BY_ID, CANCELED.getNote(), order.getId());
+            sqlUtil.exeQuery(query);
+        } catch (Exception e) {
+
+        } finally {
+            sqlUtil.disconnect();
+        }
     }
 }

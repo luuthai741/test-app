@@ -21,6 +21,8 @@ import static com.example.demo.utils.constants.Page.*;
 public class AdminController implements Initializable {
     @FXML
     private BorderPane borderPane;
+    @FXML
+    private BorderPane settingPane;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
     }
@@ -59,7 +61,17 @@ public class AdminController implements Initializable {
                 newRoot = FXMLLoader.load(getClass().getResource(DEBTOR.getFxml()));
                 System.out.println("TEST DEBTOR");
             }
+            case SETTING -> {
+                newRoot = FXMLLoader.load(getClass().getResource(SETTING.getFxml()));
+            }
+            case WEIGHT_MONEY-> {
+                newRoot = FXMLLoader.load(getClass().getResource(WEIGHT_MONEY.getFxml()));
+            }
         }
         borderPane.setCenter(newRoot);
+    }
+
+    public void switchVisibleSettingPane(ActionEvent actionEvent){
+        settingPane.setVisible(!settingPane.isVisible());
     }
 }

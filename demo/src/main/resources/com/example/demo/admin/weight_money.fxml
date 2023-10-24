@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="874.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.WeighMoneyController">
+   <children>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0">
+         <children>
+            <AnchorPane layoutX="126.0" layoutY="64.0" prefHeight="800.0" prefWidth="874.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <Label layoutX="29.0" layoutY="89.0" prefHeight="26.0" prefWidth="60.0" text="Start">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="29.0" layoutY="131.0" prefHeight="26.0" prefWidth="60.0" text="End">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="97.0" layoutY="94.0" text=":" />
+                  <Label layoutX="97.0" layoutY="136.0" text=":" />
+                  <TextField fx:id="startWeightTextField" editable="false" layoutX="110.0" layoutY="90.0" prefWidth="240.0" />
+                  <TextField fx:id="endWeightTextField" layoutX="110.0" layoutY="132.0" prefWidth="240.0" />
+                  <Button layoutX="86.0" layoutY="268.0" mnemonicParsing="false" onAction="#saveWeightMoney" prefWidth="75.0" text="Save" />
+                  <TableView fx:id="settingTable" layoutX="369.0" layoutY="84.0" prefHeight="715.0" prefWidth="505.0">
+                    <columns>
+                      <TableColumn fx:id="idCol" prefWidth="51.0" text="Id" />
+                      <TableColumn fx:id="typeCol" prefWidth="113.5" text="Type" />
+                        <TableColumn fx:id="startWeightCol" prefWidth="113.5" text="Start" />
+                        <TableColumn fx:id="endWeightCol" prefWidth="113.5" text="End" />
+                        <TableColumn fx:id="amountMoneyCol" prefWidth="113.5" text="Amout" />
+                    </columns>
+                  </TableView>
+                  <Label layoutX="29.0" layoutY="14.0" prefHeight="30.0" text="AmountSetting">
+                     <font>
+                        <Font size="25.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="29.0" layoutY="173.0" prefHeight="26.0" prefWidth="60.0" text="Amount">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="97.0" layoutY="178.0" text=":" />
+                  <TextField fx:id="amountMoneyTextField" layoutX="110.0" layoutY="174.0" prefWidth="240.0" />
+                  <Label layoutX="29.0" layoutY="211.0" prefHeight="26.0" prefWidth="60.0" text="Type">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="97.0" layoutY="216.0" text=":" />
+                  <ComboBox fx:id="typeCombobox" layoutX="110.0" layoutY="212.0" prefWidth="150.0" />
+                  <Button layoutX="223.0" layoutY="268.0" mnemonicParsing="false" onAction="#rollback" prefWidth="75.0" text="Rollback" />
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+   </children>
+</StackPane>
