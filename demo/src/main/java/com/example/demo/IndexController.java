@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import com.example.demo.dao.OrderDAO;
+import com.example.demo.dao.WeightMoneyDAO;
 import com.example.demo.model.Order;
 import com.example.demo.service.PrintService;
 import com.example.demo.utils.constants.OrderStatus;
@@ -9,6 +10,8 @@ import com.example.demo.utils.constants.PaymentStatus;
 import com.example.demo.utils.util.DateUtil;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -91,8 +94,6 @@ public class IndexController implements Initializable {
     @FXML
     private DatePicker endDatePicker;
     @FXML
-    private ComboBox<String> statusComboBox;
-    @FXML
     private Button searchButton;
     @FXML
     private TableView<Order> orderTable;
@@ -117,8 +118,32 @@ public class IndexController implements Initializable {
     @FXML
     private Order selectedOrder = null;
     private OrderDAO orderDAO = OrderDAO.getInstance();
+    private WeightMoneyDAO weightMoneyDAO = WeightMoneyDAO.getInstance();
     private PrintService printService = PrintService.getInstance();
     private ObservableList<Order> orders;
+    PauseTransition pause = new PauseTransition(Duration.seconds(300));
+    private ChangeListener licensePlatesChangeListener = new ChangeListener() {
+        @Override
+        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+            pause.setOnFinished(e -> {
+                try {
+                    String licensePlates = newValue.toString();
+                    if (!licensePlates.isBlank()) {
+                        return;
+                    }
+                    Order order = orderDAO.getTopByLicensePlates(licensePlates);
+                    if (order == null) {
+                        return;
+                    }
+                    sellerTextField.setText(order.getSeller());
+                    buyerCol.setText(order.getBuyer());
+                } catch (Exception ex) {
+                    System.out.println("Error form licensePlatesChangeListener " + ex.getMessage());
+                }
+            });
+            pause.playFromStart();
+        }
+    };
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -152,21 +177,15 @@ public class IndexController implements Initializable {
 
         startDatePicker.setValue(LocalDate.now());
         endDatePicker.setValue(LocalDate.now());
-        statusComboBox.setItems(OrderStatus.getIndexStatus());
-        statusComboBox.setValue(OrderStatus.CREATED.getNote());
-        PauseTransition pause = new PauseTransition(Duration.seconds(300));
         manualTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            pause.setOnFinished(e ->{
-                try {
-                    Long longValue = Long.valueOf(newValue);
-                    manualTextField.setText(newValue);
-                    weightLabel.setText(longValue.toString());
-                } catch (IllegalArgumentException ex) {
-                    manualTextField.setText("");
-                    weightLabel.setText("");
-                }
-            });
-            pause.playFromStart();
+            try {
+                Long longValue = Long.valueOf(newValue);
+                manualTextField.setText(newValue);
+                weightLabel.setText(longValue.toString());
+            } catch (IllegalArgumentException ex) {
+                manualTextField.setText("");
+                weightLabel.setText("");
+            }
         });
         weightDetailPane.setVisible(false);
         printButton.setDisable(true);
@@ -225,6 +244,7 @@ public class IndexController implements Initializable {
         secondTimeButton.setDisable(true);
         weightDetailPane.setVisible(true);
         totalWeightLabel.setText(weightLabel.getText());
+        licensePlatesCol.textProperty().addListener(licensePlatesChangeListener);
     }
 
     public void actionSecondTime(ActionEvent actionEvent) {
@@ -250,6 +270,8 @@ public class IndexController implements Initializable {
         cargoWeightLabel.setText(String.valueOf(cargoWeight.intValue()));
         paymentPane.setVisible(true);
         paymentAmountTextField.setEditable(true);
+        double paymentAmount = weightMoneyDAO.getAmountByCargoWeight(licensePlatesTextField.getText(), cargoWeight.intValue());
+        paymentAmountTextField.setText(String.valueOf(paymentAmount));
     }
 
     public void saveOrder(ActionEvent actionEvent) {
@@ -318,6 +340,11 @@ public class IndexController implements Initializable {
         orderTable.setEditable(true);
         indexTextField.setText("");
         licensePlatesTextField.setText("");
+        try {
+            licensePlatesTextField.textProperty().removeListener(licensePlatesChangeListener);
+        } catch (Exception e) {
+            System.out.println("error when remove licensePlatesChangeListener" + e.getMessage());
+        }
         sellerTextField.setText("");
         buyerTextField.setText("");
         noteTextField.setText("");

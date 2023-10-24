@@ -83,10 +83,10 @@ public class ItemController implements Initializable {
     private TableColumn<?, ?> vehicleWeightCol;
 
     private OrderDAO orderDAO = OrderDAO.getInstance();
+    private ObservableList<Order> orders;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        ObservableList<Order> orders = orderDAO.getOrders();
         indexCol.setCellValueFactory(new PropertyValueFactory("index"));
         licensePlatesCol.setCellValueFactory(new PropertyValueFactory("licensePlates"));
         sellerCol.setCellValueFactory(new PropertyValueFactory("seller"));
@@ -99,7 +99,6 @@ public class ItemController implements Initializable {
         createdAtCol.setCellValueFactory(new PropertyValueFactory("createdAt"));
         updatedCol.setCellValueFactory(new PropertyValueFactory("updatedAt"));
         paymentStatusCol.setCellValueFactory(new PropertyValueFactory("paymentStatus"));
-        orderTable.setItems(orders);
         startDatePicker.setValue(LocalDate.now());
         endDatePicker.setValue(LocalDate.now());
         statusComboBox.setItems(OrderStatus.getIndexStatus());
@@ -107,16 +106,24 @@ public class ItemController implements Initializable {
         paymentStatusComboBox.setItems(PaymentStatus.getItemStatus());
         paymentStatusComboBox.setValue(PaymentStatus.ALL.getNote());
         ContextMenu contextMenu = new ContextMenu();
-        MenuItem deleteMenuItem = new MenuItem("Chỉnh sửa");
-        deleteMenuItem.setOnAction(e -> {
+        MenuItem detailMenuItem = new MenuItem("Chỉnh sửa");
+        detailMenuItem.setOnAction(e -> {
             try {
                 openPopup(e);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         });
-        contextMenu.getItems().add(deleteMenuItem);
+        contextMenu.getItems().add(detailMenuItem);
+        orders = orderDAO.getOrderFilters(null,
+                sellerTextField.getText(),
+                buyerTextField.getText(),
+                statusComboBox.getValue(),
+                paymentStatusComboBox.getValue(),
+                startDatePicker.getValue().atStartOfDay().withHour(0).withMinute(0).withSecond(0),
+                endDatePicker.getValue().atStartOfDay().withHour(23).withMinute(59).withSecond(59));
         orderTable.setContextMenu(contextMenu);
+        orderTable.setItems(orders);
     }
 
     public void report(ActionEvent actionEvent) throws IOException {
@@ -136,7 +143,22 @@ public class ItemController implements Initializable {
     }
 
     public void search(ActionEvent actionEvent) {
-
+        if (endDatePicker.getValue().equals(startDatePicker.getValue())) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Lỗi tìm kiếm");
+            alert.setHeaderText(null);
+            alert.setContentText("Ngày kết thúc không được nhỏ hơn ngày bắt đầu!");
+            alert.show();
+            return;
+        }
+        orders = orderDAO.getOrderFilters(null,
+                sellerTextField.getText(),
+                buyerTextField.getText(),
+                statusComboBox.getValue(),
+                paymentStatusComboBox.getValue(),
+                startDatePicker.getValue().atStartOfDay().withHour(0).withMinute(0).withSecond(0),
+                endDatePicker.getValue().atStartOfDay().withHour(23).withMinute(59).withSecond(59));
+        orderTable.setItems(orders);
     }
 
     public void openPopup(ActionEvent actionEvent) throws IOException {

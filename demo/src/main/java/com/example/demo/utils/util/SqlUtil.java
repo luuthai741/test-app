@@ -1,7 +1,5 @@
 package com.example.demo.utils.util;
 
-import com.example.demo.dao.OrderDAO;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +19,7 @@ public class SqlUtil {
     }
 
     public void connect() throws Exception {
-        String databaseURL = "jdbc:ucanaccess:///home/thai-luu/Downloads/sample (1).mdb";
+        String databaseURL = "jdbc:ucanaccess:///home/thai-luu/Downloads/test.accdb";
         connection = DriverManager.getConnection(databaseURL);
         connectionConcurrentHashMap.put(System.currentTimeMillis(), connection);
     }

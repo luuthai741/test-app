@@ -21,7 +21,8 @@ import static com.example.demo.utils.constants.Page.*;
 public class AdminController implements Initializable {
     @FXML
     private BorderPane borderPane;
-
+    @FXML
+    private BorderPane settingPane;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
     }
@@ -33,11 +34,9 @@ public class AdminController implements Initializable {
         switch (page) {
             case INDEX:
                 newRoot = FXMLLoader.load(getClass().getResource(INDEX.getFxml()));
-                System.out.println("Can xe");
                 break;
             case ADMIN_HOME:
                 newRoot = FXMLLoader.load(getClass().getResource(ADMIN_HOME.getFxml()));
-                System.out.println("TEST HOME");
                 break;
             case LIST:
                 if (!ConvertUtil.PAGES.contains(LIST.name())) {
@@ -60,7 +59,17 @@ public class AdminController implements Initializable {
                 newRoot = FXMLLoader.load(getClass().getResource(DEBTOR.getFxml()));
                 System.out.println("TEST DEBTOR");
                 break;
+            case SETTING:
+                newRoot = FXMLLoader.load(getClass().getResource(SETTING.getFxml()));
+                break;
+            case WEIGHT_MONEY:
+                newRoot = FXMLLoader.load(getClass().getResource(WEIGHT_MONEY.getFxml()));
+                break;
         }
         borderPane.setCenter(newRoot);
+    }
+
+    public void switchVisibleSettingPane(ActionEvent actionEvent){
+        settingPane.setVisible(!settingPane.isVisible());
     }
 }
