@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Order {
     private long id;
@@ -11,8 +12,8 @@ public class Order {
     private int totalWeight;
     private int vehicleWeight;
     private int cargoWeight;
-    private LocalDate createdAt;
-    private LocalDate updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private String status;
     private String paymentStatus;
     private String cargoType;
@@ -24,7 +25,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(long id, int index, String licensePlates, String seller, String buyer, int totalWeight, int vehicleWeight, int cargoWeight, LocalDate createdAt, LocalDate updatedAt, String status, String paymentStatus, String cargoType, double paymentAmount, String note, String payer, String createdBy) {
+    public Order(long id, int index, String licensePlates, String seller, String buyer, int totalWeight, int vehicleWeight, int cargoWeight, LocalDateTime createdAt, LocalDateTime updatedAt, String status, String paymentStatus, String cargoType, double paymentAmount, String note, String payer, String createdBy) {
         this.id = id;
         this.index = index;
         this.licensePlates = licensePlates;
@@ -108,19 +109,19 @@ public class Order {
         this.cargoWeight = cargoWeight;
     }
 
-    public LocalDate getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDate createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public LocalDate getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(LocalDate updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 

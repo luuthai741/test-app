@@ -70,6 +70,20 @@ public class SqlUtil {
         }
     }
 
+    public int exeUpdate(String strSQL) throws SQLException {
+        try {
+            if (connection == null) {
+                getConnection();
+            }
+            Statement statement = connection.createStatement();
+            statements.add(statement);
+            return statement.executeUpdate(strSQL);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return 0;
+        }
+    }
+
     public boolean isClosed() {
         try {
             return connection == null || connection.isClosed();

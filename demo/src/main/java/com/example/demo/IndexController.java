@@ -2,6 +2,8 @@ package com.example.demo;
 
 import com.example.demo.dao.OrderDAO;
 import com.example.demo.dao.WeightMoneyDAO;
+import com.example.demo.data.WeighingScale;
+import com.example.demo.listener.WeighingScaleListener;
 import com.example.demo.model.Order;
 import com.example.demo.service.PrintService;
 import com.example.demo.utils.constants.OrderStatus;
@@ -24,6 +26,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.IOException;
 import java.net.URL;
@@ -31,6 +34,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
+import static com.example.demo.utils.constants.OrderStatus.CREATED;
 import static com.example.demo.utils.util.ConvertUtil.replaceNullStringToBlank;
 import static com.example.demo.utils.util.DateUtil.DD_MM_YYYY_HH_MM_SS;
 
@@ -85,16 +89,16 @@ public class IndexController implements Initializable {
     @FXML
     private Button secondTimeButton;
     @FXML
-    private Button printButton;
+    private Button saveButton;
     @FXML
-    private Button deleteButton;
+    private Button printButton;
     // DANH SÁCH
     @FXML
     private DatePicker startDatePicker;
     @FXML
     private DatePicker endDatePicker;
     @FXML
-    private Button searchButton;
+    private TextField licensePlatesSearchTextField;
     @FXML
     private TableView<Order> orderTable;
     @FXML
@@ -121,29 +125,7 @@ public class IndexController implements Initializable {
     private WeightMoneyDAO weightMoneyDAO = WeightMoneyDAO.getInstance();
     private PrintService printService = PrintService.getInstance();
     private ObservableList<Order> orders;
-    PauseTransition pause = new PauseTransition(Duration.seconds(300));
-    private ChangeListener licensePlatesChangeListener = new ChangeListener() {
-        @Override
-        public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-            pause.setOnFinished(e -> {
-                try {
-                    String licensePlates = newValue.toString();
-                    if (!licensePlates.isBlank()) {
-                        return;
-                    }
-                    Order order = orderDAO.getTopByLicensePlates(licensePlates);
-                    if (order == null) {
-                        return;
-                    }
-                    sellerTextField.setText(order.getSeller());
-                    buyerCol.setText(order.getBuyer());
-                } catch (Exception ex) {
-                    System.out.println("Error form licensePlatesChangeListener " + ex.getMessage());
-                }
-            });
-            pause.playFromStart();
-        }
-    };
+    private WeighingScale weighingScale;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -164,17 +146,14 @@ public class IndexController implements Initializable {
             selectedOrder = newValue;
             if (selectedOrder != null) {
                 printButton.setDisable(false);
-                deleteButton.setDisable(false);
                 setValue(selectedOrder);
             } else {
                 printButton.setDisable(true);
-                deleteButton.setDisable(true);
             }
         });
         manualTextField.setVisible(false);
         paymentPane.setVisible(false);
 //        cargoComboBox.setItems(FXCollections.observableList(List.of("Sắt","Than","Dây 27")));
-
         startDatePicker.setValue(LocalDate.now());
         endDatePicker.setValue(LocalDate.now());
         manualTextField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -189,7 +168,6 @@ public class IndexController implements Initializable {
         });
         weightDetailPane.setVisible(false);
         printButton.setDisable(true);
-        deleteButton.setDisable(true);
         Thread timerThread = new Thread(() -> {
             while (true) {
                 try {
@@ -203,14 +181,53 @@ public class IndexController implements Initializable {
             }
         });
         timerThread.start();
+//        PauseTransition pause = new PauseTransition(Duration.seconds(300));
+        licensePlatesTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+//            pause.setOnFinished(e -> {
+            try {
+                String licensePlates = newValue.toString();
+                if (StringUtils.isBlank(licensePlates) && (StringUtils.isNotBlank(sellerTextField.getText()) || StringUtils.isNotBlank(buyerTextField.getText()))) {
+                    return;
+                }
+                Order order = orderDAO.getTopByLicensePlates(licensePlates);
+                if (order == null) {
+                    return;
+                }
+                sellerTextField.setText(order.getSeller());
+                buyerTextField.setText(order.getBuyer());
+            } catch (Exception ex) {
+                System.out.println("Error form licensePlatesChangeListener " + ex.getMessage());
+            }
+//        });
+//            pause.playFromStart();
+        });
+
+        //TESTING
+        manualCheckbox.setSelected(true);
+
+        switchManual();
+
     }
 
     public void switchManual() {
         if (manualCheckbox.isSelected()) {
             manualTextField.setVisible(true);
+            if (weighingScale != null) {
+                weighingScale.disconnect();
+            }
         } else {
             manualTextField.setVisible(false);
-            manualTextField.setText("0");
+            try {
+                weighingScale = new WeighingScale();
+                weighingScale.connect();
+                weighingScale.addListener(weight -> manualTextField.setText(String.valueOf(weight)));
+            }catch (RuntimeException e){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Lỗi cấu hình");
+                alert.setHeaderText(null);
+                alert.setContentText(e.getMessage());
+                alert.show();
+            }
         }
     }
 
@@ -226,6 +243,7 @@ public class IndexController implements Initializable {
         weightDetailPane.setVisible(false);
         orders = orderDAO.getOrders();
         orderTable.setItems(orders);
+        saveButton.setDisable(false);
     }
 
     public void actionFirstTime(ActionEvent actionEvent) {
@@ -244,7 +262,6 @@ public class IndexController implements Initializable {
         secondTimeButton.setDisable(true);
         weightDetailPane.setVisible(true);
         totalWeightLabel.setText(weightLabel.getText());
-        licensePlatesCol.textProperty().addListener(licensePlatesChangeListener);
     }
 
     public void actionSecondTime(ActionEvent actionEvent) {
@@ -272,14 +289,16 @@ public class IndexController implements Initializable {
         paymentAmountTextField.setEditable(true);
         double paymentAmount = weightMoneyDAO.getAmountByCargoWeight(licensePlatesTextField.getText(), cargoWeight.intValue());
         paymentAmountTextField.setText(String.valueOf(paymentAmount));
+        payerIsSellerCheckbox.setSelected(true);
+        onChangePayerIsSellerCheckbox();
     }
 
     public void saveOrder(ActionEvent actionEvent) {
         String errorText = "";
-        if (licensePlatesTextField.getText().isBlank()) {
+        if (StringUtils.isBlank(licensePlatesTextField.getText())) {
             errorText = "Biển số xe không được để trống!";
         }
-        if (!errorText.isBlank()) {
+        if (StringUtils.isNotBlank(errorText)) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Lỗi tạo mã cân");
             alert.setHeaderText(null);
@@ -294,15 +313,15 @@ public class IndexController implements Initializable {
             order.setId(id);
             order.setId(Integer.valueOf(indexTextField.getText()));
             order.setIndex(Integer.valueOf(indexTextField.getText()));
-            order.setLicensePlates(licensePlatesTextField.getText());
+            order.setLicensePlates(licensePlatesTextField.getText().toUpperCase());
             order.setSeller(replaceNullStringToBlank(sellerTextField.getText()));
             order.setBuyer(replaceNullStringToBlank(buyerTextField.getText()));
             order.setTotalWeight(Integer.valueOf(totalWeightLabel.getText()));
             order.setVehicleWeight(0);
             order.setCargoWeight(0);
-            order.setCreatedAt(LocalDate.now());
-            order.setUpdatedAt(LocalDate.now());
-            order.setStatus(OrderStatus.CREATED.getNote());
+            order.setCreatedAt(LocalDateTime.now());
+            order.setUpdatedAt(LocalDateTime.now());
+            order.setStatus(CREATED.getNote());
             order.setPaymentStatus(PaymentStatus.UNPAID.getNote());
             order.setCargoType(cargoComboBox.getValue());
             order.setPaymentAmount(0);
@@ -312,17 +331,17 @@ public class IndexController implements Initializable {
             firstTimeButton.setDisable(false);
             secondTimeButton.setDisable(false);
         } else {
-            selectedOrder.setLicensePlates(licensePlatesTextField.getText());
+            selectedOrder.setLicensePlates(licensePlatesTextField.getText().toUpperCase());
             selectedOrder.setSeller(replaceNullStringToBlank(sellerTextField.getText()));
             selectedOrder.setBuyer(replaceNullStringToBlank(buyerTextField.getText()));
             selectedOrder.setTotalWeight(Double.valueOf(totalWeightLabel.getText()).intValue());
             selectedOrder.setVehicleWeight(Double.valueOf(vehicleWeightLabel.getText()).intValue());
             selectedOrder.setCargoWeight(Double.valueOf(cargoWeightLabel.getText()).intValue());
-            selectedOrder.setUpdatedAt(LocalDate.now());
+            selectedOrder.setUpdatedAt(LocalDateTime.now());
             selectedOrder.setStatus(OrderStatus.COMPLETED.name());
             selectedOrder.setPaymentStatus(PaymentStatus.PAID.name());
             selectedOrder.setCargoType(cargoComboBox.getValue());
-            selectedOrder.setPaymentAmount(Double.valueOf(paymentAmountTextField.getText().isBlank() ? "0" : paymentAmountTextField.getText()));
+            selectedOrder.setPaymentAmount(Double.valueOf(StringUtils.isBlank(paymentAmountTextField.getText()) ? "0" : paymentAmountTextField.getText()));
             selectedOrder.setNote(noteTextField.getText());
             selectedOrder.setCreatedBy("test");
             selectedOrder.setPayer(payerTextField.getText());
@@ -333,18 +352,13 @@ public class IndexController implements Initializable {
             secondTimeButton.setDisable(true);
             orderTable.setEditable(false);
         }
-
+        saveButton.setDisable(true);
     }
 
     private void cleanData() {
         orderTable.setEditable(true);
         indexTextField.setText("");
         licensePlatesTextField.setText("");
-        try {
-            licensePlatesTextField.textProperty().removeListener(licensePlatesChangeListener);
-        } catch (Exception e) {
-            System.out.println("error when remove licensePlatesChangeListener" + e.getMessage());
-        }
         sellerTextField.setText("");
         buyerTextField.setText("");
         noteTextField.setText("");
@@ -378,7 +392,7 @@ public class IndexController implements Initializable {
         }
     }
 
-    public void onChangePayerIsSellerCheckbox(ActionEvent actionEvent) {
+    public void onChangePayerIsSellerCheckbox() {
         if (payerIsSellerCheckbox.isSelected()) {
             payerTextField.setText(sellerTextField.getText());
         } else {
@@ -403,5 +417,12 @@ public class IndexController implements Initializable {
             alert.setContentText("Có lỗi trọng quá trình xuất phiếu cân");
             alert.show();
         }
+    }
+
+    public void searchOrder() {
+        LocalDateTime startDateTime = startDatePicker.getValue().atStartOfDay();
+        LocalDateTime endDateTime = endDatePicker.getValue().atStartOfDay();
+        String licensePlates = licensePlatesSearchTextField.getText();
+        orderTable.setItems(orderDAO.getOrderFilters(licensePlates, null, null, CREATED.getNote(), null, startDateTime, endDateTime));
     }
 }

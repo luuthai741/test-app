@@ -28,10 +28,10 @@
                   </Label>
                   <Label layoutX="97.0" layoutY="94.0" text=":" />
                   <Label layoutX="97.0" layoutY="136.0" text=":" />
-                  <TextField fx:id="startWeightTextField" editable="false" layoutX="110.0" layoutY="90.0" prefWidth="240.0" />
+                  <TextField fx:id="startWeightTextField" layoutX="110.0" layoutY="90.0" prefWidth="240.0" />
                   <TextField fx:id="endWeightTextField" layoutX="110.0" layoutY="132.0" prefWidth="240.0" />
                   <Button layoutX="86.0" layoutY="268.0" mnemonicParsing="false" onAction="#saveWeightMoney" prefWidth="75.0" text="Save" />
-                  <TableView fx:id="settingTable" layoutX="369.0" layoutY="84.0" prefHeight="715.0" prefWidth="505.0">
+                  <TableView fx:id="weightMoneyTable" layoutX="369.0" layoutY="84.0" prefHeight="715.0" prefWidth="505.0">
                     <columns>
                       <TableColumn fx:id="idCol" prefWidth="51.0" text="Id" />
                       <TableColumn fx:id="typeCol" prefWidth="113.5" text="Type" />

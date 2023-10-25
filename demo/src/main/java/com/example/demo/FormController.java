@@ -12,14 +12,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static com.example.demo.utils.constants.Page.FORM;
 import static com.example.demo.utils.util.ConvertUtil.replaceNullStringToBlank;
@@ -51,13 +50,15 @@ public class FormController {
     private RadioButton paidRadioButton;
     @FXML
     private RadioButton unpaidRadioButton;
+    @FXML
+    private Label id;
     private OrderDAO orderDAO = OrderDAO.getInstance();
 
     public void setValue(Order order) {
         if (order == null) {
             return;
         }
-//        cargoComboBox.setItems(FXCollections.observableList(List.of("Sắt", "Than", "Dây 27")));
+        id.setText(String.valueOf(order.getId()));
         indexTextField.setText(String.valueOf(order.getIndex()));
         licensePlatesTextField.setText(order.getLicensePlates());
         sellerTextField.setText(order.getSeller());
@@ -81,7 +82,7 @@ public class FormController {
         try {
             int firstValue = Integer.valueOf(totalWeightTextField.getText());
             int secondValue = Integer.valueOf(vehicleWeightTextField.getText());
-            Order order = orderDAO.getOrderOnByObservableListByIndex(Integer.valueOf(indexTextField.getText()));
+            Order order = orderDAO.getById(id.getText());
             if (firstValue >= secondValue) {
                 order.setTotalWeight(firstValue);
                 order.setVehicleWeight(secondValue);
@@ -94,11 +95,11 @@ public class FormController {
             order.setLicensePlates(licensePlatesTextField.getText());
             order.setSeller(replaceNullStringToBlank(sellerTextField.getText()));
             order.setBuyer(replaceNullStringToBlank(buyerTextField.getText()));
-            order.setUpdatedAt(LocalDate.now());
+            order.setUpdatedAt(LocalDateTime.now());
             order.setStatus(OrderStatus.COMPLETED.name());
             order.setPaymentStatus(PaymentStatus.PAID.name());
             order.setCargoType(cargoComboBox.getValue());
-            order.setPaymentAmount(Double.valueOf(paymentAmountTextField.getText().isBlank() ? "0" : paymentAmountTextField.getText()));
+            order.setPaymentAmount(Double.valueOf(StringUtils.isBlank(paymentAmountTextField.getText()) ? "0" : paymentAmountTextField.getText()));
             order.setNote(noteTextField.getText());
             order.setCreatedBy("test");
             order.setPayer(payerTextField.getText());
@@ -136,7 +137,7 @@ public class FormController {
     }
 
     public void openOrderDetail(ActionEvent actionEvent) throws IOException {
-        Order order = orderDAO.getOrderOnByObservableListByIndex(Integer.valueOf(indexTextField.getText()));
+        Order order = orderDAO.getById(id.getText());
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(Page.ORDER.getFxml()));
         Parent root = fxmlLoader.load();
         OrderController orderController = fxmlLoader.getController();

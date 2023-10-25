@@ -3,6 +3,7 @@ package com.example.demo.dao;
 import com.example.demo.mapper.WeightMoneyMapper;
 import com.example.demo.model.WeightMoney;
 import com.example.demo.utils.constants.VehicleType;
+import com.example.demo.utils.constants.WeightMoneyConstants;
 import com.example.demo.utils.util.SqlUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -50,8 +51,8 @@ public class WeightMoneyDAO {
         SqlUtil sqlUtil = new SqlUtil();
         try {
             sqlUtil.connect();
-            String sql = String.format(INSERT_WEIGHT_MONEY, weightMoney.getStartWeight(), weightMoney.getEndWeight(), weightMoney.getAmountMoney(), weightMoney.getType());
-            sqlUtil.exeQuery(sql);
+            String sql = String.format(INSERT_WEIGHT_MONEY, weightMoney.getId(), weightMoney.getStartWeight(), weightMoney.getEndWeight(), weightMoney.getAmountMoney(), weightMoney.getType());
+            sqlUtil.exeUpdate(sql);
         } catch (Exception e) {
 
         } finally {
@@ -65,7 +66,7 @@ public class WeightMoneyDAO {
         try {
             sqlUtil.connect();
             String sql = String.format(UPDATE_WEIGHT_MONEY_BY_ID, weightMoney.getStartWeight(), weightMoney.getEndWeight(), weightMoney.getAmountMoney(), weightMoney.getType(), weightMoney.getId());
-            sqlUtil.exeQuery(sql);
+            sqlUtil.exeUpdate(sql);
         } catch (Exception e) {
 
         } finally {
@@ -73,14 +74,13 @@ public class WeightMoneyDAO {
         }
         return weightMoney;
     }
-
     public boolean deleteWeightMoneyById(int id) {
         SqlUtil sqlUtil = new SqlUtil();
         boolean isSuccessFully = false;
         try {
             sqlUtil.connect();
             String sql = String.format(DELETE_WEIGHT_MONEY_BY_ID, id);
-            sqlUtil.exeQuery(sql);
+            sqlUtil.exeUpdate(sql);
             isSuccessFully = true;
         } catch (Exception e) {
 
@@ -98,7 +98,7 @@ public class WeightMoneyDAO {
             vehicleType = FARM;
         } else if (licensePlatesText.equalsIgnoreCase("xk")) {
             vehicleType = HANDCART;
-        } else if (licensePlatesText.matches("([a-zA-Z])([0-9]+)")) {
+        } else if (licensePlatesText.matches("[a-zA-Z0-9]+")) {
             vehicleType = CAR;
         }
         try {
@@ -115,5 +115,20 @@ public class WeightMoneyDAO {
             sqlUtil.disconnect();
         }
         return amount;
+    }
+
+    public int countWeightMoney() {
+        SqlUtil sqlUtil = new SqlUtil();
+        try {
+            sqlUtil.connect();
+            String sql = COUNT_ALL;
+            ResultSet rs = sqlUtil.exeQuery(sql);
+            return weightMoneyMapper.countWeightMoney(rs);
+        } catch (Exception e) {
+
+        } finally {
+            sqlUtil.disconnect();
+        }
+        return 0;
     }
 }

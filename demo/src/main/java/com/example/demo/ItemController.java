@@ -5,6 +5,7 @@ import com.example.demo.model.Order;
 import com.example.demo.utils.constants.OrderStatus;
 import com.example.demo.utils.constants.PaymentStatus;
 import com.example.demo.utils.util.ConvertUtil;
+import com.example.demo.utils.util.DateUtil;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,6 +20,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
 import static com.example.demo.utils.constants.Page.FORM;
@@ -41,7 +43,7 @@ public class ItemController implements Initializable {
     private TableColumn<?, ?> cargoWeightCol;
 
     @FXML
-    private TableColumn<?, ?> createdAtCol;
+    private TableColumn<Order, ?> createdAtCol;
 
     @FXML
     private DatePicker endDatePicker;
@@ -77,7 +79,7 @@ public class ItemController implements Initializable {
     private TableColumn<?, ?> totalWeightCol;
 
     @FXML
-    private TableColumn<?, ?> updatedCol;
+    private TableColumn<Order, ?> updatedCol;
 
     @FXML
     private TableColumn<?, ?> vehicleWeightCol;
@@ -99,6 +101,7 @@ public class ItemController implements Initializable {
         createdAtCol.setCellValueFactory(new PropertyValueFactory("createdAt"));
         updatedCol.setCellValueFactory(new PropertyValueFactory("updatedAt"));
         paymentStatusCol.setCellValueFactory(new PropertyValueFactory("paymentStatus"));
+        amountCol.setCellValueFactory(new PropertyValueFactory("paymentAmount"));
         startDatePicker.setValue(LocalDate.now());
         endDatePicker.setValue(LocalDate.now());
         statusComboBox.setItems(OrderStatus.getIndexStatus());
@@ -106,15 +109,27 @@ public class ItemController implements Initializable {
         paymentStatusComboBox.setItems(PaymentStatus.getItemStatus());
         paymentStatusComboBox.setValue(PaymentStatus.ALL.getNote());
         ContextMenu contextMenu = new ContextMenu();
-        MenuItem detailMenuItem = new MenuItem("Chỉnh sửa");
-        detailMenuItem.setOnAction(e -> {
+        MenuItem editItem = new MenuItem("Chỉnh sửa");
+        MenuItem deleteItem = new MenuItem("Xóa");
+        editItem.setOnAction(e -> {
             try {
                 openPopup(e);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         });
-        contextMenu.getItems().add(detailMenuItem);
+        deleteItem.setOnAction(e -> {
+            orderDAO.deleteOrder(orderTable.getSelectionModel().getSelectedItem());
+            orderTable.setItems(orderDAO.getOrderFilters(null,
+                    sellerTextField.getText(),
+                    buyerTextField.getText(),
+                    statusComboBox.getValue(),
+                    paymentStatusComboBox.getValue(),
+                    startDatePicker.getValue().atStartOfDay().withHour(0).withMinute(0).withSecond(0),
+                    endDatePicker.getValue().atStartOfDay().withHour(23).withMinute(59).withSecond(59)));
+        });
+        contextMenu.getItems().add(editItem);
+        contextMenu.getItems().add(deleteItem);
         orders = orderDAO.getOrderFilters(null,
                 sellerTextField.getText(),
                 buyerTextField.getText(),
@@ -143,7 +158,7 @@ public class ItemController implements Initializable {
     }
 
     public void search(ActionEvent actionEvent) {
-        if (endDatePicker.getValue().equals(startDatePicker.getValue())) {
+        if (endDatePicker.getValue().isBefore(startDatePicker.getValue())) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Lỗi tìm kiếm");
             alert.setHeaderText(null);

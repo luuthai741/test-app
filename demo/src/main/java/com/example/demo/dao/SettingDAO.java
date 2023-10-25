@@ -54,8 +54,8 @@ public class SettingDAO {
         SqlUtil sqlUtil = new SqlUtil();
         try {
             sqlUtil.connect();
-            String sql = String.format(INSERT_SETTING, setting.getValue(), setting.getValue());
-            sqlUtil.exeQuery(sql);
+            String sql = String.format(INSERT_SETTING, setting.getKey(), setting.getValue());
+            sqlUtil.exeUpdate(sql);
         } catch (Exception e) {
 
         } finally {
@@ -68,7 +68,7 @@ public class SettingDAO {
         try {
             sqlUtil.connect();
             String sql = String.format(UPDATE_SETTING_BY_KEY, setting.getValue(), setting.getKey());
-            sqlUtil.exeQuery(sql);
+            sqlUtil.exeUpdate(sql);
         } catch (Exception e) {
 
         } finally {
@@ -82,7 +82,7 @@ public class SettingDAO {
         SqlUtil sqlUtil = new SqlUtil();
         try {
             sqlUtil.connect();
-            String sql = String.format(SELECT_BY_KEY, setting.getKey());
+            String sql = String.format(SELECT_BY_KEY, settingKey.name());
             ResultSet rs = sqlUtil.exeQuery(sql);
             List<Setting> settings = settingMapper.mapToSetting(rs);
             if (settings.size() > 0) {

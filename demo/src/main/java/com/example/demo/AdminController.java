@@ -2,6 +2,7 @@ package com.example.demo;
 
 import com.example.demo.utils.constants.Page;
 import com.example.demo.utils.util.ConvertUtil;
+import com.fazecast.jSerialComm.SerialPort;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,8 +22,6 @@ import static com.example.demo.utils.constants.Page.*;
 public class AdminController implements Initializable {
     @FXML
     private BorderPane borderPane;
-    @FXML
-    private BorderPane settingPane;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
     }
@@ -34,11 +33,9 @@ public class AdminController implements Initializable {
         switch (page) {
             case INDEX -> {
                 newRoot = FXMLLoader.load(getClass().getResource(INDEX.getFxml()));
-                System.out.println("Can xe");
             }
             case ADMIN_HOME -> {
                 newRoot = FXMLLoader.load(getClass().getResource(ADMIN_HOME.getFxml()));
-                System.out.println("TEST HOME");
             }
             case LIST -> {
                 if (!ConvertUtil.PAGES.contains(LIST.name())){
@@ -55,11 +52,9 @@ public class AdminController implements Initializable {
                     System.out.println("Mở trang");
                     return;
                 }
-                System.out.println("Đã mở trang");
             }
             case DEBTOR -> {
                 newRoot = FXMLLoader.load(getClass().getResource(DEBTOR.getFxml()));
-                System.out.println("TEST DEBTOR");
             }
             case SETTING -> {
                 newRoot = FXMLLoader.load(getClass().getResource(SETTING.getFxml()));
@@ -69,9 +64,5 @@ public class AdminController implements Initializable {
             }
         }
         borderPane.setCenter(newRoot);
-    }
-
-    public void switchVisibleSettingPane(ActionEvent actionEvent){
-        settingPane.setVisible(!settingPane.isVisible());
     }
 }

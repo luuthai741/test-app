@@ -30,7 +30,7 @@ public class HelloApplication extends Application {
         for (SettingKey settingKey : SettingKey.values()) {
             Setting setting = new Setting();
             setting.setKey(settingKey.name());
-            setting.setValue("");
+            setting.setValue(" ");
             settingDAO.createSetting(setting);
         }
     }

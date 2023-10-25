@@ -1,5 +1,7 @@
 package com.example.demo.utils.util;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.text.NumberFormat;
 import java.util.*;
 
@@ -12,6 +14,6 @@ public class ConvertUtil {
     }
 
     public static String replaceNullStringToBlank(String value){
-        return value.isBlank() ? "" : value;
+        return StringUtils.isBlank(value) ? "" : value;
     }
 }

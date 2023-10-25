@@ -1,18 +1,16 @@
 package com.example.demo;
 
+import com.example.demo.dao.SettingDAO;
 import com.example.demo.model.Order;
+import com.example.demo.model.Setting;
 import com.example.demo.utils.util.DateUtil;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 
-import java.net.URL;
-import java.util.Date;
-import java.util.ResourceBundle;
-
+import static com.example.demo.utils.constants.SettingKey.*;
 import static com.example.demo.utils.util.DateUtil.DD_MM_YYYY;
 
-public class OrderController{
+public class OrderController {
     @FXML
     private Label companyLabel;
     @FXML
@@ -43,18 +41,21 @@ public class OrderController{
     private Label cargoWeightLabel;
     @FXML
     private Label createdByLabel;
+    private SettingDAO settingDAO = SettingDAO.getInstance();
 
     public OrderController() {
     }
 
-    public void setValue(Order order){
-        if (order == null){
+    public void setValue(Order order) {
+        if (order == null) {
             return;
         }
-
-        companyLabel.setText( "Trạm cân điện tử Phong Thái");
-        addressLabel.setText("Đa Hội - Châu Khê- Từ Sơn - Bắc Ninh");
-        mobileLabel.setText("0888400553");
+        Setting compaynyNameSetting = settingDAO.getByKey(COMPANY_NAME);
+        Setting phoneSetting = settingDAO.getByKey(PHONE);
+        Setting addressSetting = settingDAO.getByKey(ADDRESS);
+        companyLabel.setText(compaynyNameSetting == null ? "" : compaynyNameSetting.getValue());
+        addressLabel.setText(phoneSetting == null ? "" : phoneSetting.getValue());
+        mobileLabel.setText(addressSetting == null ? "" : addressSetting.getValue());
         indexLabel.setText(String.valueOf(order.getIndex()));
         licensePlatesLabel.setText(order.getLicensePlates());
         sellerLabel.setText(order.getSeller());

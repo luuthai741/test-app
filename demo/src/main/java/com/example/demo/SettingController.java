@@ -12,6 +12,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import org.apache.commons.lang.StringUtils;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -38,20 +39,26 @@ public class SettingController implements Initializable {
         valueCol.setCellValueFactory(new PropertyValueFactory("value"));
         settingObservableList = settingDAO.getAll();
         settingTable.setItems(settingObservableList);
+        settingTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            selectedSetting = newValue;
+            if (selectedSetting != null) {
+                keyTextField.setText(selectedSetting.getKey());
+                valueTextField.setText(selectedSetting.getValue());
+            }
+        });
     }
 
     private boolean validate() {
         String value = valueTextField.getText();
         String message = "";
-        if (value.isBlank()) {
-            message = "Khối lượng kết thúc không thể nhỏ hơn bắt đầu";
-        }
         if (selectedSetting == null) {
             message = "Vui lòng chọn cấu hình";
+        } else if (StringUtils.isBlank(value)) {
+            message = "Vui lòng nhập giá trị";
         }
-        if (!message.isBlank()) {
+        if (StringUtils.isNotBlank(message)) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setHeaderText("Thêm tiền cân thất bại");
+            alert.setHeaderText("Cập nhật cấu hình thất bại");
             alert.setHeaderText(null);
             alert.setContentText(message);
             alert.show();
@@ -61,10 +68,14 @@ public class SettingController implements Initializable {
     }
 
     public void saveSetting(ActionEvent actionEvent) {
+        if (!validate()) {
+            return;
+        }
         Setting setting = selectedSetting;
         setting.setValue(valueTextField.getText());
         settingDAO.updateSetting(setting);
         cleanData();
+        settingTable.getSelectionModel().clearSelection();
     }
 
     private void cleanData() {

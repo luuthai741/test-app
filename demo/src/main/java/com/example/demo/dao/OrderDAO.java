@@ -108,6 +108,28 @@ public class OrderDAO {
         return orders;
     }
 
+    public Order getById(String id) {
+        SqlUtil sqlUtil = new SqlUtil();
+        Order order = null;
+        try {
+            sqlUtil.connect();
+            OrderQuery orderQuery = new OrderQuery();
+            orderQuery.setId(id);
+            String sql = SELECT_ALL + orderQuery.getQueryCondition();
+            ResultSet rs = sqlUtil.exeQuery(sql);
+            List<Order> orderList = orderMapper.mapToOrder(rs);
+            List<Order> orders = FXCollections.observableList(orderList);
+            if (orders.size() > 0) {
+                order = orders.get(0);
+            }
+        } catch (Exception e) {
+
+        } finally {
+            sqlUtil.disconnect();
+        }
+        return order;
+    }
+
     public ObservableList<Order> getOrderFilters(String licensePlates, String seller, String buyer, String status, String paymentStatus, LocalDateTime dateFrom, LocalDateTime dateTo) {
         OrderQuery orderQuery = new OrderQuery();
         orderQuery.setLicensePlates(licensePlates);
@@ -157,7 +179,7 @@ public class OrderDAO {
                     DateUtil.convertToString(LocalDateTime.now(), DateUtil.DB_FORMAT), order.getStatus(), order.getPaymentStatus(),
                     order.getCargoType(), order.getPaymentAmount(), order.getNote(),
                     order.getPayer(), order.getCreatedBy());
-            sqlUtil.exeQuery(query);
+            sqlUtil.exeUpdate(query);
         } catch (Exception e) {
 
         } finally {
@@ -176,7 +198,7 @@ public class OrderDAO {
                     DateUtil.convertToString(LocalDateTime.now(), DateUtil.DB_FORMAT), order.getStatus(), order.getPaymentStatus(),
                     order.getCargoType(), order.getPaymentAmount(), order.getNote(), order.getPayer(),
                     order.getId());
-            sqlUtil.exeQuery(query);
+            sqlUtil.exeUpdate(query);
         } catch (Exception e) {
 
         } finally {
@@ -190,9 +212,9 @@ public class OrderDAO {
         try {
             sqlUtil.connect();
             String query = String.format(UPDATE_ORDER_STATUS_BY_ID, CANCELED.getNote(), order.getId());
-            sqlUtil.exeQuery(query);
+            sqlUtil.exeUpdate(query);
         } catch (Exception e) {
-
+            System.out.println(e.getMessage());
         } finally {
             sqlUtil.disconnect();
         }

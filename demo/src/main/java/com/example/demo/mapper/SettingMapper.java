@@ -26,7 +26,7 @@ public class SettingMapper {
         while (resultSet.next()) {
             Setting setting = new Setting();
             setting.setKey(resultSet.getString("KEY"));
-            setting.setValue(resultSet.getString("VALUE"));
+            setting.setValue(resultSet.getString("SETTING_VALUE"));
             settings.add(setting);
         }
         return settings;

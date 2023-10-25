@@ -5,6 +5,9 @@ import com.example.demo.model.Order;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +43,20 @@ public class OrderMapper {
             order.setNote(resultSet.getString("NOTE"));
             order.setPayer(resultSet.getString("PAYER"));
             order.setCreatedBy(resultSet.getString("CREATED_BY"));
+            LocalDateTime createdAt = null;
+            LocalDateTime updatedAt = null;
+            if (resultSet.getDate("CREATED_AT") != null) {
+                LocalDate date = resultSet.getDate("CREATED_AT").toLocalDate();
+                LocalTime time = resultSet.getTime("CREATED_AT").toLocalTime();
+                createdAt = LocalDateTime.of(date, time);
+            }
+            if (resultSet.getDate("UPDATED_AT") != null) {
+                LocalDate date = resultSet.getDate("UPDATED_AT").toLocalDate();
+                LocalTime time = resultSet.getTime("UPDATED_AT").toLocalTime();
+                updatedAt = LocalDateTime.of(date, time);
+            }
+            order.setCreatedAt(createdAt);
+            order.setUpdatedAt(updatedAt);
             orders.add(order);
         }
         return orders;

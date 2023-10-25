@@ -10,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import org.apache.commons.lang.StringUtils;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -45,6 +46,7 @@ public class WeighMoneyController implements Initializable {
         startWeightCol.setCellValueFactory(new PropertyValueFactory("startWeight"));
         endWeightCol.setCellValueFactory(new PropertyValueFactory("endWeight"));
         amountMoneyCol.setCellValueFactory(new PropertyValueFactory("amountMoney"));
+        typeCol.setCellValueFactory(new PropertyValueFactory("type"));
         moneyObservableList = weightMoneyDAO.getAll();
         weightMoneyTable.setItems(moneyObservableList);
         startWeightTextField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -73,6 +75,15 @@ public class WeighMoneyController implements Initializable {
         });
         typeCombobox.setItems(FXCollections.observableList(VehicleType.getVehicleTypes()));
         typeCombobox.setValue(VehicleType.CAR.name());
+        weightMoneyTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            selectedWeightMoney = newValue;
+            if (selectedWeightMoney != null) {
+                startWeightTextField.setText(String.valueOf(selectedWeightMoney.getStartWeight()));
+                endWeightTextField.setText(String.valueOf(selectedWeightMoney.getEndWeight()));
+                amountMoneyTextField.setText(String.valueOf(selectedWeightMoney.getAmountMoney()));
+                typeCombobox.setValue(selectedWeightMoney.getType());
+            }
+        });
     }
 
     private boolean validate() {
@@ -86,9 +97,9 @@ public class WeighMoneyController implements Initializable {
         if (amountMoney == 0) {
             message = "Hãy nhập số tiền!";
         }
-        if (!message.isBlank()) {
+        if (StringUtils.isNotBlank(message)) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setHeaderText("Thêm tiền cân thất bại");
+            alert.setHeaderText("Lưu tiền cân thất bại");
             alert.setHeaderText(null);
             alert.setContentText(message);
             alert.show();
@@ -97,7 +108,7 @@ public class WeighMoneyController implements Initializable {
         return true;
     }
 
-    public void saveWeightMoney(ActionEvent actionEvent) {
+    public void saveWeightMoney() {
         int startWeight = Integer.valueOf(startWeightTextField.getText());
         int endWeight = Integer.valueOf(endWeightTextField.getText());
         double amountMoney = Double.valueOf(amountMoneyTextField.getText());
@@ -107,9 +118,11 @@ public class WeighMoneyController implements Initializable {
         WeightMoney weightMoney = selectedWeightMoney;
         if (weightMoney == null) {
             weightMoney = new WeightMoney();
+            weightMoney.setId(weightMoneyDAO.countWeightMoney()+1);
             weightMoney.setStartWeight(startWeight);
             weightMoney.setEndWeight(endWeight);
             weightMoney.setAmountMoney(amountMoney);
+            weightMoney.setType(typeCombobox.getValue());
             weightMoneyDAO.createWeightMoney(weightMoney);
         } else {
             weightMoney.setStartWeight(startWeight);
@@ -122,11 +135,13 @@ public class WeighMoneyController implements Initializable {
 
     public void rollback() {
         cleanData();
+        weightMoneyTable.getSelectionModel().clearSelection();
     }
 
     private void cleanData() {
         moneyObservableList = weightMoneyDAO.getAll();
         weightMoneyTable.setItems(moneyObservableList);
+        weightMoneyTable.getSelectionModel().clearSelection();
         startWeightTextField.setText("");
         endWeightTextField.setText("");
         amountMoneyTextField.setText("");
