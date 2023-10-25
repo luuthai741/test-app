@@ -1,7 +1,10 @@
 package com.example.demo;
 
 import com.example.demo.dao.OrderDAO;
+import com.example.demo.data.CurrentUser;
+import com.example.demo.model.HistoryLog;
 import com.example.demo.model.Order;
+import com.example.demo.utils.constants.LogType;
 import com.example.demo.utils.constants.OrderStatus;
 import com.example.demo.utils.constants.Page;
 import com.example.demo.utils.constants.PaymentStatus;
@@ -21,6 +24,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static com.example.demo.utils.constants.Page.FORM;
+import static com.example.demo.utils.constants.PaymentStatus.PAID;
+import static com.example.demo.utils.constants.PaymentStatus.UNPAID;
 import static com.example.demo.utils.util.ConvertUtil.replaceNullStringToBlank;
 
 public class FormController {
@@ -70,7 +75,7 @@ public class FormController {
         vehicleWeightTextField.setText(String.valueOf(order.getVehicleWeight()));
         cargoWeightTextField.setText(String.valueOf(order.getCargoWeight()));
         PaymentStatus paymentStatus = PaymentStatus.getByNote(order.getPaymentStatus());
-        if (PaymentStatus.PAID.equals(paymentStatus)) {
+        if (PAID.equals(paymentStatus)) {
             paidRadioButton.setSelected(true);
         } else {
             unpaidRadioButton.setSelected(true);
@@ -83,6 +88,16 @@ public class FormController {
             int firstValue = Integer.valueOf(totalWeightTextField.getText());
             int secondValue = Integer.valueOf(vehicleWeightTextField.getText());
             Order order = orderDAO.getById(id.getText());
+            //OLD VALUE
+            int oldTotalWeight = order.getTotalWeight();
+            int oldVehicleWeight = order.getVehicleWeight();
+            int oldCargoWeight = order.getCargoWeight();
+            String oldLicensePlates = order.getLicensePlates();
+            String oldSeller = order.getSeller();
+            String oldBuyer = order.getBuyer();
+            String oldPaymentStatus = order.getStatus();
+            double oldPaymentAmount = order.getPaymentAmount();
+            String oldPayer = order.getPayer();
             if (firstValue >= secondValue) {
                 order.setTotalWeight(firstValue);
                 order.setVehicleWeight(secondValue);
@@ -92,19 +107,46 @@ public class FormController {
             }
             int cargoValue = Math.abs(firstValue - secondValue);
             order.setCargoWeight(cargoValue);
-            order.setLicensePlates(licensePlatesTextField.getText());
+            order.setLicensePlates(licensePlatesTextField.getText().toUpperCase());
             order.setSeller(replaceNullStringToBlank(sellerTextField.getText()));
             order.setBuyer(replaceNullStringToBlank(buyerTextField.getText()));
             order.setUpdatedAt(LocalDateTime.now());
-            order.setStatus(OrderStatus.COMPLETED.name());
-            order.setPaymentStatus(PaymentStatus.PAID.name());
             order.setCargoType(cargoComboBox.getValue());
             order.setPaymentAmount(Double.valueOf(StringUtils.isBlank(paymentAmountTextField.getText()) ? "0" : paymentAmountTextField.getText()));
             order.setNote(noteTextField.getText());
-            order.setCreatedBy("test");
+            order.setCreatedBy(CurrentUser.getInstance().getUsername());
             order.setPayer(payerTextField.getText());
-            order.setPaymentStatus(paidRadioButton.isSelected() ? PaymentStatus.PAID.getNote() : PaymentStatus.UNPAID.getNote());
+            order.setPaymentStatus(paidRadioButton.isSelected() ? PAID.getNote() : UNPAID.getNote());
             orderDAO.updateOrder(order);
+
+            // CREATED LOG
+            String content = String.format("Cập nhật mã cân %s:" +
+                            "Tổng: %s -> %s, \n" +
+                            "Bì:  %s -> %s, \n" +
+                            "Hàng: %s -> %s, \n" +
+                            "Biến số xe:  %s -> %s, \n" +
+                            "Người bán:  %s -> %s, \n" +
+                            "Người mua:  %s -> %s, \n" +
+                            "Thanh toán:  %s -> %s, \n" +
+                            "Tiền trả:  %s -> %s, \n," +
+                            "Người trả:  %s -> %s, \n",
+                    order.getId(),
+                    oldTotalWeight, order.getTotalWeight(),
+                    oldVehicleWeight, order.getVehicleWeight(),
+                    oldCargoWeight, order.getCargoWeight(),
+                    oldLicensePlates, order.getLicensePlates(),
+                    oldSeller, order.getSeller(),
+                    oldBuyer, order.getBuyer(),
+                    oldPaymentStatus, order.getPaymentStatus(),
+                    oldPaymentAmount, order.getPaymentAmount(),
+                    oldPayer, order.getPayer());
+            HistoryLog historyLog = new HistoryLog();
+            historyLog.setLogType(LogType.INFO.name());
+            historyLog.setContent(content);
+            historyLog.setAction("Cập nhật đơn hàng");
+            historyLog.setCreatedAt(LocalDateTime.now());
+
+
             alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Cập nhật thành công");
             alert.setHeaderText(null);
@@ -126,7 +168,7 @@ public class FormController {
         FormController formController = fxmlLoader.getController();
         formController.setValue(order);
         Scene scene = new Scene(root);
-        Stage stage = (Stage)((Node) actionEvent.getSource()).getScene().getWindow();
+        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         stage.setScene(scene);
         stage.setTitle("Chỉnh sửa mã cân");
         stage.show();

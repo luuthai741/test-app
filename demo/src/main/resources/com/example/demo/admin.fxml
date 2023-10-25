@@ -47,12 +47,12 @@
                               <Font size="14.0" />
                            </font>
                         </Button>
-                        <Button fx:id="WEIGHT_MONEY" alignment="BASELINE_LEFT" contentDisplay="BOTTOM" layoutX="14.0" layoutY="311.0" mnemonicParsing="false" onAction="#switchPage" prefHeight="34.0" prefWidth="150.0" styleClass="nav-button" stylesheets="@css/login.css" text="Weight">
+                        <Button fx:id="WEIGHT_MONEY" alignment="BASELINE_LEFT" contentDisplay="BOTTOM" layoutX="14.0" layoutY="311.0" mnemonicParsing="false" onAction="#switchPage" prefHeight="34.0" prefWidth="150.0" styleClass="nav-button" stylesheets="@css/login.css" text="Tiền cân">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Button>
-                        <Button fx:id="SETTING" alignment="BASELINE_LEFT" contentDisplay="BOTTOM" layoutX="14.0" layoutY="277.0" mnemonicParsing="false" onAction="#switchPage" prefHeight="34.0" prefWidth="150.0" styleClass="nav-button" stylesheets="@css/login.css" text="Setting">
+                        <Button fx:id="SETTING" alignment="BASELINE_LEFT" contentDisplay="BOTTOM" layoutX="14.0" layoutY="277.0" mnemonicParsing="false" onAction="#switchPage" prefHeight="34.0" prefWidth="150.0" styleClass="nav-button" stylesheets="@css/login.css" text="Cấu hình">
                            <font>
                               <Font size="14.0" />
                            </font>

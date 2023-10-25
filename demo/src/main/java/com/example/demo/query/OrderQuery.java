@@ -8,7 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-import static com.example.demo.utils.constants.OrderStatus.ALL;
+import static com.example.demo.utils.constants.OrderStatus.*;
 
 public class OrderQuery {
     private String id;
@@ -81,7 +81,11 @@ public class OrderQuery {
     private String queryByStatus() {
         String query = "";
         if (StringUtils.isNotBlank(status) && !status.equals(ALL.getNote())) {
-            query = " AND STATUS = '" + status + "'";
+            if (status.equals(ALL.getNote())) {
+                query = String.format("AND STATUS IN ('%s','%s') ", CREATED.getNote(), COMPLETED.getNote());
+            } else {
+                query = " AND STATUS = '" + status + "'";
+            }
         }
         return query;
     }

@@ -353,6 +353,8 @@ public class IndexController implements Initializable {
             orderTable.setEditable(false);
         }
         saveButton.setDisable(true);
+        firstTimeButton.setDisable(true);
+        secondTimeButton.setDisable(true);
     }
 
     private void cleanData() {

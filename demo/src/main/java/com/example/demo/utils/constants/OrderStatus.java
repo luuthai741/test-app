@@ -1,10 +1,14 @@
 package com.example.demo.utils.constants;
 
+import com.example.demo.data.CurrentUser;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.demo.utils.constants.RoleType.ADMIN;
+import static com.example.demo.utils.constants.RoleType.USER;
 
 public enum OrderStatus {
     ALL("Tất cả"),
@@ -33,6 +37,9 @@ public enum OrderStatus {
     public static ObservableList<String> getIndexStatus() {
         List<String> statusList = new ArrayList<>();
         for (OrderStatus orderStatus : OrderStatus.values()) {
+            if (OrderStatus.CANCELED.equals(orderStatus) && CurrentUser.getInstance().getRole().equals(USER)) {
+                continue;
+            }
             statusList.add(orderStatus.getNote());
         }
         return FXCollections.observableList(statusList);
