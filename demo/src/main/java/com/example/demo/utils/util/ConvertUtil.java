@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 
 import java.text.NumberFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ConvertUtil {
     public static Set<String> PAGES = new HashSet<>();

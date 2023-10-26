@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import com.example.demo.data.CurrentUser;
+import com.example.demo.data.ScreenScale;
 import com.example.demo.utils.constants.RoleType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

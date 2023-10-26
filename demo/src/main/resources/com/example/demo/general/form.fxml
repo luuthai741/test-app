@@ -101,9 +101,9 @@
                            </font>
                         </Label>
                         <TextField fx:id="cargoWeightTextField" alignment="CENTER" editable="false" layoutX="346.0" layoutY="51.0" prefWidth="120.0" />
-                        <Button layoutX="29.0" layoutY="124.0" mnemonicParsing="false" onAction="#openOrderDetail" prefHeight="30.0" prefWidth="100.0" text="Detail" />
-                        <Button layoutX="149.0" layoutY="124.0" mnemonicParsing="false" onAction="#updateOrder" prefHeight="30.0" prefWidth="100.0" text="Update" />
-                        <Button layoutX="269.0" layoutY="124.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" text="Cancel" />
+                        <Button layoutX="29.0" layoutY="124.0" mnemonicParsing="false" onAction="#openOrderDetail" prefHeight="30.0" prefWidth="100.0" text="Chi tiết" />
+                        <Button layoutX="149.0" layoutY="124.0" mnemonicParsing="false" onAction="#updateOrder" prefHeight="30.0" prefWidth="100.0" text="Cập nhật" />
+                        <Button layoutX="269.0" layoutY="124.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" text="Quay lại" />
                      </children>
                   </AnchorPane>
                </children>

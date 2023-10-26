@@ -3,7 +3,6 @@ package com.example.demo.dao;
 import com.example.demo.mapper.WeightMoneyMapper;
 import com.example.demo.model.WeightMoney;
 import com.example.demo.utils.constants.VehicleType;
-import com.example.demo.utils.constants.WeightMoneyConstants;
 import com.example.demo.utils.util.SqlUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -51,7 +50,7 @@ public class WeightMoneyDAO {
         SqlUtil sqlUtil = new SqlUtil();
         try {
             sqlUtil.connect();
-            String sql = String.format(INSERT_WEIGHT_MONEY, weightMoney.getId(), weightMoney.getStartWeight(), weightMoney.getEndWeight(), weightMoney.getAmountMoney(), weightMoney.getType());
+            String sql = String.format(INSERT_WEIGHT_MONEY, weightMoney.getStartWeight(), weightMoney.getEndWeight(), weightMoney.getAmountMoney(), weightMoney.getType());
             sqlUtil.exeUpdate(sql);
         } catch (Exception e) {
 

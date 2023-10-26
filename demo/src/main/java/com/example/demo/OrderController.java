@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 
 import static com.example.demo.utils.constants.SettingKey.*;
 import static com.example.demo.utils.util.DateUtil.DD_MM_YYYY;
+import static com.example.demo.utils.util.DateUtil.DD_MM_YYYY_HH_MM_SS;
 
 public class OrderController {
     @FXML
@@ -41,6 +42,8 @@ public class OrderController {
     private Label cargoWeightLabel;
     @FXML
     private Label createdByLabel;
+    @FXML
+    private Label noteLabel;
     private SettingDAO settingDAO = SettingDAO.getInstance();
 
     public OrderController() {
@@ -61,12 +64,13 @@ public class OrderController {
         sellerLabel.setText(order.getSeller());
         buyerLabel.setText(order.getBuyer());
         cargoLabel.setText(order.getCargoType());
-        createdLabel.setText(DateUtil.convertToString(order.getCreatedAt(), DD_MM_YYYY));
-        updatedTimeLabel.setText(DateUtil.convertToString(order.getUpdatedAt(), DD_MM_YYYY));
+        createdLabel.setText(DateUtil.convertToString(order.getCreatedAt(), DD_MM_YYYY_HH_MM_SS));
+        updatedTimeLabel.setText(DateUtil.convertToString(order.getUpdatedAt(), DD_MM_YYYY_HH_MM_SS));
         amountLabel.setText(String.valueOf(order.getPaymentAmount()));
         totalWeightLabel.setText(String.valueOf(order.getTotalWeight()));
         vehicleWeightLabel.setText(String.valueOf(order.getVehicleWeight()));
         cargoWeightLabel.setText(String.valueOf(order.getCargoWeight()));
         createdByLabel.setText(order.getCreatedBy());
+        noteLabel.setText(order.getNote());
     }
 }

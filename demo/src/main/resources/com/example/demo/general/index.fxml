@@ -47,7 +47,7 @@
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></Button>
-            <Button layoutX="608.0" layoutY="25.0" mnemonicParsing="false" onAction="#rollback" prefHeight="30.0" prefWidth="100.0" text="Hoàn tác">
+            <Button layoutX="608.0" layoutY="25.0" mnemonicParsing="false" onAction="#rollback" prefHeight="30.0" prefWidth="100.0" text="Quay lại">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></Button>

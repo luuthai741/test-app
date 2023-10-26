@@ -9,7 +9,8 @@ public enum Page {
     REPORT("general/report.fxml"),
     FORM("general/form.fxml"),
     SETTING("admin/setting.fxml"),
-    WEIGHT_MONEY("admin/weight_money.fxml");
+    WEIGHT_MONEY("admin/weight_money.fxml"),
+    LOG("admin/log.fxml"),;
 
     private String fxml;
 

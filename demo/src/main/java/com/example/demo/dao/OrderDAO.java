@@ -3,6 +3,7 @@ package com.example.demo.dao;
 import com.example.demo.mapper.OrderMapper;
 import com.example.demo.model.Order;
 import com.example.demo.query.OrderQuery;
+import com.example.demo.utils.util.ConvertUtil;
 import com.example.demo.utils.util.DateUtil;
 import com.example.demo.utils.util.SqlUtil;
 import javafx.collections.FXCollections;
@@ -17,6 +18,7 @@ import java.util.List;
 import static com.example.demo.utils.constants.OrderQueryConstants.*;
 import static com.example.demo.utils.constants.OrderStatus.CANCELED;
 import static com.example.demo.utils.constants.OrderStatus.CREATED;
+import static com.example.demo.utils.util.ConvertUtil.replaceNullStringToBlank;
 
 public class OrderDAO {
     private static OrderDAO instance;
@@ -173,12 +175,12 @@ public class OrderDAO {
         try {
             sqlUtil.connect();
             String query = String.format(INSERT_ORDER,
-                    order.getIndex(), order.getLicensePlates(),
-                    order.getSeller(), order.getBuyer(), order.getTotalWeight(),
+                    order.getIndex(), replaceNullStringToBlank(order.getLicensePlates()),
+                    replaceNullStringToBlank(order.getSeller()), replaceNullStringToBlank(order.getBuyer()), order.getTotalWeight(),
                     order.getVehicleWeight(), order.getCargoWeight(), DateUtil.convertToString(LocalDateTime.now(), DateUtil.DB_FORMAT),
-                    DateUtil.convertToString(LocalDateTime.now(), DateUtil.DB_FORMAT), order.getStatus(), order.getPaymentStatus(),
+                    DateUtil.convertToString(LocalDateTime.now(), DateUtil.DB_FORMAT), replaceNullStringToBlank(order.getStatus()), replaceNullStringToBlank(order.getPaymentStatus()),
                     order.getCargoType(), order.getPaymentAmount(), order.getNote(),
-                    order.getPayer(), order.getCreatedBy());
+                    replaceNullStringToBlank(order.getPayer()), replaceNullStringToBlank(order.getCreatedBy()));
             sqlUtil.exeUpdate(query);
         } catch (Exception e) {
 
@@ -193,10 +195,10 @@ public class OrderDAO {
         try {
             sqlUtil.connect();
             String query = String.format(UPDATE_ORDER_BY_ID,
-                    order.getLicensePlates(), order.getSeller(), order.getBuyer(),
+                    replaceNullStringToBlank(order.getLicensePlates()), replaceNullStringToBlank(order.getSeller()), replaceNullStringToBlank(order.getBuyer()),
                     order.getTotalWeight(), order.getVehicleWeight(), order.getCargoWeight(),
-                    DateUtil.convertToString(LocalDateTime.now(), DateUtil.DB_FORMAT), order.getStatus(), order.getPaymentStatus(),
-                    order.getCargoType(), order.getPaymentAmount(), order.getNote(), order.getPayer(),
+                    DateUtil.convertToString(LocalDateTime.now(), DateUtil.DB_FORMAT), replaceNullStringToBlank(order.getStatus()), replaceNullStringToBlank(order.getPaymentStatus()),
+                    replaceNullStringToBlank(order.getCargoType()), order.getPaymentAmount(), replaceNullStringToBlank(order.getNote()), replaceNullStringToBlank(order.getPayer()),
                     order.getId());
             sqlUtil.exeUpdate(query);
         } catch (Exception e) {

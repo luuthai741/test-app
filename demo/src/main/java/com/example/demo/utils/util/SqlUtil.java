@@ -19,7 +19,7 @@ public class SqlUtil {
     }
 
     public void connect() throws Exception {
-        String databaseURL = "jdbc:ucanaccess://C:\\Users\\Admin\\Downloads\\test.accdb";
+        String databaseURL = "jdbc:ucanaccess:///home/thai-luu/Downloads/test.accdb";
         connection = DriverManager.getConnection(databaseURL);
         connectionConcurrentHashMap.put(System.currentTimeMillis(), connection);
     }

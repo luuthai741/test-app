@@ -3,7 +3,7 @@ package com.example.demo.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class Order {
+public class Order implements Cloneable {
     private long id;
     private int index;
     private String licensePlates;
@@ -179,5 +179,40 @@ public class Order {
 
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public Order clone() throws CloneNotSupportedException {
+        return (Order) super.clone();
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", index=" + index +
+                ", licensePlates='" + licensePlates + '\'' +
+                ", seller='" + seller + '\'' +
+                ", buyer='" + buyer + '\'' +
+                ", totalWeight=" + totalWeight +
+                ", vehicleWeight=" + vehicleWeight +
+                ", cargoWeight=" + cargoWeight +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", status='" + status + '\'' +
+                ", paymentStatus='" + paymentStatus + '\'' +
+                ", cargoType='" + cargoType + '\'' +
+                ", paymentAmount=" + paymentAmount +
+                ", note='" + note + '\'' +
+                ", payer='" + payer + '\'' +
+                ", createdBy='" + createdBy + '\'' +
+                '}';
+    }
+
+    public static String reportHeader() {
+        return String.format("%s-20s%s-20s%s-20s%s", "STT", "Biển số xe", "Người bán", "Người mua");
+    }
+
+    public String reportBody() {
+        return String.format("%s-20s%s-20s%s-20s%s", index, licensePlates, seller, buyer);
     }
 }

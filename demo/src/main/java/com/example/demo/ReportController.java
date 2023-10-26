@@ -38,12 +38,12 @@ public class ReportController implements Initializable {
     @FXML
     private TableColumn<Order, LocalDate> createdAtCol;
     final int MAX_ITEM = 45;
-    final int NORMAL_ITEM=53;
+    final int NORMAL_ITEM = 53;
     private OrderDAO orderDAO = OrderDAO.getInstance();
-    private ObservableList<Order> orders = orderDAO.getOrders();
+    private ObservableList<Order> orders;
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    public void setOrders(ObservableList<Order> orders) {
+        this.orders = orders;
         indexCol.setCellValueFactory(new PropertyValueFactory("index"));
         licensePlatesCol.setCellValueFactory(new PropertyValueFactory("licensePlates"));
         sellerCol.setCellValueFactory(new PropertyValueFactory("seller"));
@@ -55,5 +55,10 @@ public class ReportController implements Initializable {
         orderTable.setItems(orders);
         orderTable.setEditable(false);
         orderTable.setSelectionModel(null);
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
     }
 }

@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.example.demo.dao.HistoryLogDAO;
 import com.example.demo.dao.OrderDAO;
 import com.example.demo.data.CurrentUser;
 import com.example.demo.model.HistoryLog;
@@ -20,9 +21,9 @@ import javafx.stage.Stage;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import static com.example.demo.utils.constants.LogAction.UPDATED_ORDER_MANUAL;
 import static com.example.demo.utils.constants.Page.FORM;
 import static com.example.demo.utils.constants.PaymentStatus.PAID;
 import static com.example.demo.utils.constants.PaymentStatus.UNPAID;
@@ -58,6 +59,7 @@ public class FormController {
     @FXML
     private Label id;
     private OrderDAO orderDAO = OrderDAO.getInstance();
+    private HistoryLogDAO historyLogDAO = HistoryLogDAO.getInstance();
 
     public void setValue(Order order) {
         if (order == null) {
@@ -88,16 +90,7 @@ public class FormController {
             int firstValue = Integer.valueOf(totalWeightTextField.getText());
             int secondValue = Integer.valueOf(vehicleWeightTextField.getText());
             Order order = orderDAO.getById(id.getText());
-            //OLD VALUE
-            int oldTotalWeight = order.getTotalWeight();
-            int oldVehicleWeight = order.getVehicleWeight();
-            int oldCargoWeight = order.getCargoWeight();
-            String oldLicensePlates = order.getLicensePlates();
-            String oldSeller = order.getSeller();
-            String oldBuyer = order.getBuyer();
-            String oldPaymentStatus = order.getStatus();
-            double oldPaymentAmount = order.getPaymentAmount();
-            String oldPayer = order.getPayer();
+            Order oldOrder = order.clone();
             if (firstValue >= secondValue) {
                 order.setTotalWeight(firstValue);
                 order.setVehicleWeight(secondValue);
@@ -116,37 +109,10 @@ public class FormController {
             order.setNote(noteTextField.getText());
             order.setCreatedBy(CurrentUser.getInstance().getUsername());
             order.setPayer(payerTextField.getText());
+            order.setStatus(OrderStatus.COMPLETED.getNote());
             order.setPaymentStatus(paidRadioButton.isSelected() ? PAID.getNote() : UNPAID.getNote());
             orderDAO.updateOrder(order);
-
-            // CREATED LOG
-            String content = String.format("Cập nhật mã cân %s:" +
-                            "Tổng: %s -> %s, \n" +
-                            "Bì:  %s -> %s, \n" +
-                            "Hàng: %s -> %s, \n" +
-                            "Biến số xe:  %s -> %s, \n" +
-                            "Người bán:  %s -> %s, \n" +
-                            "Người mua:  %s -> %s, \n" +
-                            "Thanh toán:  %s -> %s, \n" +
-                            "Tiền trả:  %s -> %s, \n," +
-                            "Người trả:  %s -> %s, \n",
-                    order.getId(),
-                    oldTotalWeight, order.getTotalWeight(),
-                    oldVehicleWeight, order.getVehicleWeight(),
-                    oldCargoWeight, order.getCargoWeight(),
-                    oldLicensePlates, order.getLicensePlates(),
-                    oldSeller, order.getSeller(),
-                    oldBuyer, order.getBuyer(),
-                    oldPaymentStatus, order.getPaymentStatus(),
-                    oldPaymentAmount, order.getPaymentAmount(),
-                    oldPayer, order.getPayer());
-            HistoryLog historyLog = new HistoryLog();
-            historyLog.setLogType(LogType.INFO.name());
-            historyLog.setContent(content);
-            historyLog.setAction("Cập nhật đơn hàng");
-            historyLog.setCreatedAt(LocalDateTime.now());
-
-
+            historyLogDAO.createLogForOrder(oldOrder, order, UPDATED_ORDER_MANUAL);
             alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Cập nhật thành công");
             alert.setHeaderText(null);
@@ -189,4 +155,5 @@ public class FormController {
         stage.setScene(scene);
         stage.show();
     }
+
 }

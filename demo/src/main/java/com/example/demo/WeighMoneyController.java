@@ -75,6 +75,7 @@ public class WeighMoneyController implements Initializable {
         });
         typeCombobox.setItems(FXCollections.observableList(VehicleType.getVehicleTypes()));
         typeCombobox.setValue(VehicleType.CAR.name());
+        weightMoneyTable.setPlaceholder(new Label(""));
         weightMoneyTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             selectedWeightMoney = newValue;
             if (selectedWeightMoney != null) {
@@ -118,7 +119,6 @@ public class WeighMoneyController implements Initializable {
         WeightMoney weightMoney = selectedWeightMoney;
         if (weightMoney == null) {
             weightMoney = new WeightMoney();
-            weightMoney.setId(weightMoneyDAO.countWeightMoney()+1);
             weightMoney.setStartWeight(startWeight);
             weightMoney.setEndWeight(endWeight);
             weightMoney.setAmountMoney(amountMoney);

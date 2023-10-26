@@ -16,12 +16,12 @@
          <children>
             <AnchorPane layoutX="126.0" layoutY="64.0" prefHeight="800.0" prefWidth="874.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <Label layoutX="29.0" layoutY="89.0" prefHeight="26.0" prefWidth="60.0" text="Start">
+                  <Label layoutX="29.0" layoutY="89.0" prefHeight="26.0" prefWidth="60.0" text="Bắt đầu">
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font>
                   </Label>
-                  <Label layoutX="29.0" layoutY="131.0" prefHeight="26.0" prefWidth="60.0" text="End">
+                  <Label layoutX="29.0" layoutY="131.0" prefHeight="26.0" prefWidth="60.0" text="Kết thúc">
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font>
@@ -30,36 +30,36 @@
                   <Label layoutX="97.0" layoutY="136.0" text=":" />
                   <TextField fx:id="startWeightTextField" layoutX="110.0" layoutY="90.0" prefWidth="240.0" />
                   <TextField fx:id="endWeightTextField" layoutX="110.0" layoutY="132.0" prefWidth="240.0" />
-                  <Button layoutX="86.0" layoutY="268.0" mnemonicParsing="false" onAction="#saveWeightMoney" prefWidth="75.0" text="Save" />
+                  <Button layoutX="86.0" layoutY="268.0" mnemonicParsing="false" onAction="#saveWeightMoney" prefWidth="75.0" text="Lưu" />
                   <TableView fx:id="weightMoneyTable" layoutX="369.0" layoutY="84.0" prefHeight="715.0" prefWidth="505.0">
                     <columns>
-                      <TableColumn fx:id="idCol" prefWidth="51.0" text="Id" />
-                      <TableColumn fx:id="typeCol" prefWidth="113.5" text="Type" />
-                        <TableColumn fx:id="startWeightCol" prefWidth="113.5" text="Start" />
-                        <TableColumn fx:id="endWeightCol" prefWidth="113.5" text="End" />
-                        <TableColumn fx:id="amountMoneyCol" prefWidth="113.5" text="Amout" />
+                      <TableColumn fx:id="idCol" prefWidth="51.0" text="ID" />
+                      <TableColumn fx:id="typeCol" prefWidth="113.5" text="Loại" />
+                        <TableColumn fx:id="startWeightCol" prefWidth="113.5" text="Bắt đầu" />
+                        <TableColumn fx:id="endWeightCol" prefWidth="113.5" text="Kết thúc" />
+                        <TableColumn fx:id="amountMoneyCol" prefWidth="113.5" text="Giá" />
                     </columns>
                   </TableView>
-                  <Label layoutX="29.0" layoutY="14.0" prefHeight="30.0" text="AmountSetting">
+                  <Label layoutX="29.0" layoutY="14.0" prefHeight="30.0" text="Chỉnh sửa tiền cân">
                      <font>
                         <Font size="25.0" />
                      </font>
                   </Label>
-                  <Label layoutX="29.0" layoutY="173.0" prefHeight="26.0" prefWidth="60.0" text="Amount">
+                  <Label layoutX="29.0" layoutY="173.0" prefHeight="26.0" prefWidth="60.0" text="Đơn giá">
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font>
                   </Label>
                   <Label layoutX="97.0" layoutY="178.0" text=":" />
                   <TextField fx:id="amountMoneyTextField" layoutX="110.0" layoutY="174.0" prefWidth="240.0" />
-                  <Label layoutX="29.0" layoutY="211.0" prefHeight="26.0" prefWidth="60.0" text="Type">
+                  <Label layoutX="29.0" layoutY="211.0" prefHeight="26.0" prefWidth="60.0" text="Loại">
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font>
                   </Label>
                   <Label layoutX="97.0" layoutY="216.0" text=":" />
                   <ComboBox fx:id="typeCombobox" layoutX="110.0" layoutY="212.0" prefWidth="150.0" />
-                  <Button layoutX="223.0" layoutY="268.0" mnemonicParsing="false" onAction="#rollback" prefWidth="75.0" text="Rollback" />
+                  <Button layoutX="223.0" layoutY="268.0" mnemonicParsing="false" onAction="#rollback" prefWidth="75.0" text="Quay lại" />
                </children>
             </AnchorPane>
          </children>

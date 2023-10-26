@@ -1,19 +1,16 @@
 package com.example.demo;
 
+import com.example.demo.dao.HistoryLogDAO;
 import com.example.demo.dao.OrderDAO;
 import com.example.demo.dao.WeightMoneyDAO;
+import com.example.demo.data.CurrentUser;
 import com.example.demo.data.WeighingScale;
-import com.example.demo.listener.WeighingScaleListener;
 import com.example.demo.model.Order;
 import com.example.demo.service.PrintService;
-import com.example.demo.utils.constants.OrderStatus;
-import com.example.demo.utils.constants.Page;
-import com.example.demo.utils.constants.PaymentStatus;
+import com.example.demo.utils.constants.*;
 import com.example.demo.utils.util.DateUtil;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -33,6 +30,9 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static com.example.demo.utils.constants.OrderStatus.CREATED;
 import static com.example.demo.utils.util.ConvertUtil.replaceNullStringToBlank;
@@ -123,10 +123,12 @@ public class IndexController implements Initializable {
     private Order selectedOrder = null;
     private OrderDAO orderDAO = OrderDAO.getInstance();
     private WeightMoneyDAO weightMoneyDAO = WeightMoneyDAO.getInstance();
+    private HistoryLogDAO historyLogDAO = HistoryLogDAO.getInstance();
+
     private PrintService printService = PrintService.getInstance();
     private ObservableList<Order> orders;
     private WeighingScale weighingScale;
-
+    private ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         orders = orderDAO.getOrders();
@@ -139,6 +141,7 @@ public class IndexController implements Initializable {
         cargoWeightCol.setCellValueFactory(new PropertyValueFactory("cargoWeight"));
         cargoCol.setCellValueFactory(new PropertyValueFactory("cargoType"));
         createdAtCol.setCellValueFactory(new PropertyValueFactory("createdAt"));
+        orderTable.setPlaceholder(new Label(""));
         orderTable.setItems(orders);
         orderTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             firstTimeButton.setDisable(false);
@@ -181,25 +184,27 @@ public class IndexController implements Initializable {
             }
         });
         timerThread.start();
-//        PauseTransition pause = new PauseTransition(Duration.seconds(300));
+        PauseTransition pause = new PauseTransition(Duration.millis(1200));
         licensePlatesTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-//            pause.setOnFinished(e -> {
-            try {
-                String licensePlates = newValue.toString();
-                if (StringUtils.isBlank(licensePlates) && (StringUtils.isNotBlank(sellerTextField.getText()) || StringUtils.isNotBlank(buyerTextField.getText()))) {
-                    return;
+            pause.setOnFinished(event -> {
+                try {
+                    System.out.println("value: " + newValue);
+                    if (StringUtils.isBlank(newValue)) {
+                        sellerTextField.setText("");
+                        buyerTextField.setText("");
+                        return;
+                    }
+                    Order order = orderDAO.getTopByLicensePlates(newValue);
+                    if (order == null) {
+                        return;
+                    }
+                    sellerTextField.setText(order.getSeller());
+                    buyerTextField.setText(order.getBuyer());
+                } catch (Exception ex) {
+                    System.out.println("Error form licensePlatesChangeListener " + ex.getMessage());
                 }
-                Order order = orderDAO.getTopByLicensePlates(licensePlates);
-                if (order == null) {
-                    return;
-                }
-                sellerTextField.setText(order.getSeller());
-                buyerTextField.setText(order.getBuyer());
-            } catch (Exception ex) {
-                System.out.println("Error form licensePlatesChangeListener " + ex.getMessage());
-            }
-//        });
-//            pause.playFromStart();
+            });
+            pause.playFromStart();
         });
 
         //TESTING
@@ -221,12 +226,14 @@ public class IndexController implements Initializable {
                 weighingScale = new WeighingScale();
                 weighingScale.connect();
                 weighingScale.addListener(weight -> manualTextField.setText(String.valueOf(weight)));
-            }catch (RuntimeException e){
+            } catch (RuntimeException e) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Lỗi cấu hình");
-                alert.setHeaderText(null);
+                alert.setHeaderText("Chuyển sang cân tay");
                 alert.setContentText(e.getMessage());
                 alert.show();
+                manualCheckbox.setSelected(true);
+                manualTextField.setVisible(true);
             }
         }
     }
@@ -293,7 +300,7 @@ public class IndexController implements Initializable {
         onChangePayerIsSellerCheckbox();
     }
 
-    public void saveOrder(ActionEvent actionEvent) {
+    public void saveOrder(ActionEvent actionEvent) throws CloneNotSupportedException {
         String errorText = "";
         if (StringUtils.isBlank(licensePlatesTextField.getText())) {
             errorText = "Biển số xe không được để trống!";
@@ -326,11 +333,17 @@ public class IndexController implements Initializable {
             order.setCargoType(cargoComboBox.getValue());
             order.setPaymentAmount(0);
             order.setNote(noteTextField.getText());
-            order.setCreatedBy("test");
+            order.setCreatedBy(CurrentUser.getInstance().getUsername());
             orderDAO.createOrder(order);
+            LogAction logAction = LogAction.CREATED_ORDER;
+            if (manualCheckbox.isSelected()) {
+                logAction = LogAction.CREATED_ORDER_MANUAL;
+            }
+            historyLogDAO.createLogForOrder(new Order(), order, logAction);
             firstTimeButton.setDisable(false);
             secondTimeButton.setDisable(false);
         } else {
+            Order oldOrder = selectedOrder.clone();
             selectedOrder.setLicensePlates(licensePlatesTextField.getText().toUpperCase());
             selectedOrder.setSeller(replaceNullStringToBlank(sellerTextField.getText()));
             selectedOrder.setBuyer(replaceNullStringToBlank(buyerTextField.getText()));
@@ -338,16 +351,20 @@ public class IndexController implements Initializable {
             selectedOrder.setVehicleWeight(Double.valueOf(vehicleWeightLabel.getText()).intValue());
             selectedOrder.setCargoWeight(Double.valueOf(cargoWeightLabel.getText()).intValue());
             selectedOrder.setUpdatedAt(LocalDateTime.now());
-            selectedOrder.setStatus(OrderStatus.COMPLETED.name());
-            selectedOrder.setPaymentStatus(PaymentStatus.PAID.name());
+            selectedOrder.setStatus(OrderStatus.COMPLETED.getNote());
+            selectedOrder.setPaymentStatus(PaymentStatus.PAID.getNote());
             selectedOrder.setCargoType(cargoComboBox.getValue());
             selectedOrder.setPaymentAmount(Double.valueOf(StringUtils.isBlank(paymentAmountTextField.getText()) ? "0" : paymentAmountTextField.getText()));
             selectedOrder.setNote(noteTextField.getText());
-            selectedOrder.setCreatedBy("test");
             selectedOrder.setPayer(payerTextField.getText());
             selectedOrder.setPaymentStatus(paidRadioButton.isSelected() ? PaymentStatus.PAID.getNote() : PaymentStatus.UNPAID.getNote());
             printButton.setDisable(false);
             orderDAO.updateOrder(selectedOrder);
+            LogAction logAction = LogAction.UPDATED_ORDER;
+            if (manualCheckbox.isSelected()) {
+                logAction = LogAction.UPDATED_ORDER_MANUAL;
+            }
+            historyLogDAO.createLogForOrder(oldOrder, selectedOrder, logAction);
             firstTimeButton.setDisable(true);
             secondTimeButton.setDisable(true);
             orderTable.setEditable(false);
@@ -373,6 +390,7 @@ public class IndexController implements Initializable {
         payerIsSellerCheckbox.setSelected(false);
         paidRadioButton.setSelected(false);
         unpaidRadioButton.setSelected(false);
+        cargoComboBox.setValue("Sắt");
     }
 
     private void setValue(Order order) {
@@ -386,6 +404,7 @@ public class IndexController implements Initializable {
         totalWeightLabel.setText(String.valueOf(order.getTotalWeight()));
         vehicleWeightLabel.setText(String.valueOf(order.getVehicleWeight()));
         cargoWeightLabel.setText(String.valueOf(order.getCargoWeight()));
+        cargoComboBox.setValue(order.getCargoType());
         PaymentStatus paymentStatus = PaymentStatus.getByNote(order.getPaymentStatus());
         if (PaymentStatus.PAID.equals(paymentStatus)) {
             paidRadioButton.setSelected(true);

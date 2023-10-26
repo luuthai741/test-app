@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.example.demo.data.ScreenScale;
 import com.example.demo.utils.constants.Page;
 import com.example.demo.utils.util.ConvertUtil;
 import com.fazecast.jSerialComm.SerialPort;
@@ -42,6 +43,9 @@ public class AdminController implements Initializable {
                     newRoot = FXMLLoader.load(getClass().getResource(LIST.getFxml()));
                     Scene scene = new Scene(newRoot);
                     Stage stage = new Stage();
+                    ScreenScale screenScale = ScreenScale.getInstance();
+                    stage.setX(screenScale.getWidth());
+                    stage.setY(-screenScale.getHeight());
                     stage.setScene(scene);
                     stage.setTitle("Danh sách mã cân");
                     stage.show();
@@ -49,9 +53,8 @@ public class AdminController implements Initializable {
                     stage.setOnCloseRequest(e->{
                         ConvertUtil.PAGES.remove(LIST.name());
                     });
-                    System.out.println("Mở trang");
-                    return;
                 }
+                return;
             }
             case DEBTOR -> {
                 newRoot = FXMLLoader.load(getClass().getResource(DEBTOR.getFxml()));
@@ -61,6 +64,9 @@ public class AdminController implements Initializable {
             }
             case WEIGHT_MONEY-> {
                 newRoot = FXMLLoader.load(getClass().getResource(WEIGHT_MONEY.getFxml()));
+            }
+            case LOG-> {
+                newRoot = FXMLLoader.load(getClass().getResource(LOG.getFxml()));
             }
         }
         borderPane.setCenter(newRoot);

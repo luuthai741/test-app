@@ -80,7 +80,7 @@ public class OrderQuery {
 
     private String queryByStatus() {
         String query = "";
-        if (StringUtils.isNotBlank(status) && !status.equals(ALL.getNote())) {
+        if (StringUtils.isNotBlank(status)) {
             if (status.equals(ALL.getNote())) {
                 query = String.format("AND STATUS IN ('%s','%s') ", CREATED.getNote(), COMPLETED.getNote());
             } else {
