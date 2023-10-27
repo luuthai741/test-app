@@ -3,13 +3,16 @@ package com.example.demo;
 import com.example.demo.dao.HistoryLogDAO;
 import com.example.demo.dao.OrderDAO;
 import com.example.demo.data.CurrentUser;
+import com.example.demo.data.OrderDTO;
 import com.example.demo.model.Order;
 import com.example.demo.service.IOService;
+import com.example.demo.service.ReportService;
 import com.example.demo.utils.constants.LogAction;
 import com.example.demo.utils.constants.OrderStatus;
 import com.example.demo.utils.constants.PaymentStatus;
 import com.example.demo.utils.constants.RoleType;
 import com.example.demo.utils.util.ConvertUtil;
+import com.example.demo.utils.util.DateUtil;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -27,13 +30,18 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import static com.example.demo.utils.constants.Page.FORM;
 import static com.example.demo.utils.constants.Page.REPORT;
@@ -201,27 +209,44 @@ public class ItemController implements Initializable {
         }
     }
 
-    public void report() throws IOException {
-        if (!ConvertUtil.PAGES.contains(REPORT.name())) {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(REPORT.getFxml()));
-            Parent root = fxmlLoader.load();
-            ReportController reportController = fxmlLoader.getController();
-            reportController.setOrders(orderDAO.getOrderFilters(null,
-                    sellerTextField.getText(),
-                    buyerTextField.getText(),
-                    statusComboBox.getValue(),
-                    paymentStatusComboBox.getValue(),
-                    startDatePicker.getValue().atStartOfDay().withHour(0).withMinute(0).withSecond(0),
-                    endDatePicker.getValue().atStartOfDay().withHour(23).withMinute(59).withSecond(59)));
-            Scene scene = new Scene(root);
-            Stage stage = new Stage();
-            stage.setScene(scene);
-            stage.setTitle("Thống kê");
-            stage.show();
-            ConvertUtil.PAGES.add(REPORT.name());
-            stage.setOnCloseRequest(e -> {
-                ConvertUtil.PAGES.remove(REPORT.name());
-            });
-        }
+    public void report() throws IOException, JRException {
+//        if (!ConvertUtil.PAGES.contains(REPORT.name())) {
+//            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(REPORT.getFxml()));
+//            Parent root = fxmlLoader.load();
+//            ReportController reportController = fxmlLoader.getController();
+//            reportController.setOrders(orderDAO.getOrderFilters(null,
+//                    sellerTextField.getText(),
+//                    buyerTextField.getText(),
+//                    statusComboBox.getValue(),
+//                    paymentStatusComboBox.getValue(),
+//                    startDatePicker.getValue().atStartOfDay().withHour(0).withMinute(0).withSecond(0),
+//                    endDatePicker.getValue().atStartOfDay().withHour(23).withMinute(59).withSecond(59)));
+//            Scene scene = new Scene(root);
+//            Stage stage = new Stage();
+//            stage.setScene(scene);
+//            stage.setTitle("Thống kê");
+//            stage.show();
+//            ConvertUtil.PAGES.add(REPORT.name());
+//            stage.setOnCloseRequest(e -> {
+//                ConvertUtil.PAGES.remove(REPORT.name());
+//            });
+//        }
+        List<OrderDTO> reportData = orders.stream().map(order -> {
+            OrderDTO orderDTO = new OrderDTO();
+            orderDTO.setIndex(order.getIndex());
+            orderDTO.setLicensesPlates(order.getLicensePlates());
+            orderDTO.setSeller(order.getSeller());
+            orderDTO.setBuyer(order.getSeller());
+            orderDTO.setTotalWeight(order.getTotalWeight());
+            orderDTO.setVehicleWeight(order.getVehicleWeight());
+            orderDTO.setCargoWeight(order.getCargoWeight());
+            orderDTO.setCreatedAt(DateUtil.convertToString(order.getCreatedAt(),DateUtil.DD_MM_YYYY));
+            orderDTO.setPaymentAmount(order.getPaymentAmount());
+            return orderDTO;
+        }).collect(Collectors.toList());
+        JRBeanCollectionDataSource jrBeanCollectionDataSource = new JRBeanCollectionDataSource(reportData);
+        JasperReport report = JasperCompileManager.compileReport(getClass().getResourceAsStream("jasper/orders.jrxml"));
+        JasperPrint jasperPrint = JasperFillManager.fillReport(report, null, jrBeanCollectionDataSource);
+        JasperViewer.viewReport(jasperPrint);
     }
 }

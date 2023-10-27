@@ -4,9 +4,12 @@ module com.example.demo {
     requires java.sql;
     requires commons.lang;
     requires jSerialComm;
+    requires jasperreports;
 
     opens com.example.demo to javafx.fxml;
     opens com.example.demo.model to javafx.fxml;
+    opens com.example.demo.data to javafx.fxml;
     exports com.example.demo;
     exports com.example.demo.model;
+    exports com.example.demo.data;
 }

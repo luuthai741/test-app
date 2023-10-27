@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.5.final using JasperReports Library version 6.20.5-3efcf2e67f959db3888d79f73dde2dbd7acb4f8e  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="10a38cda-ac0e-40e3-8cd4-da6318dce257">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="index" class="java.lang.Integer"/>
+	<field name="licensesPlates" class="java.lang.String"/>
+	<field name="seller" class="java.lang.String"/>
+	<field name="buyer" class="java.lang.String"/>
+	<field name="totalWeight" class="java.lang.Integer"/>
+	<field name="vehicleWeight" class="java.lang.Integer"/>
+	<field name="cargoWeight" class="java.lang.Integer"/>
+	<field name="paymentAmount" class="java.lang.Double"/>
+	<field name="createdAt" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="66" splitType="Stretch"/>
+	</title>
+	<columnHeader>
+		<band height="30" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="67" height="30" uuid="eca1f458-f257-45e0-b444-1f85fc44a934">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="2e5620a5-7561-44d6-853c-42b98bc87032"/>
+				</reportElement>
+				<text><![CDATA[Mã cân]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="67" y="0" width="61" height="30" uuid="5b1157cf-0dfb-4b05-944c-792556750637">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0dca71d4-bcd7-4200-a94a-36bcff02aa0b"/>
+				</reportElement>
+				<text><![CDATA[Biển số xe]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="128" y="0" width="61" height="30" uuid="ebc48e17-a2ae-4698-998d-031786458c68">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="39f584f2-d0a9-4af4-8c9b-a524782b0983"/>
+				</reportElement>
+				<text><![CDATA[Người bán]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="189" y="0" width="61" height="30" uuid="64345aa4-b070-44f5-901d-a0b277468554">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f58ef2ee-2a4c-4632-b9ee-cb4d0c832c05"/>
+				</reportElement>
+				<text><![CDATA[Người mua]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="250" y="0" width="61" height="30" uuid="13a82798-e798-4f65-ab5a-419b67824742">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6a1c6e21-b4cf-488a-a291-5f5d49df2d4c"/>
+				</reportElement>
+				<text><![CDATA[Tổng]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="311" y="0" width="61" height="30" uuid="31c16a42-fcd4-47d7-be5d-aff46393d53a">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="afc23447-0646-4464-8835-bbe0ce08c222"/>
+				</reportElement>
+				<text><![CDATA[Bì]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="372" y="0" width="61" height="30" uuid="da2f4fdd-4e0b-48bc-975c-4aabae2d2688">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="45e653e9-a68f-4594-8bab-8fecdedca6f2"/>
+				</reportElement>
+				<text><![CDATA[Hàng]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="433" y="0" width="61" height="30" uuid="e9d4e528-3100-443b-84f2-7620d3e545ae">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="1d57d31d-7418-4f81-ae7f-500484fa084d"/>
+				</reportElement>
+				<text><![CDATA[Thành tiền]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="494" y="0" width="61" height="30" uuid="920a8c68-a31f-470c-80e3-922cb7e767c0">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="79ebcdb0-ce9a-4ffc-bb8a-bc5ac0ddf006"/>
+				</reportElement>
+				<text><![CDATA[Ngày tạo]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="30" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="67" height="20" uuid="8fe1147a-ac08-40bd-9cff-e5f96d7c318d">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="2e5620a5-7561-44d6-853c-42b98bc87032"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{index}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="67" y="0" width="61" height="20" uuid="3212e629-f41c-4c14-8c66-578fe1923abb">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0dca71d4-bcd7-4200-a94a-36bcff02aa0b"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{licensesPlates}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="128" y="0" width="61" height="20" uuid="87ff7b95-25a4-4cac-99d7-75761963a639">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="39f584f2-d0a9-4af4-8c9b-a524782b0983"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{seller}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="189" y="0" width="61" height="20" uuid="2e6f9766-05ab-4d15-abcd-da1e8bbd9074">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f58ef2ee-2a4c-4632-b9ee-cb4d0c832c05"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{buyer}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="250" y="0" width="61" height="20" uuid="0b719534-8b75-4874-87e5-48901a43d4a5">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6a1c6e21-b4cf-488a-a291-5f5d49df2d4c"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{totalWeight}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="311" y="0" width="61" height="20" uuid="1f3558a7-9111-4cb7-b52e-d532a7ff6fd9">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="afc23447-0646-4464-8835-bbe0ce08c222"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{vehicleWeight}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="372" y="0" width="61" height="20" uuid="1634b2f0-dbf2-4f48-9cda-e3686347936a">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="45e653e9-a68f-4594-8bab-8fecdedca6f2"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{cargoWeight}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="433" y="0" width="61" height="20" uuid="2d22d854-c4cc-4aeb-b183-b73a8718d15b">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="1d57d31d-7418-4f81-ae7f-500484fa084d"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{paymentAmount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="494" y="0" width="61" height="20" uuid="40df77b3-687a-4c75-b1d9-3dc582eea66f">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="79ebcdb0-ce9a-4ffc-bb8a-bc5ac0ddf006"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{createdAt}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+</jasperReport>
