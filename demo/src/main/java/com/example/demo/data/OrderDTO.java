@@ -9,8 +9,13 @@ public class OrderDTO {
     private int vehicleWeight;
     private int cargoWeight;
     private double paymentAmount;
+    private String cargoType;
+    private String note;
     private String createdAt;
-
+    private String updatedAt;
+    private String createdTime;
+    private String updatedTime;
+    private String createdBy;
     public OrderDTO() {
     }
 
@@ -84,5 +89,53 @@ public class OrderDTO {
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getCargoType() {
+        return cargoType;
+    }
+
+    public void setCargoType(String cargoType) {
+        this.cargoType = cargoType;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public String getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(String createdTime) {
+        this.createdTime = createdTime;
+    }
+
+    public String getUpdatedTime() {
+        return updatedTime;
+    }
+
+    public void setUpdatedTime(String updatedTime) {
+        this.updatedTime = updatedTime;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 }

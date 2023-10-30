@@ -5,6 +5,7 @@ import com.example.demo.dao.OrderDAO;
 import com.example.demo.data.CurrentUser;
 import com.example.demo.model.HistoryLog;
 import com.example.demo.model.Order;
+import com.example.demo.service.ReportService;
 import com.example.demo.utils.constants.LogType;
 import com.example.demo.utils.constants.OrderStatus;
 import com.example.demo.utils.constants.Page;
@@ -18,6 +19,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import net.sf.jasperreports.engine.JRException;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.IOException;
@@ -60,7 +62,8 @@ public class FormController {
     private Label id;
     private OrderDAO orderDAO = OrderDAO.getInstance();
     private HistoryLogDAO historyLogDAO = HistoryLogDAO.getInstance();
-
+    private ReportService reportService = ReportService.getInstance();
+    private Order selectedOrder;
     public void setValue(Order order) {
         if (order == null) {
             return;
@@ -82,6 +85,7 @@ public class FormController {
         } else {
             unpaidRadioButton.setSelected(true);
         }
+        selectedOrder = order;
     }
 
     public void updateOrder(ActionEvent actionEvent) {
@@ -144,16 +148,8 @@ public class FormController {
         });
     }
 
-    public void openOrderDetail(ActionEvent actionEvent) throws IOException {
-        Order order = orderDAO.getById(id.getText());
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(Page.ORDER.getFxml()));
-        Parent root = fxmlLoader.load();
-        OrderController orderController = fxmlLoader.getController();
-        orderController.setValue(order);
-        Stage stage = new Stage();
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+    public void openOrderDetail(ActionEvent actionEvent) throws JRException {
+        reportService.printOrderDetail(selectedOrder, false);
     }
 
 }

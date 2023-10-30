@@ -4,6 +4,8 @@ import com.example.demo.dao.HistoryLogDAO;
 import com.example.demo.model.HistoryLog;
 import com.example.demo.model.Order;
 import com.example.demo.utils.constants.LogAction;
+import com.example.demo.utils.util.DateUtil;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -12,6 +14,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
+
+import static com.example.demo.utils.util.DateUtil.DD_MM_YYYY_HH_MM_SS;
 
 public class LogController implements Initializable {
     @FXML
@@ -31,7 +35,7 @@ public class LogController implements Initializable {
     @FXML
     private TableColumn<?, ?> contentCol;
     @FXML
-    private TableColumn<?, ?> createdAtCol;
+    private TableColumn<HistoryLog, String> createdAtCol;
     private HistoryLogDAO historyLogDAO = HistoryLogDAO.getInstance();
 
     @Override
@@ -44,7 +48,7 @@ public class LogController implements Initializable {
         typeCol.setCellValueFactory(new PropertyValueFactory("logType"));
         actionCol.setCellValueFactory(new PropertyValueFactory("action"));
         contentCol.setCellValueFactory(new PropertyValueFactory("content"));
-        createdAtCol.setCellValueFactory(new PropertyValueFactory("createdAt"));
+        createdAtCol.cellValueFactoryProperty().setValue(cellData -> new SimpleStringProperty(DateUtil.convertToString(cellData.getValue().getCreatedAt(), DD_MM_YYYY_HH_MM_SS)));
         logTable.setPlaceholder(new Label(""));
         logTable.setItems(historyLogDAO.getLogByFilters(typeCombobox.getValue(),
                 startDatePicker.getValue().atStartOfDay().withHour(0).withMinute(0).withSecond(0),

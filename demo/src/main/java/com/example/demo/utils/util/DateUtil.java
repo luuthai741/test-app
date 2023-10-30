@@ -10,6 +10,7 @@ public class DateUtil {
     public static String DD_MM_YYYY = "dd/MM/yyyy";
     public static String DD_MM_YYYY_2 = "dd_MM_yyyy";
     public static String DD_MM_YYYY_HH_MM_SS = "dd/MM/yyyy HH:mm:ss";
+    public static String HH_MM_SS = "HH:mm:ss";
     public static String DB_FORMAT = "YYYY-MM-dd HH:mm:ss";
     public static String convertToString(Temporal temporal, String format) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(format);

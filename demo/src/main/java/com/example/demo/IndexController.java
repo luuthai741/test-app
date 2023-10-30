@@ -7,10 +7,12 @@ import com.example.demo.data.CurrentUser;
 import com.example.demo.data.WeighingScale;
 import com.example.demo.model.Order;
 import com.example.demo.service.PrintService;
+import com.example.demo.service.ReportService;
 import com.example.demo.utils.constants.*;
 import com.example.demo.utils.util.DateUtil;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -23,6 +25,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import net.sf.jasperreports.engine.JRException;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.IOException;
@@ -118,17 +121,17 @@ public class IndexController implements Initializable {
     @FXML
     private TableColumn<Order, String> cargoCol;
     @FXML
-    private TableColumn<Order, LocalDate> createdAtCol;
+    private TableColumn<Order, String> createdAtCol;
     @FXML
     private Order selectedOrder = null;
     private OrderDAO orderDAO = OrderDAO.getInstance();
     private WeightMoneyDAO weightMoneyDAO = WeightMoneyDAO.getInstance();
     private HistoryLogDAO historyLogDAO = HistoryLogDAO.getInstance();
 
-    private PrintService printService = PrintService.getInstance();
+    private ReportService reportService = ReportService.getInstance();
     private ObservableList<Order> orders;
     private WeighingScale weighingScale;
-    private ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         orders = orderDAO.getOrders();
@@ -140,7 +143,7 @@ public class IndexController implements Initializable {
         vehicleWeightCol.setCellValueFactory(new PropertyValueFactory("vehicleWeight"));
         cargoWeightCol.setCellValueFactory(new PropertyValueFactory("cargoWeight"));
         cargoCol.setCellValueFactory(new PropertyValueFactory("cargoType"));
-        createdAtCol.setCellValueFactory(new PropertyValueFactory("createdAt"));
+        createdAtCol.cellValueFactoryProperty().setValue(cellData -> new SimpleStringProperty(DateUtil.convertToString(cellData.getValue().getCreatedAt(), DD_MM_YYYY_HH_MM_SS)));
         orderTable.setPlaceholder(new Label(""));
         orderTable.setItems(orders);
         orderTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -184,11 +187,10 @@ public class IndexController implements Initializable {
             }
         });
         timerThread.start();
-        PauseTransition pause = new PauseTransition(Duration.millis(1200));
+        PauseTransition pause = new PauseTransition(Duration.millis(800));
         licensePlatesTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             pause.setOnFinished(event -> {
                 try {
-                    System.out.println("value: " + newValue);
                     if (StringUtils.isBlank(newValue)) {
                         sellerTextField.setText("");
                         buyerTextField.setText("");
@@ -196,6 +198,8 @@ public class IndexController implements Initializable {
                     }
                     Order order = orderDAO.getTopByLicensePlates(newValue);
                     if (order == null) {
+                        sellerTextField.setText("");
+                        buyerTextField.setText("");
                         return;
                     }
                     sellerTextField.setText(order.getSeller());
@@ -266,6 +270,7 @@ public class IndexController implements Initializable {
         }
         long index = orderDAO.countOrderByDate(LocalDateTime.now());
         indexTextField.setText(String.valueOf(index + 1));
+        printButton.setDisable(true);
         secondTimeButton.setDisable(true);
         weightDetailPane.setVisible(true);
         totalWeightLabel.setText(weightLabel.getText());
@@ -342,6 +347,8 @@ public class IndexController implements Initializable {
             historyLogDAO.createLogForOrder(new Order(), order, logAction);
             firstTimeButton.setDisable(false);
             secondTimeButton.setDisable(false);
+            selectedOrder = order;
+            printButton.setDisable(false);
         } else {
             Order oldOrder = selectedOrder.clone();
             selectedOrder.setLicensePlates(licensePlatesTextField.getText().toUpperCase());
@@ -421,23 +428,11 @@ public class IndexController implements Initializable {
         }
     }
 
-    public void printOrder(ActionEvent actionEvent) throws IOException {
+    public void printOrder(ActionEvent actionEvent) throws JRException {
         if (selectedOrder == null) {
             return;
         }
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(Page.ORDER.getFxml()));
-        Parent root = fxmlLoader.load();
-        OrderController orderController = fxmlLoader.getController();
-        orderController.setValue(selectedOrder);
-        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        boolean success = printService.printOrder(stage, root);
-        if (!success) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Lỗi in phiếu cân");
-            alert.setHeaderText(null);
-            alert.setContentText("Có lỗi trọng quá trình xuất phiếu cân");
-            alert.show();
-        }
+        reportService.printOrderDetail(selectedOrder, false);
     }
 
     public void searchOrder() {

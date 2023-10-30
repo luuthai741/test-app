@@ -25,7 +25,7 @@ public class OrderQuery {
     private String queryById() {
         String query = "";
         if (StringUtils.isNotBlank(id)) {
-            query = " AND ID = " + id;
+            query = " AND ID = '" + id + "'";
         }
         return query;
     }

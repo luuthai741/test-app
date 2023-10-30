@@ -4,6 +4,9 @@ import com.example.demo.dao.SettingDAO;
 import com.example.demo.model.Setting;
 import com.example.demo.model.WeightMoney;
 import com.example.demo.service.IOService;
+import com.example.demo.utils.constants.SettingKey;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -39,7 +42,10 @@ public class SettingController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        keyCol.setCellValueFactory(new PropertyValueFactory("key"));
+        keyCol.cellValueFactoryProperty().setValue(cellData -> {
+            String note = SettingKey.getByName(cellData.getValue().getKey()).getNote();
+            return new SimpleStringProperty(note);
+        });
         valueCol.setCellValueFactory(new PropertyValueFactory("value"));
         settingObservableList = settingDAO.getAll();
         settingTable.setItems(settingObservableList);
@@ -47,7 +53,7 @@ public class SettingController implements Initializable {
         settingTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             selectedSetting = newValue;
             if (selectedSetting != null) {
-                keyTextField.setText(selectedSetting.getKey());
+                keyTextField.setText(SettingKey.getByName(selectedSetting.getKey()).getNote());
                 valueTextField.setText(selectedSetting.getValue());
             }
         });

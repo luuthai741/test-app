@@ -2,49 +2,40 @@ package com.example.demo;
 
 import com.example.demo.dao.HistoryLogDAO;
 import com.example.demo.dao.OrderDAO;
+import com.example.demo.dao.SettingDAO;
 import com.example.demo.data.CurrentUser;
 import com.example.demo.data.OrderDTO;
 import com.example.demo.model.Order;
-import com.example.demo.service.IOService;
+import com.example.demo.model.Setting;
 import com.example.demo.service.ReportService;
-import com.example.demo.utils.constants.LogAction;
-import com.example.demo.utils.constants.OrderStatus;
-import com.example.demo.utils.constants.PaymentStatus;
-import com.example.demo.utils.constants.RoleType;
+import com.example.demo.utils.constants.*;
 import com.example.demo.utils.util.ConvertUtil;
 import com.example.demo.utils.util.DateUtil;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.view.JasperViewer;
+import org.apache.commons.lang.ObjectUtils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.example.demo.utils.constants.Page.FORM;
-import static com.example.demo.utils.constants.Page.REPORT;
+import static com.example.demo.utils.constants.SettingKey.*;
+import static com.example.demo.utils.util.DateUtil.DD_MM_YYYY_HH_MM_SS;
 
 public class ItemController implements Initializable {
     @FXML
@@ -63,7 +54,7 @@ public class ItemController implements Initializable {
     private TableColumn<?, ?> cargoWeightCol;
 
     @FXML
-    private TableColumn<Order, ?> createdAtCol;
+    private TableColumn<Order, String> createdAtCol;
 
     @FXML
     private DatePicker endDatePicker;
@@ -99,7 +90,7 @@ public class ItemController implements Initializable {
     private TableColumn<?, ?> totalWeightCol;
 
     @FXML
-    private TableColumn<Order, ?> updatedCol;
+    private TableColumn<Order, String> updatedCol;
 
     @FXML
     private TableColumn<?, ?> vehicleWeightCol;
@@ -109,6 +100,8 @@ public class ItemController implements Initializable {
 
     private OrderDAO orderDAO = OrderDAO.getInstance();
     private HistoryLogDAO historyLogDAO = HistoryLogDAO.getInstance();
+    private SettingDAO settingDAO = SettingDAO.getInstance();
+    private ReportService reportService = ReportService.getInstance();
     private ObservableList<Order> orders;
 
     @Override
@@ -122,8 +115,8 @@ public class ItemController implements Initializable {
         vehicleWeightCol.setCellValueFactory(new PropertyValueFactory("vehicleWeight"));
         cargoWeightCol.setCellValueFactory(new PropertyValueFactory("cargoWeight"));
         cargoCol.setCellValueFactory(new PropertyValueFactory("cargoType"));
-        createdAtCol.setCellValueFactory(new PropertyValueFactory("createdAt"));
-        updatedCol.setCellValueFactory(new PropertyValueFactory("updatedAt"));
+        createdAtCol.cellValueFactoryProperty().setValue(cellData -> new SimpleStringProperty(DateUtil.convertToString(cellData.getValue().getCreatedAt(), DD_MM_YYYY_HH_MM_SS)));
+        updatedCol.cellValueFactoryProperty().setValue(cellData -> new SimpleStringProperty(DateUtil.convertToString(cellData.getValue().getUpdatedAt(), DD_MM_YYYY_HH_MM_SS)));
         paymentStatusCol.setCellValueFactory(new PropertyValueFactory("paymentStatus"));
         amountCol.setCellValueFactory(new PropertyValueFactory("paymentAmount"));
         startDatePicker.setValue(LocalDate.now());
@@ -209,44 +202,22 @@ public class ItemController implements Initializable {
         }
     }
 
-    public void report() throws IOException, JRException {
-//        if (!ConvertUtil.PAGES.contains(REPORT.name())) {
-//            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(REPORT.getFxml()));
-//            Parent root = fxmlLoader.load();
-//            ReportController reportController = fxmlLoader.getController();
-//            reportController.setOrders(orderDAO.getOrderFilters(null,
-//                    sellerTextField.getText(),
-//                    buyerTextField.getText(),
-//                    statusComboBox.getValue(),
-//                    paymentStatusComboBox.getValue(),
-//                    startDatePicker.getValue().atStartOfDay().withHour(0).withMinute(0).withSecond(0),
-//                    endDatePicker.getValue().atStartOfDay().withHour(23).withMinute(59).withSecond(59)));
-//            Scene scene = new Scene(root);
-//            Stage stage = new Stage();
-//            stage.setScene(scene);
-//            stage.setTitle("Thống kê");
-//            stage.show();
-//            ConvertUtil.PAGES.add(REPORT.name());
-//            stage.setOnCloseRequest(e -> {
-//                ConvertUtil.PAGES.remove(REPORT.name());
-//            });
-//        }
-        List<OrderDTO> reportData = orders.stream().map(order -> {
-            OrderDTO orderDTO = new OrderDTO();
-            orderDTO.setIndex(order.getIndex());
-            orderDTO.setLicensesPlates(order.getLicensePlates());
-            orderDTO.setSeller(order.getSeller());
-            orderDTO.setBuyer(order.getSeller());
-            orderDTO.setTotalWeight(order.getTotalWeight());
-            orderDTO.setVehicleWeight(order.getVehicleWeight());
-            orderDTO.setCargoWeight(order.getCargoWeight());
-            orderDTO.setCreatedAt(DateUtil.convertToString(order.getCreatedAt(),DateUtil.DD_MM_YYYY));
-            orderDTO.setPaymentAmount(order.getPaymentAmount());
-            return orderDTO;
-        }).collect(Collectors.toList());
-        JRBeanCollectionDataSource jrBeanCollectionDataSource = new JRBeanCollectionDataSource(reportData);
-        JasperReport report = JasperCompileManager.compileReport(getClass().getResourceAsStream("jasper/orders.jrxml"));
-        JasperPrint jasperPrint = JasperFillManager.fillReport(report, null, jrBeanCollectionDataSource);
-        JasperViewer.viewReport(jasperPrint);
+    public void report() throws JRException {
+        ObservableList<Order> ordersFilter = orderDAO.getOrderFilters(null,
+                sellerTextField.getText(),
+                buyerTextField.getText(),
+                statusComboBox.getValue(),
+                paymentStatusComboBox.getValue(),
+                startDatePicker.getValue().atStartOfDay().withHour(0).withMinute(0).withSecond(0),
+                endDatePicker.getValue().atStartOfDay().withHour(23).withMinute(59).withSecond(59));
+        if (ordersFilter.size() == 0) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Thống kê mã cân");
+            alert.setHeaderText(null);
+            alert.setContentText("Không có mã cân nào");
+            alert.show();
+            return;
+        }
+        reportService.printOrders(ordersFilter, startDatePicker.getValue(), endDatePicker.getValue());
     }
 }
