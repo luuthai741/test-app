@@ -5,7 +5,8 @@ public class WeightMoney {
     private int startWeight;
     private int endWeight;
     private double amountMoney;
-    private String type;
+    private double minAmount;
+    private int vehicleId;
     public WeightMoney() {}
 
     public int getId() {
@@ -40,11 +41,20 @@ public class WeightMoney {
         this.amountMoney = amountMoney;
     }
 
-    public String getType() {
-        return type;
+
+    public double getMinAmount() {
+        return minAmount;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setMinAmount(double minAmount) {
+        this.minAmount = minAmount;
+    }
+
+    public int getVehicleId() {
+        return vehicleId;
+    }
+
+    public void setVehicleId(int vehicleId) {
+        this.vehicleId = vehicleId;
     }
 }

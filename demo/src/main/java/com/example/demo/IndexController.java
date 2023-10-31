@@ -1,14 +1,16 @@
 package com.example.demo;
 
+import com.example.demo.dao.CargoDAO;
 import com.example.demo.dao.HistoryLogDAO;
 import com.example.demo.dao.OrderDAO;
 import com.example.demo.dao.WeightMoneyDAO;
 import com.example.demo.data.CurrentUser;
 import com.example.demo.data.WeighingScale;
 import com.example.demo.model.Order;
-import com.example.demo.service.PrintService;
 import com.example.demo.service.ReportService;
-import com.example.demo.utils.constants.*;
+import com.example.demo.utils.constants.LogAction;
+import com.example.demo.utils.constants.OrderStatus;
+import com.example.demo.utils.constants.PaymentStatus;
 import com.example.demo.utils.util.DateUtil;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
@@ -16,29 +18,22 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 import net.sf.jasperreports.engine.JRException;
 import org.apache.commons.lang.StringUtils;
 
-import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import static com.example.demo.utils.constants.OrderStatus.CREATED;
 import static com.example.demo.utils.util.ConvertUtil.replaceNullStringToBlank;
+import static com.example.demo.utils.util.DateUtil.DD_MM_YYYY;
 import static com.example.demo.utils.util.DateUtil.DD_MM_YYYY_HH_MM_SS;
 
 public class IndexController implements Initializable {
@@ -65,8 +60,6 @@ public class IndexController implements Initializable {
     private TextField noteTextField;
     @FXML
     private ComboBox<String> cargoComboBox;
-    @FXML
-    private AnchorPane paymentPane;
     @FXML
     private TextField paymentAmountTextField;
     @FXML
@@ -127,7 +120,7 @@ public class IndexController implements Initializable {
     private OrderDAO orderDAO = OrderDAO.getInstance();
     private WeightMoneyDAO weightMoneyDAO = WeightMoneyDAO.getInstance();
     private HistoryLogDAO historyLogDAO = HistoryLogDAO.getInstance();
-
+    private CargoDAO cargoDAO = CargoDAO.getInstance();
     private ReportService reportService = ReportService.getInstance();
     private ObservableList<Order> orders;
     private WeighingScale weighingScale;
@@ -143,7 +136,7 @@ public class IndexController implements Initializable {
         vehicleWeightCol.setCellValueFactory(new PropertyValueFactory("vehicleWeight"));
         cargoWeightCol.setCellValueFactory(new PropertyValueFactory("cargoWeight"));
         cargoCol.setCellValueFactory(new PropertyValueFactory("cargoType"));
-        createdAtCol.cellValueFactoryProperty().setValue(cellData -> new SimpleStringProperty(DateUtil.convertToString(cellData.getValue().getCreatedAt(), DD_MM_YYYY_HH_MM_SS)));
+        createdAtCol.cellValueFactoryProperty().setValue(cellData -> new SimpleStringProperty(DateUtil.convertToString(cellData.getValue().getCreatedAt(), DD_MM_YYYY)));
         orderTable.setPlaceholder(new Label(""));
         orderTable.setItems(orders);
         orderTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -158,8 +151,7 @@ public class IndexController implements Initializable {
             }
         });
         manualTextField.setVisible(false);
-        paymentPane.setVisible(false);
-//        cargoComboBox.setItems(FXCollections.observableList(List.of("Sắt","Than","Dây 27")));
+        cargoComboBox.setItems(cargoDAO.getAll());
         startDatePicker.setValue(LocalDate.now());
         endDatePicker.setValue(LocalDate.now());
         manualTextField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -248,7 +240,6 @@ public class IndexController implements Initializable {
         }
         orderTable.getSelectionModel().clearSelection();
         cleanData();
-        paymentPane.setVisible(false);
         firstTimeButton.setDisable(false);
         secondTimeButton.setDisable(false);
         weightDetailPane.setVisible(false);
@@ -274,6 +265,9 @@ public class IndexController implements Initializable {
         secondTimeButton.setDisable(true);
         weightDetailPane.setVisible(true);
         totalWeightLabel.setText(weightLabel.getText());
+        Integer weight = Integer.valueOf(totalWeightLabel.getText());
+        double paymentAmount = weightMoneyDAO.getAmountByCargoWeight(licensePlatesTextField.getText(), weight, true);
+        paymentAmountTextField.setText(String.valueOf(paymentAmount));
     }
 
     public void actionSecondTime(ActionEvent actionEvent) {
@@ -297,9 +291,7 @@ public class IndexController implements Initializable {
             vehicleWeightLabel.setText(String.valueOf(value.intValue()));
         }
         cargoWeightLabel.setText(String.valueOf(cargoWeight.intValue()));
-        paymentPane.setVisible(true);
-        paymentAmountTextField.setEditable(true);
-        double paymentAmount = weightMoneyDAO.getAmountByCargoWeight(licensePlatesTextField.getText(), cargoWeight.intValue());
+        double paymentAmount = weightMoneyDAO.getAmountByCargoWeight(licensePlatesTextField.getText(), cargoWeight.intValue(), false);
         paymentAmountTextField.setText(String.valueOf(paymentAmount));
         payerIsSellerCheckbox.setSelected(true);
         onChangePayerIsSellerCheckbox();
@@ -309,6 +301,10 @@ public class IndexController implements Initializable {
         String errorText = "";
         if (StringUtils.isBlank(licensePlatesTextField.getText())) {
             errorText = "Biển số xe không được để trống!";
+        }
+        Double paymentAmount = Double.valueOf(StringUtils.isBlank(paymentAmountTextField.getText()) ? "0" : paymentAmountTextField.getText());
+        if (paymentAmount <= 0) {
+            errorText = "Giá cân không thể bằng 0";
         }
         if (StringUtils.isNotBlank(errorText)) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -330,13 +326,13 @@ public class IndexController implements Initializable {
             order.setBuyer(replaceNullStringToBlank(buyerTextField.getText()));
             order.setTotalWeight(Integer.valueOf(totalWeightLabel.getText()));
             order.setVehicleWeight(0);
-            order.setCargoWeight(0);
+            order.setCargoWeight(Integer.valueOf(totalWeightLabel.getText()));
             order.setCreatedAt(LocalDateTime.now());
             order.setUpdatedAt(LocalDateTime.now());
             order.setStatus(CREATED.getNote());
             order.setPaymentStatus(PaymentStatus.UNPAID.getNote());
             order.setCargoType(cargoComboBox.getValue());
-            order.setPaymentAmount(0);
+            order.setPaymentAmount(paymentAmount);
             order.setNote(noteTextField.getText());
             order.setCreatedBy(CurrentUser.getInstance().getUsername());
             orderDAO.createOrder(order);
@@ -345,10 +341,10 @@ public class IndexController implements Initializable {
                 logAction = LogAction.CREATED_ORDER_MANUAL;
             }
             historyLogDAO.createLogForOrder(new Order(), order, logAction);
+            cargoDAO.createCargo(cargoComboBox.getValue());
             firstTimeButton.setDisable(false);
             secondTimeButton.setDisable(false);
             selectedOrder = order;
-            printButton.setDisable(false);
         } else {
             Order oldOrder = selectedOrder.clone();
             selectedOrder.setLicensePlates(licensePlatesTextField.getText().toUpperCase());
@@ -361,11 +357,10 @@ public class IndexController implements Initializable {
             selectedOrder.setStatus(OrderStatus.COMPLETED.getNote());
             selectedOrder.setPaymentStatus(PaymentStatus.PAID.getNote());
             selectedOrder.setCargoType(cargoComboBox.getValue());
-            selectedOrder.setPaymentAmount(Double.valueOf(StringUtils.isBlank(paymentAmountTextField.getText()) ? "0" : paymentAmountTextField.getText()));
+            selectedOrder.setPaymentAmount(paymentAmount);
             selectedOrder.setNote(noteTextField.getText());
             selectedOrder.setPayer(payerTextField.getText());
             selectedOrder.setPaymentStatus(paidRadioButton.isSelected() ? PaymentStatus.PAID.getNote() : PaymentStatus.UNPAID.getNote());
-            printButton.setDisable(false);
             orderDAO.updateOrder(selectedOrder);
             LogAction logAction = LogAction.UPDATED_ORDER;
             if (manualCheckbox.isSelected()) {
@@ -376,6 +371,7 @@ public class IndexController implements Initializable {
             secondTimeButton.setDisable(true);
             orderTable.setEditable(false);
         }
+        printButton.setDisable(false);
         saveButton.setDisable(true);
         firstTimeButton.setDisable(true);
         secondTimeButton.setDisable(true);
@@ -388,8 +384,7 @@ public class IndexController implements Initializable {
         sellerTextField.setText("");
         buyerTextField.setText("");
         noteTextField.setText("");
-        paymentAmountTextField.setText("");
-        paymentAmountTextField.setEditable(false);
+        paymentAmountTextField.setText("0");
         totalWeightLabel.setText("");
         vehicleWeightLabel.setText("");
         cargoWeightLabel.setText("");
@@ -397,7 +392,7 @@ public class IndexController implements Initializable {
         payerIsSellerCheckbox.setSelected(false);
         paidRadioButton.setSelected(false);
         unpaidRadioButton.setSelected(false);
-        cargoComboBox.setValue("Sắt");
+        cargoComboBox.setItems(cargoDAO.getAll());
     }
 
     private void setValue(Order order) {
@@ -439,6 +434,10 @@ public class IndexController implements Initializable {
         LocalDateTime startDateTime = startDatePicker.getValue().atStartOfDay();
         LocalDateTime endDateTime = endDatePicker.getValue().atStartOfDay();
         String licensePlates = licensePlatesSearchTextField.getText();
+        if (StringUtils.isBlank(licensePlates)) {
+            rollback();
+            return;
+        }
         orderTable.setItems(orderDAO.getOrderFilters(licensePlates, null, null, CREATED.getNote(), null, startDateTime, endDateTime));
     }
 }

@@ -23,10 +23,10 @@
           <TableColumn fx:id="sellerCol" prefWidth="106.0" text="Người bán" />
             <TableColumn fx:id="buyerCol" prefWidth="106.0" text="Người mua" />
             <TableColumn fx:id="cargoCol" prefWidth="90.0" text="Loại hàng" />
-            <TableColumn fx:id="totalWeightCol" prefWidth="120.0" text="Tổng" />
-            <TableColumn fx:id="vehicleWeightCol" prefWidth="122.0" text="Bì" />
-            <TableColumn fx:id="cargoWeightCol" prefWidth="76.0" text="Hàng" />
-            <TableColumn fx:id="createdAtCol" prefWidth="88.0" text="Ngày tạo" />
+            <TableColumn fx:id="totalWeightCol" prefWidth="100.0" text="Tổng" />
+            <TableColumn fx:id="vehicleWeightCol" prefWidth="100.0" text="Bì" />
+            <TableColumn fx:id="cargoWeightCol" prefWidth="100.0" text="Hàng" />
+            <TableColumn fx:id="createdAtCol" prefWidth="106.0" text="Ngày tạo" />
         </columns>
       </TableView>
       <AnchorPane layoutX="64.0" layoutY="374.0" prefHeight="79.0" prefWidth="872.0">
@@ -163,11 +163,7 @@
                               <ToggleGroup fx:id="paymentStatus" />
                            </toggleGroup>
                         </RadioButton>
-                        <RadioButton fx:id="unpaidRadioButton" layoutX="121.0" layoutY="123.0" mnemonicParsing="false" text="Chưa trả">
-                           <toggleGroup>
-                              <ToggleGroup fx:id="paymentStatus" />
-                           </toggleGroup>
-                        </RadioButton>
+                        <RadioButton fx:id="unpaidRadioButton" layoutX="121.0" layoutY="123.0" mnemonicParsing="false" text="Chưa trả" toggleGroup="$paymentStatus" />
                      </children>
                   </AnchorPane>
                   <AnchorPane fx:id="weightDetailPane" layoutY="207.0" prefHeight="126.0" prefWidth="600.0" style="-fx-border-color: #e0dede; -fx-border-width: 1px 0 0 0;">

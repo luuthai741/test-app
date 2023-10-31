@@ -28,7 +28,8 @@ public class WeightMoneyMapper {
             weightMoney.setStartWeight(resultSet.getInt("START_WEIGHT"));
             weightMoney.setEndWeight(resultSet.getInt("END_WEIGHT"));
             weightMoney.setAmountMoney(resultSet.getDouble("AMOUNT_MONEY"));
-            weightMoney.setType(resultSet.getString("TYPE"));
+            weightMoney.setMinAmount(resultSet.getDouble("MIN_AMOUNT"));
+            weightMoney.setVehicleId(resultSet.getInt("VEHICLE_ID"));
             moneyList.add(weightMoney);
         }
         return moneyList;

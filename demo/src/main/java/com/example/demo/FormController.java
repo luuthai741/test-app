@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.example.demo.dao.CargoDAO;
 import com.example.demo.dao.HistoryLogDAO;
 import com.example.demo.dao.OrderDAO;
 import com.example.demo.data.CurrentUser;
@@ -14,6 +15,7 @@ import com.example.demo.utils.util.ConvertUtil;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -23,7 +25,9 @@ import net.sf.jasperreports.engine.JRException;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.IOException;
+import java.net.URL;
 import java.time.LocalDateTime;
+import java.util.ResourceBundle;
 
 import static com.example.demo.utils.constants.LogAction.UPDATED_ORDER_MANUAL;
 import static com.example.demo.utils.constants.Page.FORM;
@@ -31,7 +35,7 @@ import static com.example.demo.utils.constants.PaymentStatus.PAID;
 import static com.example.demo.utils.constants.PaymentStatus.UNPAID;
 import static com.example.demo.utils.util.ConvertUtil.replaceNullStringToBlank;
 
-public class FormController {
+public class FormController implements Initializable {
     @FXML
     private TextField indexTextField;
     @FXML
@@ -63,7 +67,13 @@ public class FormController {
     private OrderDAO orderDAO = OrderDAO.getInstance();
     private HistoryLogDAO historyLogDAO = HistoryLogDAO.getInstance();
     private ReportService reportService = ReportService.getInstance();
+    private CargoDAO cargoDAO = CargoDAO.getInstance();
     private Order selectedOrder;
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        cargoComboBox.setItems(cargoDAO.getAll());
+    }
+
     public void setValue(Order order) {
         if (order == null) {
             return;
@@ -151,5 +161,4 @@ public class FormController {
     public void openOrderDetail(ActionEvent actionEvent) throws JRException {
         reportService.printOrderDetail(selectedOrder, false);
     }
-
 }

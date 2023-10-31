@@ -1,8 +1,8 @@
 package com.example.demo.dao;
 
 import com.example.demo.mapper.WeightMoneyMapper;
+import com.example.demo.model.Vehicle;
 import com.example.demo.model.WeightMoney;
-import com.example.demo.utils.constants.VehicleType;
 import com.example.demo.utils.util.SqlUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,12 +11,12 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.demo.utils.constants.VehicleType.*;
 import static com.example.demo.utils.constants.WeightMoneyConstants.*;
 
 
 public class WeightMoneyDAO {
     private static WeightMoneyDAO instance;
+    private VehicleDAO vehicleDAO = VehicleDAO.getInstance();
     private WeightMoneyMapper weightMoneyMapper = WeightMoneyMapper.getInstance();
 
     private WeightMoneyDAO() {
@@ -50,7 +50,7 @@ public class WeightMoneyDAO {
         SqlUtil sqlUtil = new SqlUtil();
         try {
             sqlUtil.connect();
-            String sql = String.format(INSERT_WEIGHT_MONEY, weightMoney.getStartWeight(), weightMoney.getEndWeight(), weightMoney.getAmountMoney(), weightMoney.getType());
+            String sql = String.format(INSERT_WEIGHT_MONEY, weightMoney.getStartWeight(), weightMoney.getEndWeight(), weightMoney.getAmountMoney(), weightMoney.getVehicleId(), weightMoney.getMinAmount());
             sqlUtil.exeUpdate(sql);
         } catch (Exception e) {
 
@@ -64,7 +64,7 @@ public class WeightMoneyDAO {
         SqlUtil sqlUtil = new SqlUtil();
         try {
             sqlUtil.connect();
-            String sql = String.format(UPDATE_WEIGHT_MONEY_BY_ID, weightMoney.getStartWeight(), weightMoney.getEndWeight(), weightMoney.getAmountMoney(), weightMoney.getType(), weightMoney.getId());
+            String sql = String.format(UPDATE_WEIGHT_MONEY_BY_ID, weightMoney.getStartWeight(), weightMoney.getEndWeight(), weightMoney.getAmountMoney(), weightMoney.getVehicleId(), weightMoney.getMinAmount(), weightMoney.getId());
             sqlUtil.exeUpdate(sql);
         } catch (Exception e) {
 
@@ -73,6 +73,7 @@ public class WeightMoneyDAO {
         }
         return weightMoney;
     }
+
     public boolean deleteWeightMoneyById(int id) {
         SqlUtil sqlUtil = new SqlUtil();
         boolean isSuccessFully = false;
@@ -89,30 +90,33 @@ public class WeightMoneyDAO {
         return isSuccessFully;
     }
 
-    public double getAmountByCargoWeight(String licensePlatesText, int cargoWeight) {
+    public double getAmountByCargoWeight(String licensePlatesText, int cargoWeight, boolean isFirstTime) {
         SqlUtil sqlUtil = new SqlUtil();
         double amount = 0;
-        VehicleType vehicleType = OTHER;
-        if (licensePlatesText.equalsIgnoreCase("cn")) {
-            vehicleType = FARM;
-        } else if (licensePlatesText.equalsIgnoreCase("xk")) {
-            vehicleType = HANDCART;
-        } else if (licensePlatesText.matches("[a-zA-Z0-9]+")) {
-            vehicleType = CAR;
+        double minAmount = 0;
+        ObservableList<Vehicle> vehicles = vehicleDAO.getAll();
+        int vehicleId = 0;
+        for (Vehicle vehicle : vehicles) {
+            if (licensePlatesText.equalsIgnoreCase(vehicle.getPattern()) || licensePlatesText.matches(vehicle.getPattern())) {
+                vehicleId = vehicle.getId();
+                break;
+            }
         }
         try {
             sqlUtil.connect();
-            String sql = String.format(SELECT_BETWEEN_START_AND_END_AND_TYPE, cargoWeight, cargoWeight, vehicleType.name());
+            String sql = String.format(SELECT_BETWEEN_START_AND_END_AND_VEHICLE_ID, cargoWeight, cargoWeight, vehicleId);
             ResultSet resultSet = sqlUtil.exeQuery(sql);
             List<WeightMoney> moneyList = weightMoneyMapper.mapToWeightMoney(resultSet);
             if (moneyList.size() > 0) {
                 amount = moneyList.get(0).getAmountMoney();
+                minAmount = moneyList.get(0).getMinAmount();
             }
         } catch (Exception e) {
 
         } finally {
             sqlUtil.disconnect();
         }
+        amount = isFirstTime ? minAmount : amount;
         return amount;
     }
 
