@@ -16,7 +16,8 @@ public enum LogAction {
     CREATED_ORDER_MANUAL("Tạo mã cân thủ công"),
     UPDATED_ORDER("Cập nhật mã cân"),
     UPDATED_ORDER_MANUAL("Cập nhật mã cân thủ công"),
-    DELETE_ORDER("Xóa mã cân");
+    DELETE_ORDER("Xóa mã cân"),
+    UPDATED_PAID_ORDERS("Cập nhật thanh toán mã cân");
 
     private String note;
 

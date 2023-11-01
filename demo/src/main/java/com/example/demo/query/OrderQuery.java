@@ -18,9 +18,9 @@ public class OrderQuery {
     private String buyer;
     private String status;
     private String paymentStatus;
+
     private LocalDateTime dateTimeFrom;
     private LocalDateTime dateTimeTo;
-    private int limit;
 
     private String queryById() {
         String query = "";
@@ -48,15 +48,29 @@ public class OrderQuery {
 
     private String queryBySeller() {
         String query = "";
+        String sellerCondition1 = "";
+        String sellerCondition2 = "";
         if (StringUtils.isNotBlank(seller)) {
             seller = seller.trim();
             String[] parts = seller.split(" ");
             if (parts.length == 2) {
-                String seller1 = parts[0] + " " + parts[1];
-                String seller2 = parts[1] + " " + parts[0];
-                query = " AND (SELLER LIKE '*" + seller1 + "*' OR SELLER LIKE '*" + seller2 + "*')";
+                sellerCondition1 = parts[0] + " " + parts[1];
+                sellerCondition2 = parts[1] + " " + parts[0];
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append("AND (SELLER LIKE '*").append(sellerCondition1).append("*' OR SELLER LIKE '*").append(sellerCondition2).append("*'");
+                if ((PaymentStatus.ALL.getNote().equals(paymentStatus) || PaymentStatus.UNPAID.getNote().equals(paymentStatus))){
+                    stringBuilder.append(" OR PAYER LIKE '*").append(sellerCondition1).append("*' OR PAYER LIKE '*").append(sellerCondition2).append("*'");
+                }
+                stringBuilder.append(")");
+                query = stringBuilder.toString();
             } else {
-                query = " AND SELLER LIKE '*" + seller + "*'";
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append("AND (SELLER LIKE '*").append(seller).append("*'");
+                if ((PaymentStatus.ALL.getNote().equals(paymentStatus) || PaymentStatus.UNPAID.getNote().equals(paymentStatus))){
+                    stringBuilder.append(" OR PAYER LIKE '*").append(seller).append("*'");
+                }
+                stringBuilder.append(")");
+                query = stringBuilder.toString();
             }
         }
         return query;
@@ -72,7 +86,7 @@ public class OrderQuery {
                 String buyer2 = parts[1] + " " + parts[0];
                 query = " AND (BUYER LIKE '*" + buyer1 + "*' OR BUYER LIKE '*" + buyer2 + "*')";
             } else {
-                query = " AND BUYER LIKE '*" + seller + "*'";
+                query = " AND BUYER LIKE '*" + buyer + "*'";
             }
         }
         return query;

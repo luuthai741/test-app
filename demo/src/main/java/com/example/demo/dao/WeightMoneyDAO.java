@@ -6,6 +6,7 @@ import com.example.demo.model.WeightMoney;
 import com.example.demo.utils.util.SqlUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.apache.commons.lang.StringUtils;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -91,6 +92,9 @@ public class WeightMoneyDAO {
     }
 
     public double getAmountByCargoWeight(String licensePlatesText, int cargoWeight, boolean isFirstTime) {
+        if (StringUtils.isBlank(licensePlatesText)){
+            return 0;
+        }
         SqlUtil sqlUtil = new SqlUtil();
         double amount = 0;
         double minAmount = 0;

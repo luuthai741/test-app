@@ -32,27 +32,22 @@
                               <Font size="14.0" />
                            </font>
                         </Button>
-                        <Button fx:id="DEBTOR" alignment="BASELINE_LEFT" layoutX="18.0" layoutY="193.0" mnemonicParsing="false" onAction="#switchPage" prefHeight="34.0" prefWidth="150.0" styleClass="nav-button" stylesheets="@css/login.css" text="Tổng thu nợ">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </Button>
                         <Button fx:id="INDEX" alignment="BASELINE_LEFT" layoutX="18.0" layoutY="125.0" mnemonicParsing="false" onAction="#switchPage" prefHeight="34.0" prefWidth="150.0" styleClass="nav-button" stylesheets="@css/login.css" text="Cân xe">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Button>
-                        <Button fx:id="WEIGHT_MONEY" alignment="BASELINE_LEFT" contentDisplay="BOTTOM" layoutX="18.0" layoutY="295.0" mnemonicParsing="false" onAction="#switchPage" prefHeight="34.0" prefWidth="150.0" styleClass="nav-button" stylesheets="@css/login.css" text="Tiền cân">
+                        <Button fx:id="WEIGHT_MONEY" alignment="BASELINE_LEFT" contentDisplay="BOTTOM" layoutX="18.0" layoutY="261.0" mnemonicParsing="false" onAction="#switchPage" prefHeight="34.0" prefWidth="150.0" styleClass="nav-button" stylesheets="@css/login.css" text="Tiền cân">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Button>
-                        <Button fx:id="SETTING" alignment="BASELINE_LEFT" contentDisplay="BOTTOM" layoutX="18.0" layoutY="261.0" mnemonicParsing="false" onAction="#switchPage" prefHeight="34.0" prefWidth="150.0" styleClass="nav-button" stylesheets="@css/login.css" text="Cấu hình">
+                        <Button fx:id="SETTING" alignment="BASELINE_LEFT" contentDisplay="BOTTOM" layoutX="18.0" layoutY="227.0" mnemonicParsing="false" onAction="#switchPage" prefHeight="34.0" prefWidth="150.0" styleClass="nav-button" stylesheets="@css/login.css" text="Cấu hình">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Button>
-                        <Button fx:id="LOG" alignment="BASELINE_LEFT" layoutX="18.0" layoutY="227.0" mnemonicParsing="false" onAction="#switchPage" prefHeight="34.0" prefWidth="150.0" styleClass="nav-button" stylesheets="@css/login.css" text="Lịch sử">
+                        <Button fx:id="LOG" alignment="BASELINE_LEFT" layoutX="18.0" layoutY="193.0" mnemonicParsing="false" onAction="#switchPage" prefHeight="34.0" prefWidth="150.0" styleClass="nav-button" stylesheets="@css/login.css" text="Lịch sử">
                            <font>
                               <Font size="14.0" />
                            </font>

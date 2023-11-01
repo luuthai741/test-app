@@ -4,11 +4,12 @@ import com.example.demo.dao.HistoryLogDAO;
 import com.example.demo.dao.OrderDAO;
 import com.example.demo.dao.SettingDAO;
 import com.example.demo.data.CurrentUser;
-import com.example.demo.data.OrderDTO;
 import com.example.demo.model.Order;
-import com.example.demo.model.Setting;
 import com.example.demo.service.ReportService;
-import com.example.demo.utils.constants.*;
+import com.example.demo.utils.constants.LogAction;
+import com.example.demo.utils.constants.OrderStatus;
+import com.example.demo.utils.constants.PaymentStatus;
+import com.example.demo.utils.constants.RoleType;
 import com.example.demo.utils.util.ConvertUtil;
 import com.example.demo.utils.util.DateUtil;
 import javafx.beans.property.SimpleStringProperty;
@@ -21,23 +22,21 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.view.JasperViewer;
-import org.apache.commons.lang.ObjectUtils;
+import net.sf.jasperreports.engine.JRException;
 
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ResourceBundle;
 
 import static com.example.demo.utils.constants.Page.FORM;
-import static com.example.demo.utils.constants.SettingKey.*;
-import static com.example.demo.utils.util.DateUtil.DD_MM_YYYY_HH_MM_SS;
+import static com.example.demo.utils.util.DateUtil.DD_MM_YYYY;
 
 public class ItemController implements Initializable {
+    @FXML
+    private AnchorPane mainPane;
     @FXML
     private TableColumn<?, ?> amountCol;
 
@@ -94,7 +93,6 @@ public class ItemController implements Initializable {
 
     @FXML
     private TableColumn<?, ?> vehicleWeightCol;
-
     @FXML
     private Button importButton;
 
@@ -115,8 +113,8 @@ public class ItemController implements Initializable {
         vehicleWeightCol.setCellValueFactory(new PropertyValueFactory("vehicleWeight"));
         cargoWeightCol.setCellValueFactory(new PropertyValueFactory("cargoWeight"));
         cargoCol.setCellValueFactory(new PropertyValueFactory("cargoType"));
-        createdAtCol.cellValueFactoryProperty().setValue(cellData -> new SimpleStringProperty(DateUtil.convertToString(cellData.getValue().getCreatedAt(), DD_MM_YYYY_HH_MM_SS)));
-        updatedCol.cellValueFactoryProperty().setValue(cellData -> new SimpleStringProperty(DateUtil.convertToString(cellData.getValue().getUpdatedAt(), DD_MM_YYYY_HH_MM_SS)));
+        createdAtCol.cellValueFactoryProperty().setValue(cellData -> new SimpleStringProperty(DateUtil.convertToString(cellData.getValue().getCreatedAt(), DD_MM_YYYY)));
+        updatedCol.cellValueFactoryProperty().setValue(cellData -> new SimpleStringProperty(DateUtil.convertToString(cellData.getValue().getUpdatedAt(), DD_MM_YYYY)));
         paymentStatusCol.setCellValueFactory(new PropertyValueFactory("paymentStatus"));
         amountCol.setCellValueFactory(new PropertyValueFactory("paymentAmount"));
         startDatePicker.setValue(LocalDate.now());
@@ -165,7 +163,7 @@ public class ItemController implements Initializable {
         }
     }
 
-    public void search(ActionEvent actionEvent) {
+    public void search() {
         if (endDatePicker.getValue().isBefore(startDatePicker.getValue())) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Lỗi tìm kiếm");
@@ -189,15 +187,18 @@ public class ItemController implements Initializable {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(FORM.getFxml()));
             Parent root = fxmlLoader.load();
             FormController formController = fxmlLoader.getController();
-            formController.setValue(orderTable.getSelectionModel().getSelectedItem());
+            formController.setValue(orderDAO.getById(String.valueOf(orderTable.getSelectionModel().getSelectedItem().getId())));
             Scene scene = new Scene(root);
             Stage stage = new Stage();
             stage.setScene(scene);
             stage.setTitle("Chỉnh sửa mã cân");
             stage.show();
             ConvertUtil.PAGES.add(FORM.name());
+            mainPane.setDisable(true);
             stage.setOnCloseRequest(e -> {
                 ConvertUtil.PAGES.remove(FORM.name());
+                search();
+                mainPane.setDisable(false);
             });
         }
     }

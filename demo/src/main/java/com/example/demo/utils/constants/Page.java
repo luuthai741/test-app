@@ -3,7 +3,6 @@ package com.example.demo.utils.constants;
 public enum Page {
     ADMIN_HOME("admin/home.fxml"),
     LIST("general/list.fxml"),
-    DEBTOR("admin/debtor.fxml"),
     INDEX("general/index.fxml"),
     FORM("general/form.fxml"),
     SETTING("admin/setting.fxml"),

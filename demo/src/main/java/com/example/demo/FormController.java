@@ -4,12 +4,9 @@ import com.example.demo.dao.CargoDAO;
 import com.example.demo.dao.HistoryLogDAO;
 import com.example.demo.dao.OrderDAO;
 import com.example.demo.data.CurrentUser;
-import com.example.demo.model.HistoryLog;
 import com.example.demo.model.Order;
 import com.example.demo.service.ReportService;
-import com.example.demo.utils.constants.LogType;
 import com.example.demo.utils.constants.OrderStatus;
-import com.example.demo.utils.constants.Page;
 import com.example.demo.utils.constants.PaymentStatus;
 import com.example.demo.utils.util.ConvertUtil;
 import javafx.event.ActionEvent;
@@ -34,6 +31,8 @@ import static com.example.demo.utils.constants.Page.FORM;
 import static com.example.demo.utils.constants.PaymentStatus.PAID;
 import static com.example.demo.utils.constants.PaymentStatus.UNPAID;
 import static com.example.demo.utils.util.ConvertUtil.replaceNullStringToBlank;
+import static javafx.scene.control.Alert.AlertType.INFORMATION;
+import static javafx.scene.control.Alert.AlertType.WARNING;
 
 public class FormController implements Initializable {
     @FXML
@@ -69,6 +68,7 @@ public class FormController implements Initializable {
     private ReportService reportService = ReportService.getInstance();
     private CargoDAO cargoDAO = CargoDAO.getInstance();
     private Order selectedOrder;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         cargoComboBox.setItems(cargoDAO.getAll());
@@ -89,13 +89,42 @@ public class FormController implements Initializable {
         totalWeightTextField.setText(String.valueOf(order.getTotalWeight()));
         vehicleWeightTextField.setText(String.valueOf(order.getVehicleWeight()));
         cargoWeightTextField.setText(String.valueOf(order.getCargoWeight()));
+        cargoComboBox.setValue(order.getCargoType());
         PaymentStatus paymentStatus = PaymentStatus.getByNote(order.getPaymentStatus());
         if (PAID.equals(paymentStatus)) {
             paidRadioButton.setSelected(true);
+            paidRadioButton.setDisable(true);
+            unpaidRadioButton.setDisable(true);
+            paymentAmountTextField.setDisable(true);
+            payerTextField.setDisable(true);
         } else {
             unpaidRadioButton.setSelected(true);
         }
         selectedOrder = order;
+        totalWeightTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            try {
+                Integer parseValue = Integer.valueOf(newValue);
+                totalWeightTextField.setText(parseValue.toString());
+            } catch (IllegalArgumentException ex) {
+                totalWeightTextField.setText(String.valueOf(selectedOrder.getTotalWeight()));
+            }
+        });
+        vehicleWeightTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            try {
+                Integer parseValue = Integer.valueOf(newValue);
+                vehicleWeightTextField.setText(parseValue.toString());
+            } catch (IllegalArgumentException ex) {
+                vehicleWeightTextField.setText(String.valueOf(selectedOrder.getVehicleWeight()));
+            }
+        });
+        paymentAmountTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            try {
+                Integer parseValue = Integer.valueOf(newValue);
+                paymentAmountTextField.setText(parseValue.toString());
+            } catch (IllegalArgumentException ex) {
+                paymentAmountTextField.setText(String.valueOf(selectedOrder.getPaymentAmount()));
+            }
+        });
     }
 
     public void updateOrder(ActionEvent actionEvent) {
@@ -112,6 +141,21 @@ public class FormController implements Initializable {
                 order.setTotalWeight(secondValue);
                 order.setVehicleWeight(firstValue);
             }
+            String payer = payerTextField.getText();
+            if (StringUtils.isBlank(payer)) {
+                alert = new Alert(WARNING);
+                alert.setTitle("Lỗi cập nhật");
+                alert.setHeaderText(null);
+                alert.setContentText("Không được để trống người thanh toán");
+                return;
+            }
+            if (paidRadioButton.isSelected() && !PAID.getNote().equals(order.getPaymentStatus())) {
+                alert = new Alert(WARNING);
+                alert.setTitle("Lưu ý cập nhật");
+                alert.setHeaderText(null);
+                alert.setContentText("Sau khi cập nhật bạn sẽ không thể thay đổi giá tiền và người bán được nữa");
+                alert.showAndWait();
+            }
             int cargoValue = Math.abs(firstValue - secondValue);
             order.setCargoWeight(cargoValue);
             order.setLicensePlates(licensePlatesTextField.getText().toUpperCase());
@@ -127,12 +171,12 @@ public class FormController implements Initializable {
             order.setPaymentStatus(paidRadioButton.isSelected() ? PAID.getNote() : UNPAID.getNote());
             orderDAO.updateOrder(order);
             historyLogDAO.createLogForOrder(oldOrder, order, UPDATED_ORDER_MANUAL);
-            alert = new Alert(Alert.AlertType.INFORMATION);
+            alert = new Alert(INFORMATION);
             alert.setTitle("Cập nhật thành công");
             alert.setHeaderText(null);
             alert.setContentText("Cập nhật mã cân " + order.getIndex() + " thành công!");
             alert.showAndWait();
-            reloadPopup(order, actionEvent);
+            resetData(order);
         } catch (Exception e) {
             alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Lỗi cập nhật");
@@ -142,23 +186,35 @@ public class FormController implements Initializable {
         }
     }
 
-    private void reloadPopup(Order order, ActionEvent actionEvent) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(FORM.getFxml()));
-        Parent root = fxmlLoader.load();
-        FormController formController = fxmlLoader.getController();
-        formController.setValue(order);
-        Scene scene = new Scene(root);
-        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        stage.setScene(scene);
-        stage.setTitle("Chỉnh sửa mã cân");
-        stage.show();
-        ConvertUtil.PAGES.add(FORM.name());
-        stage.setOnCloseRequest(e -> {
-            ConvertUtil.PAGES.remove(FORM.name());
-        });
+    private void resetData(Order order) {
+        indexTextField.setText(String.valueOf(order.getIndex()));
+        licensePlatesTextField.setText(order.getLicensePlates());
+        sellerTextField.setText(order.getSeller());
+        buyerTextField.setText(order.getBuyer());
+        noteTextField.setText(order.getNote());
+        cargoComboBox.setValue(order.getCargoType());
+        paymentAmountTextField.setText(String.valueOf(order.getPaymentAmount()));
+        payerTextField.setText(order.getPayer());
+        totalWeightTextField.setText(String.valueOf(order.getTotalWeight()));
+        vehicleWeightTextField.setText(String.valueOf(order.getVehicleWeight()));
+        cargoWeightTextField.setText(String.valueOf(order.getCargoWeight()));
+        if (PAID.getNote().equalsIgnoreCase(order.getPaymentStatus())) {
+            paidRadioButton.setSelected(true);
+            paidRadioButton.setDisable(true);
+            unpaidRadioButton.setDisable(true);
+            paymentAmountTextField.setDisable(true);
+            payerTextField.setDisable(true);
+        } else {
+            unpaidRadioButton.setSelected(true);
+        }
+        selectedOrder = order;
     }
 
     public void openOrderDetail(ActionEvent actionEvent) throws JRException {
         reportService.printOrderDetail(selectedOrder, false);
+    }
+
+    public void rollback() {
+        resetData(selectedOrder);
     }
 }

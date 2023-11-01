@@ -3,7 +3,6 @@ package com.example.demo;
 import com.example.demo.data.ScreenScale;
 import com.example.demo.utils.constants.Page;
 import com.example.demo.utils.util.ConvertUtil;
-import com.fazecast.jSerialComm.SerialPort;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -55,9 +54,6 @@ public class AdminController implements Initializable {
                     });
                 }
                 return;
-            }
-            case DEBTOR -> {
-                newRoot = FXMLLoader.load(getClass().getResource(DEBTOR.getFxml()));
             }
             case SETTING -> {
                 newRoot = FXMLLoader.load(getClass().getResource(SETTING.getFxml()));

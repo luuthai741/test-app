@@ -81,6 +81,9 @@ public class WeighMoneyController implements Initializable {
         weightMoneyTable.setItems(moneyObservableList);
         startWeightTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             try {
+                if (StringUtils.isBlank(newValue)){
+                    startWeightTextField.setText("0");
+                }
                 Integer parseValue = Integer.valueOf(newValue);
                 startWeightTextField.setText(parseValue.toString());
             } catch (IllegalArgumentException ex) {
@@ -112,7 +115,6 @@ public class WeighMoneyController implements Initializable {
             }
         });
         typeCombobox.setItems(FXCollections.observableList(vehicles.stream().map(Vehicle::getName).collect(Collectors.toList())));
-        typeCombobox.setValue(VehicleType.CAR.name());
         weightMoneyTable.setPlaceholder(new Label(""));
         weightMoneyTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             selectedWeightMoney = newValue;
@@ -139,6 +141,7 @@ public class WeighMoneyController implements Initializable {
         int endWeight = Integer.valueOf(endWeightTextField.getText());
         double amountMoney = Double.valueOf(amountMoneyTextField.getText());
         double minAmount = Double.valueOf(minAmountTextField.getText());
+        Vehicle vehicle = vehicles.parallelStream().filter(v -> v.getName().equalsIgnoreCase(typeCombobox.getValue())).findFirst().orElse(null);
         String message = "";
         if (startWeight > endWeight) {
             message = "Khối lượng kết thúc không thể nhỏ hơn bắt đầu";
@@ -148,6 +151,9 @@ public class WeighMoneyController implements Initializable {
         }
         if (minAmount > amountMoney) {
             message = "Số tiền nhỏ nhất không thể lớn hơn số tiền chính!";
+        }
+        if (vehicle == null){
+            message = "Vui lòng chọn phương tiện!";
         }
         if (StringUtils.isNotBlank(message)) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -222,10 +228,12 @@ public class WeighMoneyController implements Initializable {
         weightMoneyTable.setItems(moneyObservableList);
         vehicles = vehicleDAO.getAll();
         vehicleTable.setItems(vehicleDAO.getAll());
+        typeCombobox.setItems(FXCollections.observableList(vehicles.stream().map(Vehicle::getName).collect(Collectors.toList())));
         weightMoneyTable.getSelectionModel().clearSelection();
-        startWeightTextField.setText("");
-        endWeightTextField.setText("");
-        amountMoneyTextField.setText("");
+        startWeightTextField.setText("0");
+        endWeightTextField.setText("0");
+        amountMoneyTextField.setText("0");
+        minAmountTextField.setText("0");
         vehicleNameTextField.setText("");
         vehiclePatternTextField.setText("");
         selectedWeightMoney = null;

@@ -179,10 +179,13 @@ public class IndexController implements Initializable {
             }
         });
         timerThread.start();
-        PauseTransition pause = new PauseTransition(Duration.millis(800));
+        PauseTransition pause = new PauseTransition(Duration.millis(300));
         licensePlatesTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             pause.setOnFinished(event -> {
                 try {
+                    if (selectedOrder != null){
+                        return;
+                    }
                     if (StringUtils.isBlank(newValue)) {
                         sellerTextField.setText("");
                         buyerTextField.setText("");
@@ -245,7 +248,7 @@ public class IndexController implements Initializable {
         weightDetailPane.setVisible(false);
         orders = orderDAO.getOrders();
         orderTable.setItems(orders);
-        saveButton.setDisable(false);
+        saveButton.setDisable(true);
     }
 
     public void actionFirstTime(ActionEvent actionEvent) {
@@ -259,15 +262,13 @@ public class IndexController implements Initializable {
             alert.show();
             return;
         }
-        long index = orderDAO.countOrderByDate(LocalDateTime.now());
+        long index = orderDAO.countOrderBetweenDates(LocalDate.now(),LocalDate.now());
         indexTextField.setText(String.valueOf(index + 1));
         printButton.setDisable(true);
         secondTimeButton.setDisable(true);
         weightDetailPane.setVisible(true);
         totalWeightLabel.setText(weightLabel.getText());
-        Integer weight = Integer.valueOf(totalWeightLabel.getText());
-        double paymentAmount = weightMoneyDAO.getAmountByCargoWeight(licensePlatesTextField.getText(), weight, true);
-        paymentAmountTextField.setText(String.valueOf(paymentAmount));
+        saveButton.setDisable(false);
     }
 
     public void actionSecondTime(ActionEvent actionEvent) {
@@ -293,17 +294,19 @@ public class IndexController implements Initializable {
         cargoWeightLabel.setText(String.valueOf(cargoWeight.intValue()));
         double paymentAmount = weightMoneyDAO.getAmountByCargoWeight(licensePlatesTextField.getText(), cargoWeight.intValue(), false);
         paymentAmountTextField.setText(String.valueOf(paymentAmount));
-        payerIsSellerCheckbox.setSelected(true);
-        onChangePayerIsSellerCheckbox();
+        if (selectedOrder != null && StringUtils.isBlank(selectedOrder.getPayer())){
+            payerIsSellerCheckbox.setSelected(true);
+            onChangePayerIsSellerCheckbox();
+        }
+        saveButton.setDisable(false);
     }
-
     public void saveOrder(ActionEvent actionEvent) throws CloneNotSupportedException {
         String errorText = "";
         if (StringUtils.isBlank(licensePlatesTextField.getText())) {
             errorText = "Biển số xe không được để trống!";
         }
         Double paymentAmount = Double.valueOf(StringUtils.isBlank(paymentAmountTextField.getText()) ? "0" : paymentAmountTextField.getText());
-        if (paymentAmount <= 0) {
+        if (paymentAmount <= 0 && selectedOrder != null) {
             errorText = "Giá cân không thể bằng 0";
         }
         if (StringUtils.isNotBlank(errorText)) {
@@ -314,9 +317,8 @@ public class IndexController implements Initializable {
             alert.show();
             return;
         }
-        Order order = null;
         if (selectedOrder == null) {
-            order = new Order();
+            Order order = new Order();
             long id = orderDAO.countById() + 1;
             order.setId(id);
             order.setId(Integer.valueOf(indexTextField.getText()));
@@ -332,9 +334,14 @@ public class IndexController implements Initializable {
             order.setStatus(CREATED.getNote());
             order.setPaymentStatus(PaymentStatus.UNPAID.getNote());
             order.setCargoType(cargoComboBox.getValue());
-            order.setPaymentAmount(paymentAmount);
             order.setNote(noteTextField.getText());
+            order.setPayer(payerTextField.getText());
             order.setCreatedBy(CurrentUser.getInstance().getUsername());
+            if (paymentAmount <= 0){
+                paymentAmount = weightMoneyDAO.getAmountByCargoWeight(order.getLicensePlates(), order.getTotalWeight(), true);;
+            }
+            paymentAmountTextField.setText(String.valueOf(paymentAmount));
+            order.setPaymentAmount(paymentAmount);
             orderDAO.createOrder(order);
             LogAction logAction = LogAction.CREATED_ORDER;
             if (manualCheckbox.isSelected()) {
@@ -389,7 +396,9 @@ public class IndexController implements Initializable {
         vehicleWeightLabel.setText("");
         cargoWeightLabel.setText("");
         selectedOrder = null;
+        printButton.setDisable(true);
         payerIsSellerCheckbox.setSelected(false);
+        payerTextField.setText("");
         paidRadioButton.setSelected(false);
         unpaidRadioButton.setSelected(false);
         cargoComboBox.setItems(cargoDAO.getAll());
@@ -407,6 +416,7 @@ public class IndexController implements Initializable {
         vehicleWeightLabel.setText(String.valueOf(order.getVehicleWeight()));
         cargoWeightLabel.setText(String.valueOf(order.getCargoWeight()));
         cargoComboBox.setValue(order.getCargoType());
+        payerTextField.setText(order.getPayer());
         PaymentStatus paymentStatus = PaymentStatus.getByNote(order.getPaymentStatus());
         if (PaymentStatus.PAID.equals(paymentStatus)) {
             paidRadioButton.setSelected(true);

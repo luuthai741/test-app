@@ -2,7 +2,6 @@ package com.example.demo.dao;
 
 import com.example.demo.mapper.VehicleMapper;
 import com.example.demo.model.Vehicle;
-import com.example.demo.model.WeightMoney;
 import com.example.demo.utils.util.SqlUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -12,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.demo.utils.constants.VehicleConstants.*;
-import static com.example.demo.utils.constants.WeightMoneyConstants.UPDATE_WEIGHT_MONEY_BY_ID;
 
 
 public class VehicleDAO {

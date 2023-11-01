@@ -3,14 +3,15 @@ package com.example.demo.dao;
 import com.example.demo.mapper.OrderMapper;
 import com.example.demo.model.Order;
 import com.example.demo.query.OrderQuery;
-import com.example.demo.utils.util.ConvertUtil;
 import com.example.demo.utils.util.DateUtil;
 import com.example.demo.utils.util.SqlUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.ResultSet;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,10 +36,10 @@ public class OrderDAO {
         return instance;
     }
 
-    public long countOrderByDate(LocalDateTime dateTime) {
+    public long countOrderBetweenDates(LocalDate startDate, LocalDate endDate) {
         OrderQuery orderQuery = new OrderQuery();
-        orderQuery.setDateTimeFrom(dateTime.withHour(0).withMinute(0).withSecond(0));
-        orderQuery.setDateTimeTo(dateTime.withHour(23).withMinute(59).withSecond(59));
+        orderQuery.setDateTimeFrom(LocalDateTime.of(startDate, LocalTime.of(0,0,0)));
+        orderQuery.setDateTimeTo(LocalDateTime.of(endDate, LocalTime.of(23,59,59)));
         SqlUtil sqlUtil = new SqlUtil();
         try {
             sqlUtil.connect();
@@ -53,11 +54,29 @@ public class OrderDAO {
         return 0;
     }
 
+    public long getSumPaymentBetweenDates(LocalDate startDate, LocalDate endDate) {
+        OrderQuery orderQuery = new OrderQuery();
+        orderQuery.setDateTimeFrom(LocalDateTime.of(startDate, LocalTime.of(0,0,0)));
+        orderQuery.setDateTimeTo(LocalDateTime.of(endDate, LocalTime.of(23,59,59)));
+        SqlUtil sqlUtil = new SqlUtil();
+        try {
+            sqlUtil.connect();
+            String sql = GET_SUM_PAYMENT + orderQuery.getQueryCondition();
+            ResultSet rs = sqlUtil.exeQuery(sql);
+            return orderMapper.countOrder(rs);
+        } catch (Exception e) {
+
+        } finally {
+            sqlUtil.disconnect();
+        }
+        return 0;
+    }
+
     public long countById() {
         SqlUtil sqlUtil = new SqlUtil();
         try {
             sqlUtil.connect();
-            String sql = COUNT_ALL;
+            String sql = GET_SUM_PAYMENT;
             ResultSet rs = sqlUtil.exeQuery(sql);
             return orderMapper.countOrder(rs);
         } catch (Exception e) {

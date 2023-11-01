@@ -28,8 +28,8 @@
                         </Label>
                         <Label layoutX="119.0" layoutY="90.0" text=":" />
                         <Label layoutX="119.0" layoutY="132.0" text=":" />
-                        <TextField fx:id="startWeightTextField" layoutX="146.0" layoutY="90.0" prefWidth="200.0" />
-                        <TextField fx:id="endWeightTextField" layoutX="146.0" layoutY="132.0" prefWidth="200.0" />
+                        <TextField fx:id="startWeightTextField" layoutX="146.0" layoutY="90.0" prefWidth="200.0" text="0"/>
+                        <TextField fx:id="endWeightTextField" layoutX="146.0" layoutY="132.0" prefWidth="200.0" text="0"/>
                         <Button layoutX="86.0" layoutY="309.0" mnemonicParsing="false" onAction="#saveWeightMoney" prefWidth="75.0" text="Lưu" />
                         <TableView fx:id="weightMoneyTable" layoutX="355.0" layoutY="88.0" prefHeight="300.0" prefWidth="505.0">
                             <columns>
@@ -51,7 +51,7 @@
                             </font>
                         </Label>
                         <Label layoutX="119.0" layoutY="174.0" text=":" />
-                        <TextField fx:id="amountMoneyTextField" layoutX="146.0" layoutY="174.0" prefWidth="200.0" />
+                        <TextField fx:id="amountMoneyTextField" layoutX="146.0" layoutY="174.0" prefWidth="200.0" text="0"/>
                         <Label layoutX="29.0" layoutY="252.0" prefHeight="26.0" prefWidth="60.0" text="Loại">
                             <font>
                                 <Font name="System Bold" size="13.0" />
@@ -66,26 +66,26 @@
                             </font>
                         </Label>
                         <Label layoutX="119.0" layoutY="214.0" text=":" />
-                        <TextField fx:id="minAmountTextField" layoutX="146.0" layoutY="214.0" prefWidth="200.0" />
-                  <Label layoutX="32.0" layoutY="414.0" prefHeight="30.0" text="Chỉnh sửa tiền cân">
+                        <TextField fx:id="minAmountTextField" layoutX="146.0" layoutY="214.0" prefWidth="200.0" text="0"/>
+                  <Label layoutX="32.0" layoutY="414.0" prefHeight="30.0" text="Phương tiện">
                      <font>
                         <Font size="25.0" />
                      </font>
                   </Label>
                   <TableView fx:id="vehicleTable" layoutX="355.0" layoutY="467.0" prefHeight="327.0" prefWidth="260.0">
                     <columns>
-                      <TableColumn fx:id="vehicleNameCol" prefWidth="130.0" text="name" />
-                      <TableColumn fx:id="vehiclePatternCol" prefWidth="130.0" text="pattern" />
+                      <TableColumn fx:id="vehicleNameCol" prefWidth="130.0" text="Tên" />
+                      <TableColumn fx:id="vehiclePatternCol" prefWidth="130.0" text="Ký tự phù hợp" />
                     </columns>
                   </TableView>
-                  <Label layoutX="29.0" layoutY="467.0" prefHeight="26.0" prefWidth="60.0" text="Bắt đầu">
+                  <Label layoutX="29.0" layoutY="467.0" prefHeight="26.0" prefWidth="60.0" text="Tên">
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font>
                   </Label>
                   <Label layoutX="119.0" layoutY="468.0" text=":" />
                   <TextField fx:id="vehicleNameTextField" layoutX="146.0" layoutY="468.0" prefWidth="200.0" />
-                  <Label layoutX="29.0" layoutY="505.0" prefHeight="26.0" prefWidth="60.0" text="Bắt đầu">
+                  <Label layoutX="29.0" layoutY="505.0" prefHeight="26.0" prefWidth="60.0" text="Ký tự ">
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font>
