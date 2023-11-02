@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.ItemController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.controller.ItemController">
    <children>
       <AnchorPane prefHeight="200.0" prefWidth="200.0">
          <children>
@@ -68,7 +68,7 @@
                                  <cursor>
                                     <Cursor fx:constant="HAND" />
                                  </cursor></Button>
-                              <Button layoutX="1063.0" layoutY="44.0" mnemonicParsing="false" onAction="#updatePaidPaymentStatus" prefHeight="30.0" prefWidth="112.0" text="Thanh toán mã cân">
+                              <Button layoutX="1063.0" layoutY="44.0" mnemonicParsing="false" onAction="#updatePaidPaymentStatus" prefHeight="30.0" prefWidth="112.0" text="Thanh toán">
                                  <cursor>
                                     <Cursor fx:constant="HAND" />
                                  </cursor>

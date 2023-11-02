@@ -30,4 +30,21 @@ public class DateUtil {
         YearMonth month = YearMonth.from(date);
         return month.atEndOfMonth();
     }
+    public static LocalDate getFirstDayOfMonth(int month, int year) {
+        try {
+            return LocalDate.of(year, month, 1);
+        } catch (Exception e) {
+            return LocalDate.now();
+        }
+    }
+
+    public static LocalDate getLastDayOfMonth(int month, int year) {
+        try {
+            LocalDate date =  LocalDate.of(year, month, 1);
+            YearMonth yearMonth = YearMonth.from(date);
+            return yearMonth.atEndOfMonth();
+        } catch (Exception e) {
+            return LocalDate.now();
+        }
+    }
 }

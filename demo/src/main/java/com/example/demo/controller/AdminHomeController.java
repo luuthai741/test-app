@@ -1,10 +1,12 @@
-package com.example.demo;
+package com.example.demo.controller;
 
 import com.example.demo.dao.OrderDAO;
 import com.example.demo.service.IOService;
 import com.example.demo.utils.constants.OrderStatus;
 import com.example.demo.utils.constants.PaymentStatus;
 import com.example.demo.utils.util.DateUtil;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,7 +15,7 @@ import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
-import javafx.scene.control.DatePicker;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -22,6 +24,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.Month;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ResourceBundle;
 
@@ -31,9 +35,13 @@ public class AdminHomeController implements Initializable {
     @FXML
     private LineChart orderLineChart;
     @FXML
-    private DatePicker startDatePicker;
+    private ComboBox<Integer> startMonth;
     @FXML
-    private DatePicker endDatePicker;
+    private ComboBox<Integer> startYear;
+    @FXML
+    private ComboBox<Integer> endMonth;
+    @FXML
+    private ComboBox<Integer> endYear;
     @FXML
     private Label totalAmountLabel;
     @FXML
@@ -46,39 +54,45 @@ public class AdminHomeController implements Initializable {
     private Label totalOrderLabel;
     private OrderDAO orderDAO = OrderDAO.getInstance();
     private IOService ioService = new IOService();
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         LocalDate now = LocalDate.now();
         LocalDate yearAgo = now.minusMonths(6);
-        startDatePicker.setValue(yearAgo);
-        endDatePicker.setValue(now);
-        filter(yearAgo, now);
+        ObservableList<Integer> months = FXCollections.observableList(new ArrayList<>());
+        ObservableList<Integer> years = FXCollections.observableList(new ArrayList<>());
+        for (Month month : Month.values()) {
+            months.add(month.getValue());
+        }
+        for (int index = now.getYear(); index >= now.getYear() - 5; index--) {
+            years.add(index);
+        }
+        startMonth.setItems(months);
+        endMonth.setItems(months);
+        startYear.setItems(years);
+        endYear.setItems(years);
+        startMonth.setValue(yearAgo.getMonthValue());
+        startYear.setValue(yearAgo.getYear());
+        endMonth.setValue(now.getMonthValue());
+        endYear.setValue(now.getYear());
+        filter(orderBarChart);
+        filter(orderLineChart);
     }
 
-    private void filter(LocalDate startDate, LocalDate endDate) {
-        orderLineChart.getData().removeAll(Collections.singleton(orderLineChart.getData().setAll()));
-        orderBarChart.getData().removeAll(Collections.singleton(orderBarChart.getData().setAll()));
-        XYChart.Series totalOrderLineChart = new XYChart.Series();
-        XYChart.Series totalAmountLineChart = new XYChart.Series();
-        XYChart.Series totalPaidAmountLineChart = new XYChart.Series();
-        XYChart.Series totalUnpaidAmountLineChart = new XYChart.Series();
-        XYChart.Series totalCancelAmountLineChart = new XYChart.Series();
-        XYChart.Series totalOrderBarChart = new XYChart.Series();
-        XYChart.Series totalAmountBarChart = new XYChart.Series();
-        XYChart.Series totalPaidAmountBarChart = new XYChart.Series();
-        XYChart.Series totalUnpaidAmountBarChart = new XYChart.Series();
-        XYChart.Series totalCancelAmountBarChart = new XYChart.Series();
-        totalAmountLineChart.setName("Tổng doanh thu");
-        totalOrderLineChart.setName("Tổng số lượng cân");
-        totalPaidAmountLineChart.setName("Đã trả");
-        totalUnpaidAmountLineChart.setName("Chưa trả");
-        totalCancelAmountLineChart.setName("Hủy mã cân");
-
-        totalAmountBarChart.setName("Tổng doanh thu");
-        totalOrderBarChart.setName("Tổng số lượng cân");
-        totalPaidAmountBarChart.setName("Đã trả");
-        totalUnpaidAmountBarChart.setName("Chưa trả");
-        totalCancelAmountBarChart.setName("Hủy mã cân");
+    private void filter(XYChart xyChart) {
+        xyChart.getData().removeAll(Collections.singleton(xyChart.getData().setAll()));
+        XYChart.Series totalOrderData = new XYChart.Series();
+        XYChart.Series totalAmountData = new XYChart.Series();
+        XYChart.Series totalPaidAmountData = new XYChart.Series();
+        XYChart.Series totalUnpaidAmountData = new XYChart.Series();
+        XYChart.Series totalCancelAmountData = new XYChart.Series();
+        LocalDate startDate = DateUtil.getFirstDayOfMonth(startMonth.getValue(), startYear.getValue());
+        LocalDate endDate = DateUtil.getFirstDayOfMonth(endMonth.getValue(), endYear.getValue());
+        totalAmountData.setName("Tổng doanh thu");
+        totalOrderData.setName("Tổng số lượng cân");
+        totalPaidAmountData.setName("Đã trả");
+        totalUnpaidAmountData.setName("Chưa trả");
+        totalCancelAmountData.setName("Hủy mã cân");
         long totalOrders = 0;
         long totalAmount = 0;
         long totalPaidAmount = 0;
@@ -92,16 +106,11 @@ public class AdminHomeController implements Initializable {
             long monthCancel = orderDAO.countOrderBetweenDates(firstDayOfMonth, lastDayOfMonth, OrderStatus.CANCELED);
             long totalMonthAmount = orderDAO.getSumPaymentBetweenDates(firstDayOfMonth, lastDayOfMonth, PaymentStatus.ALL);
             long monthTotalUnpaidAmount = orderDAO.getSumPaymentBetweenDates(firstDayOfMonth, lastDayOfMonth, PaymentStatus.UNPAID);
-            totalOrderLineChart.getData().add(new XYChart.Data(String.valueOf(startDate.getMonthValue()), monthTotal));
-            totalAmountLineChart.getData().add(new XYChart.Data(String.valueOf(startDate.getMonthValue()), totalMonthAmount));
-            totalPaidAmountLineChart.getData().add(new XYChart.Data(String.valueOf(startDate.getMonthValue()), monthTotalPaidAmount));
-            totalUnpaidAmountLineChart.getData().add(new XYChart.Data(String.valueOf(startDate.getMonthValue()), monthTotalUnpaidAmount));
-            totalCancelAmountLineChart.getData().add(new XYChart.Data(String.valueOf(startDate.getMonthValue()), monthCancel));
-            totalOrderBarChart.getData().add(new XYChart.Data(String.valueOf(startDate.getMonthValue()), monthTotal));
-            totalAmountBarChart.getData().add(new XYChart.Data(String.valueOf(startDate.getMonthValue()), totalMonthAmount));
-            totalPaidAmountBarChart.getData().add(new XYChart.Data(String.valueOf(startDate.getMonthValue()), monthTotalPaidAmount));
-            totalUnpaidAmountBarChart.getData().add(new XYChart.Data(String.valueOf(startDate.getMonthValue()), monthTotalUnpaidAmount));
-            totalCancelAmountBarChart.getData().add(new XYChart.Data(String.valueOf(startDate.getMonthValue()), monthCancel));
+            totalOrderData.getData().add(new XYChart.Data(String.valueOf(startDate.getMonthValue()), monthTotal));
+            totalAmountData.getData().add(new XYChart.Data(String.valueOf(startDate.getMonthValue()), totalMonthAmount));
+            totalPaidAmountData.getData().add(new XYChart.Data(String.valueOf(startDate.getMonthValue()), monthTotalPaidAmount));
+            totalUnpaidAmountData.getData().add(new XYChart.Data(String.valueOf(startDate.getMonthValue()), monthTotalUnpaidAmount));
+            totalCancelAmountData.getData().add(new XYChart.Data(String.valueOf(startDate.getMonthValue()), monthCancel));
             totalOrders += monthTotal;
             totalAmount += totalMonthAmount;
             totalPaidAmount += monthTotalPaidAmount;
@@ -109,16 +118,11 @@ public class AdminHomeController implements Initializable {
             totalCancel += monthCancel;
             startDate = startDate.plusMonths(1);
         }
-        orderLineChart.getData().add(totalOrderLineChart);
-        orderLineChart.getData().add(totalAmountLineChart);
-        orderLineChart.getData().add(totalPaidAmountLineChart);
-        orderLineChart.getData().add(totalUnpaidAmountLineChart);
-        orderLineChart.getData().add(totalCancelAmountLineChart);
-        orderBarChart.getData().add(totalOrderBarChart);
-        orderBarChart.getData().add(totalAmountBarChart);
-        orderBarChart.getData().add(totalPaidAmountBarChart);
-        orderBarChart.getData().add(totalUnpaidAmountBarChart);
-        orderBarChart.getData().add(totalCancelAmountBarChart);
+        xyChart.getData().add(totalOrderData);
+        xyChart.getData().add(totalAmountData);
+        xyChart.getData().add(totalPaidAmountData);
+        xyChart.getData().add(totalUnpaidAmountData);
+        xyChart.getData().add(totalCancelAmountData);
         totalOrderLabel.setText(String.valueOf(totalOrders));
         totalAmountLabel.setText(String.valueOf(totalAmount));
         totalPaidAmountLabel.setText(String.valueOf(totalPaidAmount));
@@ -127,7 +131,9 @@ public class AdminHomeController implements Initializable {
     }
 
     public void search() {
-        if (startDatePicker.getValue().isAfter(endDatePicker.getValue())) {
+        LocalDate startDate = DateUtil.getFirstDayOfMonth(startMonth.getValue(), startYear.getValue());
+        LocalDate endDate = DateUtil.getFirstDayOfMonth(endMonth.getValue(), endYear.getValue());
+        if (startDate.isAfter(endDate)) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Lọc thất bại");
             alert.setHeaderText(null);
@@ -135,7 +141,8 @@ public class AdminHomeController implements Initializable {
             alert.show();
             return;
         }
-        filter(startDatePicker.getValue(), endDatePicker.getValue());
+        filter(orderLineChart);
+        filter(orderBarChart);
     }
 
     public void importOrder(ActionEvent actionEvent) throws FileNotFoundException {
@@ -161,6 +168,8 @@ public class AdminHomeController implements Initializable {
     }
 
     public void export(ActionEvent actionEvent) throws FileNotFoundException {
+        LocalDate startDate = DateUtil.getFirstDayOfMonth(startMonth.getValue(), startYear.getValue());
+        LocalDate endDate = DateUtil.getFirstDayOfMonth(endMonth.getValue(), endYear.getValue());
         DirectoryChooser directoryChooser = new DirectoryChooser();
         File selectedDirectory = directoryChooser.showDialog(((Node) actionEvent.getSource()).getScene().getWindow());
         if (selectedDirectory == null) {
@@ -171,8 +180,8 @@ public class AdminHomeController implements Initializable {
                         null,
                         null,
                         null,
-                        startDatePicker.getValue().atStartOfDay().withHour(0).withMinute(0).withSecond(0),
-                        endDatePicker.getValue().atStartOfDay().withHour(23).withMinute(59).withSecond(59)),
+                        startDate.atStartOfDay().withHour(0).withMinute(0).withSecond(0),
+                        endDate.atStartOfDay().withHour(23).withMinute(59).withSecond(59)),
                 selectedDirectory.getAbsolutePath());
         Alert alert = null;
         String title = "Xuất dữ liệu";

@@ -1,5 +1,6 @@
-package com.example.demo;
+package com.example.demo.controller;
 
+import com.example.demo.HelloApplication;
 import com.example.demo.dao.HistoryLogDAO;
 import com.example.demo.dao.OrderDAO;
 import com.example.demo.dao.SettingDAO;
@@ -181,7 +182,7 @@ public class ItemController implements Initializable {
 
     public void openPopup(ActionEvent actionEvent) throws IOException {
         if (!ConvertUtil.PAGES.contains(FORM.name())) {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(FORM.getFxml()));
+            FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource(FORM.getFxml()));
             Parent root = fxmlLoader.load();
             FormController formController = fxmlLoader.getController();
             formController.setValue(orderDAO.getById(String.valueOf(orderTable.getSelectionModel().getSelectedItem().getId())));

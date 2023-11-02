@@ -1,5 +1,6 @@
-package com.example.demo;
+package com.example.demo.controller;
 
+import com.example.demo.HelloApplication;
 import com.example.demo.data.CurrentUser;
 import com.example.demo.data.ScreenScale;
 import com.example.demo.utils.constants.RoleType;
@@ -34,14 +35,14 @@ public class LoginController {
         FXMLLoader fxmlLoader;
         CurrentUser currentUser = CurrentUser.getInstance();
         if (username.getText().equals("user") && password.getText().equals("user")) {
-            fxmlLoader = new FXMLLoader(getClass().getResource("user.fxml"));
+            fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("user.fxml"));
             root = fxmlLoader.load();
             Scene scene = new Scene(root);
             stage.setScene(scene);
             currentUser.setUsername(username.getText());
             currentUser.setRole(USER);
         } else if (username.getText().equals("admin") && password.getText().equals("admin")) {
-            fxmlLoader = new FXMLLoader(getClass().getResource("admin.fxml"));
+            fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("admin.fxml"));
             root = fxmlLoader.load();
             Scene scene = new Scene(root);
             stage.setScene(scene);

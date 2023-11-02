@@ -23,4 +23,5 @@ public class ConvertUtil {
     public static String replaceNullStringToBlank(String value){
         return StringUtils.isBlank(value) ? "" : value;
     }
+
 }

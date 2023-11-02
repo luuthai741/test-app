@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.LoginController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.controller.LoginController">
    <children>
       <AnchorPane prefHeight="200.0" prefWidth="200.0">
          <children>
@@ -22,9 +22,9 @@
                </children></AnchorPane>
             <AnchorPane layoutX="300.0" prefHeight="400.0" prefWidth="300.0" styleClass="right-form" stylesheets="@css/login.css">
                <children>
-                  <PasswordField fx:id="password" layoutX="55.0" layoutY="176.0" prefWidth="200.0" promptText="Mật khẩu" text="admin"/>
+                  <PasswordField fx:id="password" layoutX="55.0" layoutY="176.0" prefWidth="200.0" promptText="Mật khẩu" text=""/>
                   <Button fx:id="loginButton" layoutX="105.0" layoutY="224.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" styleClass="general-button" stylesheets="@css/login.css" text="ĐĂNG NHẬP" textOverrun="CENTER_ELLIPSIS" onAction="#login"/>
-                  <TextField fx:id="username" layoutX="55.0" layoutY="128.0" prefWidth="200.0" promptText="Tài khoản" text="admin"/>
+                  <TextField fx:id="username" layoutX="55.0" layoutY="128.0" prefWidth="200.0" promptText="Tài khoản" text=""/>
                </children>
             </AnchorPane>
          </children>
