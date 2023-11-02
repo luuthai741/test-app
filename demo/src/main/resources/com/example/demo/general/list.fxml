@@ -68,6 +68,11 @@
                                  <cursor>
                                     <Cursor fx:constant="HAND" />
                                  </cursor></Button>
+                              <Button layoutX="1063.0" layoutY="44.0" mnemonicParsing="false" onAction="#updatePaidPaymentStatus" prefHeight="30.0" prefWidth="112.0" text="Thanh toán mã cân">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
                            </children>
                         </AnchorPane>
                         <AnchorPane layoutX="50.0" layoutY="105.0" prefHeight="700.0" prefWidth="1100.0">

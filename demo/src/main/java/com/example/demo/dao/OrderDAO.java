@@ -3,6 +3,8 @@ package com.example.demo.dao;
 import com.example.demo.mapper.OrderMapper;
 import com.example.demo.model.Order;
 import com.example.demo.query.OrderQuery;
+import com.example.demo.utils.constants.OrderStatus;
+import com.example.demo.utils.constants.PaymentStatus;
 import com.example.demo.utils.util.DateUtil;
 import com.example.demo.utils.util.SqlUtil;
 import javafx.collections.FXCollections;
@@ -36,10 +38,11 @@ public class OrderDAO {
         return instance;
     }
 
-    public long countOrderBetweenDates(LocalDate startDate, LocalDate endDate) {
+    public long countOrderBetweenDates(LocalDate startDate, LocalDate endDate, OrderStatus status) {
         OrderQuery orderQuery = new OrderQuery();
-        orderQuery.setDateTimeFrom(LocalDateTime.of(startDate, LocalTime.of(0,0,0)));
-        orderQuery.setDateTimeTo(LocalDateTime.of(endDate, LocalTime.of(23,59,59)));
+        orderQuery.setDateTimeFrom(LocalDateTime.of(startDate, LocalTime.of(0, 0, 0)));
+        orderQuery.setDateTimeTo(LocalDateTime.of(endDate, LocalTime.of(23, 59, 59)));
+        orderQuery.setStatus(status.getNote());
         SqlUtil sqlUtil = new SqlUtil();
         try {
             sqlUtil.connect();
@@ -54,10 +57,12 @@ public class OrderDAO {
         return 0;
     }
 
-    public long getSumPaymentBetweenDates(LocalDate startDate, LocalDate endDate) {
+    public long getSumPaymentBetweenDates(LocalDate startDate, LocalDate endDate, PaymentStatus paymentStatus) {
         OrderQuery orderQuery = new OrderQuery();
-        orderQuery.setDateTimeFrom(LocalDateTime.of(startDate, LocalTime.of(0,0,0)));
-        orderQuery.setDateTimeTo(LocalDateTime.of(endDate, LocalTime.of(23,59,59)));
+        orderQuery.setDateTimeFrom(LocalDateTime.of(startDate, LocalTime.of(0, 0, 0)));
+        orderQuery.setDateTimeTo(LocalDateTime.of(endDate, LocalTime.of(23, 59, 59)));
+        orderQuery.setPaymentStatus(paymentStatus.getNote());
+        orderQuery.setStatus(OrderStatus.ALL.getNote());
         SqlUtil sqlUtil = new SqlUtil();
         try {
             sqlUtil.connect();
@@ -196,8 +201,8 @@ public class OrderDAO {
             String query = String.format(INSERT_ORDER,
                     order.getIndex(), replaceNullStringToBlank(order.getLicensePlates()),
                     replaceNullStringToBlank(order.getSeller()), replaceNullStringToBlank(order.getBuyer()), order.getTotalWeight(),
-                    order.getVehicleWeight(), order.getCargoWeight(), DateUtil.convertToString(LocalDateTime.now(), DateUtil.DB_FORMAT),
-                    DateUtil.convertToString(LocalDateTime.now(), DateUtil.DB_FORMAT), replaceNullStringToBlank(order.getStatus()), replaceNullStringToBlank(order.getPaymentStatus()),
+                    order.getVehicleWeight(), order.getCargoWeight(), DateUtil.convertToString(order.getCreatedAt(), DateUtil.DB_FORMAT),
+                    DateUtil.convertToString(order.getUpdatedAt(), DateUtil.DB_FORMAT), replaceNullStringToBlank(order.getStatus()), replaceNullStringToBlank(order.getPaymentStatus()),
                     order.getCargoType(), order.getPaymentAmount(), order.getNote(),
                     replaceNullStringToBlank(order.getPayer()), replaceNullStringToBlank(order.getCreatedBy()));
             sqlUtil.exeUpdate(query);
@@ -216,7 +221,7 @@ public class OrderDAO {
             String query = String.format(UPDATE_ORDER_BY_ID,
                     replaceNullStringToBlank(order.getLicensePlates()), replaceNullStringToBlank(order.getSeller()), replaceNullStringToBlank(order.getBuyer()),
                     order.getTotalWeight(), order.getVehicleWeight(), order.getCargoWeight(),
-                    DateUtil.convertToString(LocalDateTime.now(), DateUtil.DB_FORMAT), replaceNullStringToBlank(order.getStatus()), replaceNullStringToBlank(order.getPaymentStatus()),
+                    DateUtil.convertToString(order.getUpdatedAt(), DateUtil.DB_FORMAT), replaceNullStringToBlank(order.getStatus()), replaceNullStringToBlank(order.getPaymentStatus()),
                     replaceNullStringToBlank(order.getCargoType()), order.getPaymentAmount(), replaceNullStringToBlank(order.getNote()), replaceNullStringToBlank(order.getPayer()),
                     order.getId());
             sqlUtil.exeUpdate(query);

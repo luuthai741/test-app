@@ -262,7 +262,7 @@ public class IndexController implements Initializable {
             alert.show();
             return;
         }
-        long index = orderDAO.countOrderBetweenDates(LocalDate.now(),LocalDate.now());
+        long index = orderDAO.countOrderBetweenDates(LocalDate.now(),LocalDate.now(),null);
         indexTextField.setText(String.valueOf(index + 1));
         printButton.setDisable(true);
         secondTimeButton.setDisable(true);
@@ -337,6 +337,8 @@ public class IndexController implements Initializable {
             order.setNote(noteTextField.getText());
             order.setPayer(payerTextField.getText());
             order.setCreatedBy(CurrentUser.getInstance().getUsername());
+            order.setCreatedAt(LocalDateTime.now());
+            order.setUpdatedAt(LocalDateTime.now());
             if (paymentAmount <= 0){
                 paymentAmount = weightMoneyDAO.getAmountByCargoWeight(order.getLicensePlates(), order.getTotalWeight(), true);;
             }

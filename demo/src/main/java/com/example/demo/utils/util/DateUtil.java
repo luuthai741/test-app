@@ -3,6 +3,7 @@ package com.example.demo.utils.util;
 import java.security.PublicKey;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 
@@ -19,5 +20,14 @@ public class DateUtil {
     public static LocalDateTime convertStringToLocalDateTime(String date, String pattern) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
         return LocalDateTime.parse(date, formatter);
+    }
+    public static LocalDate getFirstDayOfMonth(LocalDate date) {
+        YearMonth month = YearMonth.from(date);
+        return month.atDay(1);
+    }
+
+    public static LocalDate getLastDayOfMonth(LocalDate date) {
+        YearMonth month = YearMonth.from(date);
+        return month.atEndOfMonth();
     }
 }

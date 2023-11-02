@@ -130,6 +130,7 @@ public class FormController implements Initializable {
     public void updateOrder(ActionEvent actionEvent) {
         Alert alert;
         try {
+
             int firstValue = Integer.valueOf(totalWeightTextField.getText());
             int secondValue = Integer.valueOf(vehicleWeightTextField.getText());
             Order order = orderDAO.getById(id.getText());
@@ -141,19 +142,27 @@ public class FormController implements Initializable {
                 order.setTotalWeight(secondValue);
                 order.setVehicleWeight(firstValue);
             }
-            String payer = payerTextField.getText();
-            if (StringUtils.isBlank(payer)) {
+            String errorMessage = "";
+            double paymentAmount = Double.valueOf(StringUtils.isBlank(paymentAmountTextField.getText()) ? "0" : paymentAmountTextField.getText());
+            if (paymentAmount <= 0) {
+                errorMessage = "Số tiền thanh toán phải lớn hơn 0";
+            }
+            if (StringUtils.isBlank(payerTextField.getText())) {
+                errorMessage = "Số tiền thanh toán phải lớn hơn 0";
+            }
+            if (StringUtils.isNotBlank(errorMessage)) {
                 alert = new Alert(WARNING);
                 alert.setTitle("Lỗi cập nhật");
                 alert.setHeaderText(null);
-                alert.setContentText("Không được để trống người thanh toán");
+                alert.setContentText(errorMessage);
+                alert.show();
                 return;
             }
             if (paidRadioButton.isSelected() && !PAID.getNote().equals(order.getPaymentStatus())) {
                 alert = new Alert(WARNING);
                 alert.setTitle("Lưu ý cập nhật");
                 alert.setHeaderText(null);
-                alert.setContentText("Sau khi cập nhật bạn sẽ không thể thay đổi giá tiền và người bán được nữa");
+                alert.setContentText("Sau khi cập nhật bạn sẽ không thể thay đổi giá tiền, người bán và trạng thái thanh toán được nữa.\nBạn chắc chắn chứ?");
                 alert.showAndWait();
             }
             int cargoValue = Math.abs(firstValue - secondValue);
@@ -171,12 +180,12 @@ public class FormController implements Initializable {
             order.setPaymentStatus(paidRadioButton.isSelected() ? PAID.getNote() : UNPAID.getNote());
             orderDAO.updateOrder(order);
             historyLogDAO.createLogForOrder(oldOrder, order, UPDATED_ORDER_MANUAL);
+            resetData(order);
             alert = new Alert(INFORMATION);
             alert.setTitle("Cập nhật thành công");
             alert.setHeaderText(null);
             alert.setContentText("Cập nhật mã cân " + order.getIndex() + " thành công!");
             alert.showAndWait();
-            resetData(order);
         } catch (Exception e) {
             alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Lỗi cập nhật");
@@ -187,17 +196,18 @@ public class FormController implements Initializable {
     }
 
     private void resetData(Order order) {
+        selectedOrder = order;
         indexTextField.setText(String.valueOf(order.getIndex()));
         licensePlatesTextField.setText(order.getLicensePlates());
         sellerTextField.setText(order.getSeller());
         buyerTextField.setText(order.getBuyer());
         noteTextField.setText(order.getNote());
         cargoComboBox.setValue(order.getCargoType());
-        paymentAmountTextField.setText(String.valueOf(order.getPaymentAmount()));
         payerTextField.setText(order.getPayer());
         totalWeightTextField.setText(String.valueOf(order.getTotalWeight()));
         vehicleWeightTextField.setText(String.valueOf(order.getVehicleWeight()));
         cargoWeightTextField.setText(String.valueOf(order.getCargoWeight()));
+        paymentAmountTextField.setText(String.valueOf(order.getPaymentAmount()));
         if (PAID.getNote().equalsIgnoreCase(order.getPaymentStatus())) {
             paidRadioButton.setSelected(true);
             paidRadioButton.setDisable(true);
@@ -207,7 +217,6 @@ public class FormController implements Initializable {
         } else {
             unpaidRadioButton.setSelected(true);
         }
-        selectedOrder = order;
     }
 
     public void openOrderDetail(ActionEvent actionEvent) throws JRException {

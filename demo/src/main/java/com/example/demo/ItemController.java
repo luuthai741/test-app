@@ -3,13 +3,13 @@ package com.example.demo;
 import com.example.demo.dao.HistoryLogDAO;
 import com.example.demo.dao.OrderDAO;
 import com.example.demo.dao.SettingDAO;
-import com.example.demo.data.CurrentUser;
+import com.example.demo.model.HistoryLog;
 import com.example.demo.model.Order;
 import com.example.demo.service.ReportService;
 import com.example.demo.utils.constants.LogAction;
+import com.example.demo.utils.constants.LogType;
 import com.example.demo.utils.constants.OrderStatus;
 import com.example.demo.utils.constants.PaymentStatus;
-import com.example.demo.utils.constants.RoleType;
 import com.example.demo.utils.util.ConvertUtil;
 import com.example.demo.utils.util.DateUtil;
 import javafx.beans.property.SimpleStringProperty;
@@ -25,10 +25,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import net.sf.jasperreports.engine.JRException;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
 import static com.example.demo.utils.constants.Page.FORM;
@@ -93,8 +95,6 @@ public class ItemController implements Initializable {
 
     @FXML
     private TableColumn<?, ?> vehicleWeightCol;
-    @FXML
-    private Button importButton;
 
     private OrderDAO orderDAO = OrderDAO.getInstance();
     private HistoryLogDAO historyLogDAO = HistoryLogDAO.getInstance();
@@ -158,9 +158,6 @@ public class ItemController implements Initializable {
                 endDatePicker.getValue().atStartOfDay().withHour(23).withMinute(59).withSecond(59));
         orderTable.setContextMenu(contextMenu);
         orderTable.setItems(orders);
-        if (!RoleType.ADMIN.equals(CurrentUser.getInstance().getRole())) {
-            importButton.setDisable(true);
-        }
     }
 
     public void search() {
@@ -220,5 +217,64 @@ public class ItemController implements Initializable {
             return;
         }
         reportService.printOrders(ordersFilter, startDatePicker.getValue(), endDatePicker.getValue());
+    }
+
+    public void updatePaidPaymentStatus() {
+        if (orders.size() == 0) {
+            return;
+        }
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Cập nhật trả tiền mã cân");
+        alert.setHeaderText(null);
+        alert.setContentText("Sau khi thanh toán mã cân, bạn sẽ không thể cập nhật được người trả, số tiền và trạng thái thanh toán của mã cân.\nBạn chắc chắn chứ?");
+        if (alert.showAndWait().get() != ButtonType.OK) {
+            return;
+        }
+        StringBuilder successBuilder = new StringBuilder();
+        StringBuilder failBuilder = new StringBuilder();
+        for (Order order : orders) {
+            if (!order.getPaymentStatus().equalsIgnoreCase(PaymentStatus.UNPAID.getNote())) {
+                continue;
+            }
+            if (order.getPaymentAmount() <= 0) {
+                failBuilder.append("Mã cân: ")
+                        .append(order.getIndex())
+                        .append(" tạo ngày ")
+                        .append(DateUtil.convertToString(order.getCreatedAt(), DD_MM_YYYY))
+                        .append(" với số tiền thanh toán ")
+                        .append(order.getPaymentAmount()).append(".\n");
+                continue;
+            }
+            order.setStatus(PaymentStatus.PAID.getNote());
+            order.setUpdatedAt(LocalDateTime.now());
+            successBuilder.append("Mã cân: ")
+                    .append(order.getIndex())
+                    .append(" tạo ngày ")
+                    .append(DateUtil.convertToString(order.getCreatedAt(), DD_MM_YYYY))
+                    .append(".\n");
+            orderDAO.updateOrder(order);
+        }
+        String successMessage = successBuilder.toString();
+        String failedMessage = failBuilder.toString();
+        if (StringUtils.isBlank(successMessage) && StringUtils.isBlank(failedMessage)){
+            return;
+        }
+        String responseMessage = "";
+        if (StringUtils.isNotBlank(successMessage)){
+            HistoryLog historyLog = new HistoryLog();
+            historyLog.setLogType(LogType.WARN.name());
+            historyLog.setContent(successMessage);
+            historyLog.setAction(LogAction.UPDATED_PAID_ORDERS.getNote());
+            historyLogDAO.createLog(historyLog);
+            responseMessage = "Cập nhật thành công \n" + successMessage;
+        }
+        if (StringUtils.isNotBlank(failedMessage)){
+            responseMessage += "Cập nhật thất bại \n" + failedMessage;
+        }
+        alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Thông báo cập nhật thanh toán");
+        alert.setHeaderText(null);
+        alert.setContentText(responseMessage);
+        alert.show();
     }
 }
