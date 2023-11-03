@@ -10,11 +10,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
+import java.util.Map;
 
 import static com.example.demo.utils.constants.Page.LIST;
 
@@ -37,6 +39,15 @@ public class HelloApplication extends Application {
             System.exit(0);
         });
         stage.show();
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        Map<String,String> vars = System.getenv();
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Map.Entry<String, String> entry : vars.entrySet()) {
+            stringBuilder.append(entry.getKey()).append(" ").append(entry.getValue()).append("\n");
+        }
+        alert.setHeaderText("test");
+        alert.setContentText(stringBuilder.toString());
+        alert.show();
     }
 
     private void createDefaultSettingKey() {
@@ -47,9 +58,5 @@ public class HelloApplication extends Application {
             setting.setValue(" ");
             settingDAO.createSetting(setting);
         }
-    }
-
-    public static void main(String[] args) {
-        launch();
     }
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
@@ -36,9 +37,18 @@
                                 <NumberAxis side="LEFT" />
                             </yAxis>
                         </LineChart>
-                        <Button fx:id="searchButton" layoutX="427.0" layoutY="61.0" mnemonicParsing="false" onAction="#search" prefHeight="26.0" prefWidth="110.0" text="Tìm kiếm" />
-                        <Button fx:id="searchButton1" layoutX="543.0" layoutY="61.0" mnemonicParsing="false" onAction="#export" prefHeight="26.0" prefWidth="110.0" text="Xuất dữ liệu" />
-                        <Button fx:id="searchButton11" layoutX="660.0" layoutY="61.0" mnemonicParsing="false" onAction="#importOrder" prefHeight="26.0" prefWidth="110.0" text="Nhập dữ liệu" />
+                        <Button fx:id="searchButton" layoutX="401.0" layoutY="61.0" mnemonicParsing="false" onAction="#search" prefHeight="26.0" prefWidth="110.0" text="Tìm kiếm">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor></Button>
+                        <Button fx:id="searchButton1" layoutX="517.0" layoutY="61.0" mnemonicParsing="false" onAction="#export" prefHeight="26.0" prefWidth="110.0" text="Xuất dữ liệu">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor></Button>
+                        <Button fx:id="searchButton11" layoutX="634.0" layoutY="61.0" mnemonicParsing="false" onAction="#importOrder" prefHeight="26.0" prefWidth="110.0" text="Nhập dữ liệu">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor></Button>
                         <HBox layoutX="50.0" layoutY="469.0" prefHeight="152.0" prefWidth="900.0">
                             <children>
                                 <VBox prefHeight="200.0" prefWidth="180.0">

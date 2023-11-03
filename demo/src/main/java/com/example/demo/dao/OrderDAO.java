@@ -9,6 +9,7 @@ import com.example.demo.utils.util.DateUtil;
 import com.example.demo.utils.util.SqlUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.apache.commons.lang.ObjectUtils;
 
 import java.sql.ResultSet;
 import java.time.LocalDate;
@@ -17,6 +18,7 @@ import java.time.LocalTime;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.example.demo.utils.constants.OrderQueryConstants.*;
 import static com.example.demo.utils.constants.OrderStatus.CANCELED;
@@ -42,7 +44,7 @@ public class OrderDAO {
         OrderQuery orderQuery = new OrderQuery();
         orderQuery.setDateTimeFrom(LocalDateTime.of(startDate, LocalTime.of(0, 0, 0)));
         orderQuery.setDateTimeTo(LocalDateTime.of(endDate, LocalTime.of(23, 59, 59)));
-        orderQuery.setStatus(status.getNote());
+        orderQuery.setStatus(Objects.isNull(status) ? null : status.getNote());
         SqlUtil sqlUtil = new SqlUtil();
         try {
             sqlUtil.connect();

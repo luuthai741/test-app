@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
@@ -62,14 +63,14 @@
                         <ComboBox fx:id="cargoComboBox" layoutX="118.0" layoutY="170.0" prefHeight="24.0" prefWidth="120.0" />
                         <Label layoutX="260.0" layoutY="15.0" prefHeight="30.0" prefWidth="80.0" text="Thành tiền">
                         <font>
-                           <Font name="System Bold"/>
+                           <Font name="System Bold" />
                         </font>
                         </Label>
                         <TextField fx:id="paymentAmountTextField" layoutX="366.0" layoutY="18.0" prefHeight="25.0" prefWidth="52.0" />
                         <Label layoutX="347.0" layoutY="22.0" text=":" />
                         <Label layoutX="260.0" layoutY="77.0" prefHeight="30.0" prefWidth="80.0" text="Thanh toán">
                            <font>
-                              <Font name="System Bold"/>
+                              <Font name="System Bold" />
                            </font>
                         </Label>
                         <Label layoutX="347.0" layoutY="84.0" text=":" />
@@ -109,9 +110,18 @@
                            </font>
                         </Label>
                         <TextField fx:id="cargoWeightTextField" alignment="CENTER" editable="false" layoutX="346.0" layoutY="51.0" prefWidth="120.0" />
-                        <Button layoutX="29.0" layoutY="124.0" mnemonicParsing="false" onAction="#openOrderDetail" prefHeight="30.0" prefWidth="100.0" text="Chi tiết" />
-                        <Button layoutX="149.0" layoutY="124.0" mnemonicParsing="false" onAction="#updateOrder" prefHeight="30.0" prefWidth="100.0" text="Cập nhật" />
-                        <Button layoutX="269.0" layoutY="124.0" mnemonicParsing="false" onAction="#rollback" prefHeight="30.0" prefWidth="100.0" text="Quay lại" />
+                        <Button layoutX="29.0" layoutY="124.0" mnemonicParsing="false" onAction="#openOrderDetail" prefHeight="30.0" prefWidth="100.0" text="Chi tiết">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></Button>
+                        <Button layoutX="149.0" layoutY="124.0" mnemonicParsing="false" onAction="#updateOrder" prefHeight="30.0" prefWidth="100.0" text="Cập nhật">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></Button>
+                        <Button layoutX="269.0" layoutY="124.0" mnemonicParsing="false" onAction="#rollback" prefHeight="30.0" prefWidth="100.0" text="Quay lại">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></Button>
                      </children>
                   </AnchorPane>
                </children>
